@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name" translatable="false">Co.Payment</string>
+    <string name="onboarding_item_title_1">Finance app the safest and most trusted</string>
+    <string name="onboarding_item_title_2">The fastest transaction process only here.</string>
+    <string name="onboarding_item_desc_1">Your finance work starts here. Our here to help you track and deal with speeding up your transactions.</string>
+    <string name="onboarding_item_desc_2">Get easy to pay all your bills with just a few steps. Paying your bills become fast and efficient.</string>
+    <string name="onboarding_get_started">Get Started</string>
+    <string name="logo">Logo</string>
+    <string name="splash_title_part_1" translatable="false">Co</string>
+    <string name="splash_title_part_2" translatable="false">.Payment</string>
+    <string name="onboarding_skip">Skip</string>
+</resources>

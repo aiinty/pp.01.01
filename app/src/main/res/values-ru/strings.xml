@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_item_title_1">Cамое безопасное и надежное финансовое приложение</string>
+    <string name="onboarding_item_title_2">Только здесь самые быстрые операции</string>
+    <string name="onboarding_item_desc_1">Ваша финансовая работа начинается здесь. Мы поможем вам отслеживать и ускорять ваши операции.</string>
+    <string name="onboarding_item_desc_2">Оплачивайте всего за несколько шагов. Оплата станет быстрой и эффективной.</string>
+    <string name="onboarding_get_started">Приступить</string>
+    <string name="logo">Логотип</string>
+</resources>

@@ -1,0 +1,108 @@
+package com.aiinty.copayment.presentation.ui
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.compose.composable
+import com.aiinty.copayment.R
+import com.aiinty.copayment.presentation.ui.theme.Green
+import kotlinx.coroutines.delay
+import kotlinx.serialization.Serializable
+
+@Serializable
+object SplashScreenRoute
+
+@Composable
+fun SplashScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToOnboarding: () -> Unit = {},
+    onNavigateToLogin: () -> Unit = {},
+    onNavigateToPinCode: () -> Unit = {},
+) {
+    LaunchedEffect(Unit) {
+        delay(2500)
+
+        // TODO
+        val userIsAuthenticated = false
+        val userIsNew = true
+
+        if (userIsAuthenticated) {
+            onNavigateToPinCode()
+        } else if (!userIsNew) {
+            onNavigateToLogin()
+        } else {
+            onNavigateToOnboarding()
+        }
+    }
+
+    Column(
+        modifier = modifier.background(Green),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(R.drawable.splashlogo),
+            contentDescription = stringResource(R.string.logo)
+        )
+        Row() {
+            Text(
+                text = stringResource(R.string.splash_title_part_1),
+                fontWeight = FontWeight.Bold,
+                fontSize = 32.sp,
+                color = Color.Black
+            )
+            Text(
+                text = stringResource(R.string.splash_title_part_2),
+                fontWeight = FontWeight.Bold,
+                fontSize = 32.sp,
+                color = Color.White
+            )
+        }
+
+    }
+}
+
+fun NavController.navigateToSplash(navOptions: NavOptionsBuilder.() -> Unit = {}) =
+    navigate(route = SplashScreenRoute, navOptions)
+
+fun NavGraphBuilder.splashScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToOnboarding: () -> Unit = {},
+    onNavigateToLogin: () -> Unit = {},
+    onNavigateToPinCode: () -> Unit = {},
+
+) {
+    composable<SplashScreenRoute> {
+        SplashScreen(
+            modifier = modifier,
+            onNavigateToOnboarding = onNavigateToOnboarding,
+            onNavigateToLogin = onNavigateToLogin,
+            onNavigateToPinCode = onNavigateToPinCode,
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SplashScreenPreview() {
+    SplashScreen(
+        Modifier.fillMaxSize()
+    )
+}

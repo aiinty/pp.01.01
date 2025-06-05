@@ -11,4 +11,6 @@
 
 ## Используемые библиотеки
 
+- Navigation Compose
+- [DotsIndicator](https://github.com/tommybuonomo/dotsindicator)
 - 
