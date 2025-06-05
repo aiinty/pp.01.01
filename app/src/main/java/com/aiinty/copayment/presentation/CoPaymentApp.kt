@@ -10,6 +10,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.aiinty.copayment.presentation.ui.SplashScreenRoute
+import com.aiinty.copayment.presentation.ui.navigateToOnboarding
+import com.aiinty.copayment.presentation.ui.navigateToSplash
+import com.aiinty.copayment.presentation.ui.onboardingScreen
 import com.aiinty.copayment.presentation.ui.splashScreen
 
 @Composable
@@ -27,7 +30,16 @@ fun CoPaymentApp(
             startDestination = SplashScreenRoute,
             modifier = modifier.padding(innerPadding)
         ) {
-            splashScreen()
+            splashScreen(
+                onNavigateToOnboarding = { navController.navigateToOnboarding(
+                    navOptions = {
+                        popUpTo(SplashScreenRoute) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                ) }
+            )
+
+            onboardingScreen()
         }
     }
 }
