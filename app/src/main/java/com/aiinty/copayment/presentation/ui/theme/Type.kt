@@ -17,7 +17,7 @@ val Typography = Typography(
     ),
     bodyMedium = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
+        fontWeight = FontWeight.W400,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         color = Greyscale500
