@@ -22,18 +22,15 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
+import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui.theme.Green
 import kotlinx.coroutines.delay
-import kotlinx.serialization.Serializable
-
-@Serializable
-object SplashScreenRoute
 
 @Composable
 fun SplashScreen(
     modifier: Modifier = Modifier,
     onNavigateToOnboarding: () -> Unit = {},
-    onNavigateToLogin: () -> Unit = {},
+    onNavigateToSignIn: () -> Unit = {},
     onNavigateToPinCode: () -> Unit = {},
 ) {
     LaunchedEffect(Unit) {
@@ -46,14 +43,15 @@ fun SplashScreen(
         if (userIsAuthenticated) {
             onNavigateToPinCode()
         } else if (!userIsNew) {
-            onNavigateToLogin()
+            onNavigateToSignIn()
         } else {
             onNavigateToOnboarding()
         }
     }
 
     Column(
-        modifier = modifier.background(Green),
+        modifier = modifier
+            .background(Green),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -80,20 +78,21 @@ fun SplashScreen(
 }
 
 fun NavController.navigateToSplash(navOptions: NavOptionsBuilder.() -> Unit = {}) =
-    navigate(route = SplashScreenRoute, navOptions)
+    navigate(route = NavigationRoute.SplashScreen.route, navOptions)
 
 fun NavGraphBuilder.splashScreen(
     modifier: Modifier = Modifier,
     onNavigateToOnboarding: () -> Unit = {},
-    onNavigateToLogin: () -> Unit = {},
+    onNavigateToSignIn: () -> Unit = {},
     onNavigateToPinCode: () -> Unit = {},
-
-) {
-    composable<SplashScreenRoute> {
+    ) {
+    composable(
+        route = NavigationRoute.SplashScreen.route
+    ) {
         SplashScreen(
             modifier = modifier,
             onNavigateToOnboarding = onNavigateToOnboarding,
-            onNavigateToLogin = onNavigateToLogin,
+            onNavigateToSignIn = onNavigateToSignIn,
             onNavigateToPinCode = onNavigateToPinCode,
         )
     }

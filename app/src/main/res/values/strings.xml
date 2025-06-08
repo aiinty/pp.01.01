@@ -9,4 +9,36 @@
     <string name="splash_title_part_1" translatable="false">Co</string>
     <string name="splash_title_part_2" translatable="false">.Payment</string>
     <string name="onboarding_skip">Skip</string>
+    <string name="sign_in_title">Hi There! 👋</string>
+    <string name="sign_in_desc">Welcome back, Sign in to your account</string>
+    <string name="back">Back</string>
+    <string name="email">Email</string>
+    <string name="hide">Hide</string>
+    <string name="show">Show</string>
+    <string name="password">Password</string>
+    <string name="sign_in_forgot_password">Forgot Password?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_in_dont_have">Don’t have an account?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="verify_otp_resend_code">Resend Code</string>
+    <string name="verify_otp_wait_seconds">Wait %1$s seconds...</string>
+    <string name="confirm">Confirm</string>
+    <string name="verify_otp_desc">We send a code to ( %1$s ). Enter it here to verify your identity</string>
+    <string name="verify_otp_title">Verify it’s you</string>
+    <string name="backspace">Backspace</string>
+    <string name="sign_up_already_have">Already have an account?</string>
+    <string name="sign_up_title">Create a %1$s account</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="passwords_must_match">Passwords must match</string>
+    <string name="email_cannot_be_empty">Email cannot be empty</string>
+    <string name="invalid_email_address">Invalid email address</string>
+    <string name="full_name_cannot_be_empty">Full Name cannot be empty</string>
+    <string name="only_letters_allowed">Only letters, spaces, and hyphens are allowed</string>
+    <string name="password_must_be">Password must be at least 6 characters</string>
+    <string name="send_me_email">Send me email</string>
+    <string name="recovery_title">Password Recovery</string>
+    <string name="recovery_desc">Enter your registered email below to receive password instructions</string>
+    <string name="create_new_password">Create new password</string>
+    <string name="password_change_title">Create New Password</string>
+    <string name="password_change_desc">Please, enter a new password below different from the previous password</string>
 </resources>

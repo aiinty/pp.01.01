@@ -1,0 +1,39 @@
+package com.aiinty.copayment.data.network
+
+import com.aiinty.copayment.BuildConfig
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+object RetrofitInstance {
+    private const val BASE_URL = "https://cqvwbtjvzqmjfskbduav.supabase.co"
+
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    private val client by lazy {
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader("apikey", BuildConfig.API_KEY)
+                    .build()
+                chain.proceed(request)
+            }
+            .build()
+    }
+
+    private val retrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+    }
+
+    val api: SupabaseApi by lazy {
+        retrofit.create(SupabaseApi::class.java)
+    }
+}

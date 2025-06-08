@@ -1,4 +1,4 @@
-package com.aiinty.copayment.presentation.ui.components
+package com.aiinty.copayment.presentation.ui.components.base
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth

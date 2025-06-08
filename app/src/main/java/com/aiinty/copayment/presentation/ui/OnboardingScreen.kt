@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,17 +37,15 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
-import com.aiinty.copayment.presentation.ui.components.BaseButton
-import com.aiinty.copayment.presentation.ui.components.TopShadow
+import com.aiinty.copayment.presentation.navigation.NavigationRoute
+import com.aiinty.copayment.presentation.ui.components.base.BaseButton
+import com.aiinty.copayment.presentation.ui.components.base.BaseTextButton
+import com.aiinty.copayment.presentation.ui.components.base.TopShadow
 import com.aiinty.copayment.presentation.ui.theme.Typography
 import com.tbuonomo.viewpagerdotsindicator.compose.DotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.compose.model.DotGraphic
 import com.tbuonomo.viewpagerdotsindicator.compose.type.ShiftIndicatorType
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
-
-@Serializable
-object OnboardingScreenRoute
 
 @Composable
 fun OnboardingScreen(
@@ -83,14 +80,11 @@ fun OnboardingScreen(
         modifier = modifier.fillMaxHeight(),
         horizontalAlignment = Alignment.End
     ) {
-        Text(
-            modifier = Modifier
-                .padding(16.dp)
-                .clickable { onNavigateToLogin() },
+        BaseTextButton(
             text = stringResource(R.string.onboarding_skip),
-            style = Typography.titleMedium,
-            fontSize = 16.sp,
-            color = Color.Black,
+            modifier = Modifier
+                .padding(16.dp),
+            onClick = onNavigateToLogin
         )
 
         Box(
@@ -203,16 +197,18 @@ private fun AnimatedOnboardingDescItem(
 }
 
 fun NavController.navigateToOnboarding(navOptions: NavOptionsBuilder.() -> Unit = {}) =
-    navigate(route = OnboardingScreenRoute, navOptions)
+    navigate(route = NavigationRoute.OnboardingScreen.route, navOptions)
 
 fun NavGraphBuilder.onboardingScreen(
     modifier: Modifier = Modifier,
-    onNavigateToLogin: () -> Unit = {}
+    onNavigateToSignIn: () -> Unit = {}
 ) {
-    composable<OnboardingScreenRoute> {
+    composable(
+        route = NavigationRoute.OnboardingScreen.route
+    ) {
         OnboardingScreen(
             modifier = modifier,
-            onNavigateToLogin = onNavigateToLogin
+            onNavigateToLogin = onNavigateToSignIn
         )
     }
 }

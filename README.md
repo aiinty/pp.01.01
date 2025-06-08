@@ -11,6 +11,12 @@
 
 ## Используемые библиотеки
 
-- Navigation Compose
+- [Navigation Compose](https://developer.android.com/develop/ui/compose/navigation)
 - [DotsIndicator](https://github.com/tommybuonomo/dotsindicator)
-- 
+- [Retrofit2](https://github.com/square/retrofit)
+- [OkHttp Logging Interceptor](https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor)
+- [Gson](https://github.com/google/gson)
+- [Converter Gson](https://github.com/square/retrofit/tree/trunk/retrofit-converters/gson)
+- [Kotlinx Serialization JSON](github.com/Kotlin/kotlinx.serialization)
+- [AndroidX Security Crypto](https://developer.android.com/jetpack/androidx/releases/security)
+- [Dagger Hilt](https://dagger.dev/hilt/)

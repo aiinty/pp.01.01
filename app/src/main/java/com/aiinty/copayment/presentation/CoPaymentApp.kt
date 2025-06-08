@@ -7,13 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
-import com.aiinty.copayment.presentation.ui.SplashScreenRoute
-import com.aiinty.copayment.presentation.ui.navigateToOnboarding
-import com.aiinty.copayment.presentation.ui.navigateToSplash
-import com.aiinty.copayment.presentation.ui.onboardingScreen
-import com.aiinty.copayment.presentation.ui.splashScreen
+import com.aiinty.copayment.presentation.navigation.CoPaymentNavHost
 
 @Composable
 fun CoPaymentApp(
@@ -23,24 +17,11 @@ fun CoPaymentApp(
         modifier = modifier,
         containerColor = Color.White
     ) { innerPadding ->
-        val navController = rememberNavController()
-
-        NavHost(
-            navController = navController,
-            startDestination = SplashScreenRoute,
-            modifier = modifier.padding(innerPadding)
-        ) {
-            splashScreen(
-                onNavigateToOnboarding = { navController.navigateToOnboarding(
-                    navOptions = {
-                        popUpTo(SplashScreenRoute) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                ) }
-            )
-
-            onboardingScreen()
-        }
+        CoPaymentNavHost(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        )
     }
 }
 
