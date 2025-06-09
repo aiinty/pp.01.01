@@ -59,13 +59,13 @@ fun SignUpScreen(
     AuthErrorHandler(viewModel = viewModel)
 
     val fullName = remember { mutableStateOf("") }
-    val fullNameError = remember { mutableStateOf<String?>(null) }
+    val fullNameError = remember { mutableStateOf<Int?>(null) }
     val email = remember { mutableStateOf("") }
-    val emailError = remember { mutableStateOf<String?>(null) }
+    val emailError = remember { mutableStateOf<Int?>(null) }
     val password = remember { mutableStateOf("") }
-    val passwordError = remember { mutableStateOf<String?>(null) }
+    val passwordError = remember { mutableStateOf<Int?>(null) }
     val passwordConfirm = remember { mutableStateOf("") }
-    val passwordConfirmError = remember { mutableStateOf<String?>(null) }
+    val passwordConfirmError = remember { mutableStateOf<Int?>(null) }
     val isInputsValidated = fullNameError.value == null && emailError.value == null &&
             passwordError.value == null && passwordConfirmError.value == null &&
             fullName.value.isNotEmpty() && email.value.isNotEmpty() &&
@@ -170,63 +170,53 @@ private fun SignUpHeader(
 private fun SignUpFields(
     modifier: Modifier = Modifier,
     fullName: MutableState<String>,
-    fullNameError: MutableState<String?>,
+    fullNameError: MutableState<Int?>,
     email: MutableState<String>,
-    emailError: MutableState<String?>,
+    emailError: MutableState<Int?>,
     password: MutableState<String>,
-    passwordError: MutableState<String?>,
+    passwordError: MutableState<Int?>,
     passwordConfirm: MutableState<String>,
-    passwordConfirmError: MutableState<String?>,
+    passwordConfirmError: MutableState<Int?>,
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        val errorEmptyFullName = stringResource(R.string.full_name_cannot_be_empty)
-        val errorInvalidFullName = stringResource(R.string.only_letters_allowed)
         FullNameTextField(
             modifier = Modifier.fillMaxWidth(),
             fullName = fullName.value,
-            errorEmptyFullName = errorEmptyFullName,
-            errorInvalidFullName = errorInvalidFullName,
             onFullNameChange = { fullName.value=it },
             onValidationResultChange={ error ->
                 fullNameError.value=error
             }
         )
 
-        val errorEmptyEmail = stringResource(R.string.email_cannot_be_empty)
-        val errorInvalidEmail = stringResource(R.string.invalid_email_address)
         EmailTextField(
             modifier = Modifier.fillMaxWidth(),
             email = email.value,
             onEmailChange = { email.value=it },
-            errorEmptyEmail = errorEmptyEmail,
-            errorInvalidEmail = errorInvalidEmail,
             onValidationResultChange = { error ->
                 emailError.value=error
             }
         )
 
-        val errorPasswordLength = stringResource(R.string.password_must_be)
         PasswordTextField(
             modifier = Modifier.fillMaxWidth(),
             password = password.value,
-            errorPasswordLength = errorPasswordLength,
             onPasswordChange = { password.value = it },
             onValidationResultChange = { error ->
                 passwordError.value = error
             }
         )
 
-        val errorPasswordMustMuch = stringResource(R.string.passwords_must_match)
         PasswordTextField(
             modifier = Modifier.fillMaxWidth(),
             password = passwordConfirm.value,
             onPasswordChange = { passwordConfirm.value = it },
-            label = stringResource(R.string.confirm_password),
+            labelResId = R.string.confirm_password,
             validateRules = { pass ->
-                if (pass != password.value) errorPasswordMustMuch else null
+                if (pass != password.value) R.string.error_match_passwords
+                else null
             },
             onValidationResultChange = { error ->
                 passwordConfirmError.value = error

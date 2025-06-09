@@ -60,9 +60,9 @@ fun SignInScreen(
     AuthErrorHandler(viewModel = viewModel)
 
     val email = remember { mutableStateOf("") }
-    val emailError = remember { mutableStateOf<String?>(null) }
+    val emailError = remember { mutableStateOf<Int?>(null) }
     val password = remember { mutableStateOf("") }
-    val passwordError = remember { mutableStateOf<String?>(null) }
+    val passwordError = remember { mutableStateOf<Int?>(null) }
     val isInputsValidated = emailError.value == null && passwordError.value == null &&
             email.value.isNotEmpty() && password.value.isNotEmpty()
 
@@ -157,32 +157,26 @@ private fun SignInHeader(
 private fun SignInFields(
     modifier: Modifier = Modifier,
     email: MutableState<String>,
-    emailError: MutableState<String?>,
+    emailError: MutableState<Int?>,
     password: MutableState<String>,
-    passwordError: MutableState<String?>,
+    passwordError: MutableState<Int?>,
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        val errorEmptyEmail = stringResource(R.string.email_cannot_be_empty)
-        val errorInvalidEmail = stringResource(R.string.invalid_email_address)
         EmailTextField(
             modifier = Modifier.fillMaxWidth(),
             email = email.value,
             onEmailChange = { email.value=it },
-            errorEmptyEmail = errorEmptyEmail,
-            errorInvalidEmail = errorInvalidEmail,
             onValidationResultChange = { error ->
                 emailError.value=error
             }
         )
 
-        val errorPasswordLength = stringResource(R.string.password_must_be)
         PasswordTextField(
             modifier = Modifier.fillMaxWidth(),
             password = password.value,
-            errorPasswordLength = errorPasswordLength,
             onPasswordChange = { password.value = it },
             onValidationResultChange = { error ->
                 passwordError.value = error

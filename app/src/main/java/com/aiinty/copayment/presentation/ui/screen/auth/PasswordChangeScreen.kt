@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,9 +46,9 @@ fun PasswordChangeScreen(
     AuthErrorHandler(viewModel = viewModel)
 
     val password = remember { mutableStateOf("") }
-    val passwordError = remember { mutableStateOf<String?>(null) }
+    val passwordError = remember { mutableStateOf<Int?>(null) }
     val passwordConfirm = remember { mutableStateOf("") }
-    val passwordConfirmError = remember { mutableStateOf<String?>(null) }
+    val passwordConfirmError = remember { mutableStateOf<Int?>(null) }
     val isInputsValidated = passwordError.value == null && passwordConfirmError.value == null &&
             password.value.isNotEmpty() && passwordConfirm.value.isNotEmpty()
 
@@ -120,33 +119,31 @@ private fun PasswordChangeHeader(
 private fun PasswordChangeFields(
     modifier: Modifier = Modifier,
     password: MutableState<String>,
-    passwordError: MutableState<String?>,
+    passwordError: MutableState<Int?>,
     passwordConfirm: MutableState<String>,
-    passwordConfirmError: MutableState<String?>,
+    passwordConfirmError: MutableState<Int?>,
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        val errorPasswordLength = stringResource(R.string.password_must_be)
         PasswordTextField(
             modifier = Modifier.fillMaxWidth(),
             password = password.value,
-            errorPasswordLength = errorPasswordLength,
             onPasswordChange = { password.value = it },
             onValidationResultChange = { error ->
                 passwordError.value = error
             }
         )
 
-        val errorPasswordMustMuch = stringResource(R.string.passwords_must_match)
         PasswordTextField(
             modifier = Modifier.fillMaxWidth(),
             password = passwordConfirm.value,
             onPasswordChange = { passwordConfirm.value = it },
-            label = stringResource(R.string.confirm_password),
+            labelResId = R.string.confirm_password,
             validateRules = { pass ->
-                if (pass != password.value) errorPasswordMustMuch else null
+                if (pass != password.value) R.string.error_match_passwords
+                else null
             },
             onValidationResultChange = { error ->
                 passwordConfirmError.value = error

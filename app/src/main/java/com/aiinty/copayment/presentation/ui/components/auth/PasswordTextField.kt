@@ -23,15 +23,15 @@ fun PasswordTextField(
     modifier: Modifier = Modifier,
     password: String,
     onPasswordChange: (String) -> Unit,
-    label: String = "Password",
-    errorPasswordLength: String = "Password must be at least 6 characters",
-    validateRules: (String) -> String? = { pass ->
-        if (pass.length < 6) errorPasswordLength else null
+    labelResId: Int? = null,
+    validateRules: (String) -> Int? = { pass ->
+        if (pass.length < 6) R.string.error_password_length
+        else null
     },
-    onValidationResultChange: ((String?) -> Unit)? = null,
+    onValidationResultChange: ((Int?) -> Unit)? = null,
 ) {
     val isPasswordVisible = remember { mutableStateOf(false) }
-    val errorMessage = remember { mutableStateOf<String?>(null) }
+    val errorMessage = remember { mutableStateOf<Int?>(null) }
 
     fun validateInput(input: String) {
         val error = validateRules(input)
@@ -46,7 +46,12 @@ fun PasswordTextField(
             onPasswordChange(it)
             validateInput(it)
         },
-        label = { Text(text = label) },
+        label = {
+            Text(
+                text = if (labelResId != null) stringResource(labelResId) else
+                    stringResource(R.string.password)
+            )
+        },
         visualTransformation = if (isPasswordVisible.value)
             VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
@@ -57,7 +62,8 @@ fun PasswordTextField(
                     painter = if (isPasswordVisible.value)
                         painterResource(R.drawable.eye) else painterResource(R.drawable.eye_off),
                     contentDescription = if (isPasswordVisible.value)
-                        stringResource(R.string.hide) else stringResource(R.string.show)
+                        stringResource(R.string.hide) else stringResource(R.string.show),
+                    tint = Color.Unspecified
                 )
             }
         },
@@ -66,7 +72,7 @@ fun PasswordTextField(
 
     errorMessage.value?.let { error ->
         Text(
-            text = error,
+            text = stringResource(error),
             color = Color.Red,
             style = Typography.bodyMedium,
             modifier = Modifier.padding(start = 16.dp)

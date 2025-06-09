@@ -7,7 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.aiinty.copayment.R
 import com.aiinty.copayment.presentation.ui.components.base.BaseTextField
 import com.aiinty.copayment.presentation.ui.theme.Typography
 
@@ -16,20 +18,18 @@ fun FullNameTextField(
     modifier: Modifier = Modifier,
     fullName: String,
     onFullNameChange: (String) -> Unit,
-    label: String = "Full Name",
-    errorEmptyFullName: String = "Full Name cannot be empty",
-    errorInvalidFullName: String = "Only letters, spaces, and hyphens are allowed",
-    validateRules: (String) -> String? = { name ->
+    labelResId: Int? = null,
+    validateRules: (String) -> Int? = { name ->
         val pattern = "^[a-zA-Zа-яА-ЯёЁ\\s-]+$".toRegex()
         when {
-            name.isEmpty() -> errorEmptyFullName
-            !pattern.matches(name) -> errorInvalidFullName
+            name.isEmpty() -> R.string.error_empty_full_name
+            !pattern.matches(name) -> R.string.error_invalid_full_name
             else -> null
         }
     },
-    onValidationResultChange: ((String?) -> Unit)? = null,
+    onValidationResultChange: ((Int?) -> Unit)? = null,
 ) {
-    val errorMessage = remember { mutableStateOf<String?>(null) }
+    val errorMessage = remember { mutableStateOf<Int?>(null) }
 
     fun validateInput(input: String) {
         val error = validateRules(input)
@@ -47,16 +47,21 @@ fun FullNameTextField(
             onFullNameChange(filtered)
             validateInput(filtered)
         },
-        label = { Text(text = label) },
+        label = {
+            Text(
+                text = if (labelResId != null) stringResource(labelResId) else
+                    stringResource(R.string.full_name)
+            )
+        },
         isError = errorMessage.value != null
     )
 
     errorMessage.value?.let { error ->
         Text(
-            text = error,
+            text = stringResource(error),
             color = Color.Red,
             style = Typography.bodyMedium,
-            modifier = Modifier.padding(start=16.dp)
+            modifier = Modifier.padding(start = 16.dp)
         )
     }
 }

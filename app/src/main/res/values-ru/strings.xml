@@ -27,12 +27,12 @@
     <string name="sign_up_already_have">Уже есть аккаунт?</string>
     <string name="sign_up_title">Создать учетную запись %1$s</string>
     <string name="confirm_password">Подтвердите пароль</string>
-    <string name="passwords_must_match">Пароли должны совпадать</string>
-    <string name="email_cannot_be_empty">Email-адрес не может быть пустой</string>
-    <string name="invalid_email_address">Неверный email-адрес</string>
-    <string name="full_name_cannot_be_empty">Полное имя не может быть пустым</string>
-    <string name="only_letters_allowed">Допускаются только буквы, пробелы и дефисы</string>
-    <string name="password_must_be">Пароль должен состоять не менее чем из 6 символов</string>
+    <string name="error_match_passwords">Пароли должны совпадать</string>
+    <string name="error_empty_email">Email-адрес не может быть пустой</string>
+    <string name="error_invalid_email">Неверный email-адрес</string>
+    <string name="error_empty_full_name">Полное имя не может быть пустым</string>
+    <string name="error_invalid_full_name">Допускаются только буквы, пробелы и дефисы</string>
+    <string name="error_password_length">Пароль должен состоять не менее чем из 6 символов</string>
     <string name="send_me_email">Отправьте мне письмо</string>
     <string name="recovery_title">Восстановление пароля</string>
     <string name="recovery_desc">Введите свой зарегистрированный e-mail ниже, чтобы получить инструкции по восстановлению пароля</string>
@@ -50,4 +50,7 @@
     <string name="send_rate_limit">Вы превысили лимит на отправку электронных писем. Пожалуйста, повторите попытку позже</string>
     <string name="weak_password">Ваш пароль слишком слаб</string>
     <string name="invalid_credentials">Неверные учетные данные. Пожалуйста, проверьте ваш адрес электронной почты и пароль</string>
+    <string name="error">Ошибка</string>
+    <string name="ok">ОК</string>
+    <string name="full_name">ФИО</string>
 </resources>

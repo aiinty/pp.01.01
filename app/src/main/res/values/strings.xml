@@ -29,12 +29,12 @@
     <string name="sign_up_already_have">Already have an account?</string>
     <string name="sign_up_title">Create a %1$s account</string>
     <string name="confirm_password">Confirm password</string>
-    <string name="passwords_must_match">Passwords must match</string>
-    <string name="email_cannot_be_empty">Email cannot be empty</string>
-    <string name="invalid_email_address">Invalid email address</string>
-    <string name="full_name_cannot_be_empty">Full Name cannot be empty</string>
-    <string name="only_letters_allowed">Only letters, spaces, and hyphens are allowed</string>
-    <string name="password_must_be">Password must be at least 6 characters</string>
+    <string name="error_match_passwords">Passwords must match</string>
+    <string name="error_empty_email">Email cannot be empty</string>
+    <string name="error_invalid_email">Invalid email address</string>
+    <string name="error_empty_full_name">Full Name cannot be empty</string>
+    <string name="error_invalid_full_name">Only letters, spaces, and hyphens are allowed</string>
+    <string name="error_password_length">Password must be at least 6 characters</string>
     <string name="send_me_email">Send me email</string>
     <string name="recovery_title">Password Recovery</string>
     <string name="recovery_desc">Enter your registered email below to receive password instructions</string>
@@ -54,4 +54,5 @@
     <string name="invalid_credentials">Invalid credentials. Please check your email and password</string>
     <string name="error">Error</string>
     <string name="ok">OK</string>
+    <string name="full_name">Full name</string>
 </resources>

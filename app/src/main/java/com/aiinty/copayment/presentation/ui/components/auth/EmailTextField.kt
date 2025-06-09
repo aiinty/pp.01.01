@@ -8,7 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.aiinty.copayment.R
 import com.aiinty.copayment.presentation.ui.components.base.BaseTextField
 import com.aiinty.copayment.presentation.ui.theme.Typography
 
@@ -17,19 +19,17 @@ fun EmailTextField(
     modifier: Modifier = Modifier,
     email: String,
     onEmailChange: (String) -> Unit,
-    label: String = "Email",
-    errorEmptyEmail: String = "Email cannot be empty",
-    errorInvalidEmail: String = "Invalid email address",
-    validateRules: (String) -> String? = { emailInput ->
+    labelResId: Int? = null,
+    validateRules: (String) -> Int? = { emailInput ->
         when {
-            emailInput.isEmpty() -> errorEmptyEmail
-            !Patterns.EMAIL_ADDRESS.matcher(emailInput).matches() -> errorInvalidEmail
+            emailInput.isEmpty() -> R.string.error_empty_email
+            !Patterns.EMAIL_ADDRESS.matcher(emailInput).matches() -> R.string.error_invalid_email
             else -> null
         }
     },
-    onValidationResultChange: ((String?) -> Unit)? = null,
+    onValidationResultChange: ((Int?) -> Unit)? = null,
 ) {
-    val errorMessage = remember { mutableStateOf<String?>(null) }
+    val errorMessage = remember { mutableStateOf<Int?>(null) }
 
     fun validateInput(input: String) {
         val error = validateRules(input)
@@ -44,13 +44,17 @@ fun EmailTextField(
             onEmailChange(it)
             validateInput(it)
         },
-        label = { Text(text = label) },
+        label = {
+            Text(
+                text = if (labelResId != null) stringResource(labelResId) else
+                    stringResource(R.string.email))
+        },
         isError = errorMessage.value != null
     )
 
     errorMessage.value?.let { error ->
         Text(
-            text = error,
+            text = stringResource(error),
             color = Color.Red,
             style = Typography.bodyMedium,
             modifier = Modifier.padding(start = 16.dp)

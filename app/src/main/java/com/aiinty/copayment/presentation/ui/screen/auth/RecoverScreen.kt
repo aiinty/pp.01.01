@@ -50,7 +50,7 @@ fun RecoverScreen(
     AuthErrorHandler(viewModel = viewModel)
 
     val email = remember { mutableStateOf("") }
-    val emailError = remember { mutableStateOf<String?>(null) }
+    val emailError = remember { mutableStateOf<Int?>(null) }
     val isInputsValidated = emailError.value == null && email.value.isNotEmpty()
 
     Column(
@@ -118,22 +118,18 @@ private fun RecoverHeader(
 private fun RecoverFields(
     modifier: Modifier = Modifier,
     email: MutableState<String>,
-    emailError: MutableState<String?>
+    emailError: MutableState<Int?>
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        val errorEmptyEmail = stringResource(R.string.email_cannot_be_empty)
-        val errorInvalidEmail = stringResource(R.string.invalid_email_address)
         EmailTextField(
             modifier = Modifier.fillMaxWidth(),
             email = email.value,
-            onEmailChange = { email.value=it },
-            errorEmptyEmail = errorEmptyEmail,
-            errorInvalidEmail = errorInvalidEmail,
+            onEmailChange = { email.value = it },
             onValidationResultChange = { error ->
-                emailError.value=error
+                emailError.value = error
             }
         )
     }
