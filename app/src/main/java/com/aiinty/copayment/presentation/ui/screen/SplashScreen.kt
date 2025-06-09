@@ -17,36 +17,39 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
+import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
+import com.aiinty.copayment.presentation.ui.components.auth.AuthErrorHandler
 import com.aiinty.copayment.presentation.ui.theme.Green
+import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
     modifier: Modifier = Modifier,
+    viewModel: AuthViewModel = hiltViewModel(),
     onNavigateToOnboarding: () -> Unit = {},
     onNavigateToSignIn: () -> Unit = {},
+    onNavigateToCreatePinCode: () -> Unit = {},
     onNavigateToPinCode: () -> Unit = {},
 ) {
+    CollectNavigationEvents(
+        navigationFlow = viewModel.navigationEvent,
+        onNavigateToOnboarding = onNavigateToOnboarding,
+        onNavigateToSignIn = onNavigateToSignIn,
+        onNavigateToCreatePinCode = onNavigateToCreatePinCode,
+        onNavigateToPinCode = onNavigateToPinCode
+    )
+    AuthErrorHandler(viewModel = viewModel)
+
     LaunchedEffect(Unit) {
-        delay(2500)
-
-        // TODO
-        val userIsAuthenticated = false
-        val userIsNew = true
-
-        if (userIsAuthenticated) {
-            onNavigateToPinCode()
-        } else if (!userIsNew) {
-            onNavigateToSignIn()
-        } else {
-            onNavigateToOnboarding()
-        }
+        viewModel.startSplashLogic()
     }
 
     Column(
@@ -73,7 +76,6 @@ fun SplashScreen(
                 color = Color.White
             )
         }
-
     }
 }
 
@@ -84,6 +86,7 @@ fun NavGraphBuilder.splashScreen(
     modifier: Modifier = Modifier,
     onNavigateToOnboarding: () -> Unit = {},
     onNavigateToSignIn: () -> Unit = {},
+    onNavigateToCreatePinCode: () -> Unit = {},
     onNavigateToPinCode: () -> Unit = {},
     ) {
     composable(
@@ -93,6 +96,7 @@ fun NavGraphBuilder.splashScreen(
             modifier = modifier,
             onNavigateToOnboarding = onNavigateToOnboarding,
             onNavigateToSignIn = onNavigateToSignIn,
+            onNavigateToCreatePinCode = onNavigateToCreatePinCode,
             onNavigateToPinCode = onNavigateToPinCode,
         )
     }

@@ -48,6 +48,17 @@ class FakeUserRepository : UserRepository {
         }
     }
 
+    override suspend fun refreshToken(refreshToken: String): Result<Unit> {
+        return withContext(ioDispatcher) {
+            delay(500)
+            if (this@FakeUserRepository.refreshToken == refreshToken) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Invalid Refresh Token"))
+            }
+        }
+    }
+
     override suspend fun verifyOTP(type: OTPType, email: String, token: String): Result<Unit> {
         return withContext(ioDispatcher) {
             delay(300)
@@ -74,7 +85,7 @@ class FakeUserRepository : UserRepository {
     override suspend fun updateUser(email: String?, password: String?): Result<Unit> {
         return withContext(ioDispatcher) {
             delay(500)
-            if (accessToken == accessToken) { //lol
+            if (accessToken == accessToken) {
                 email?.let { storedEmail = email }
                 password.let { storedPassword = password }
                 Result.success(Unit)

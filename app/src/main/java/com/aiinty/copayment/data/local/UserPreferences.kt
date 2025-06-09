@@ -10,6 +10,7 @@ class UserPreferences(
 
     companion object {
         private const val PREFS_NAME = "user_prefs"
+        private const val KEY_FIRST_LAUNCH = "first_launch"
         private const val KEY_ACCESS_TOKEN = "access_token"
         private const val KEY_REFRESH_TOKEN = "refresh_token"
         private const val KEY_USER_ID = "user_id"
@@ -30,6 +31,14 @@ class UserPreferences(
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
+    }
+
+    fun saveFirstLaunch(value: Boolean) {
+        sharedPreferences.edit().putBoolean(KEY_FIRST_LAUNCH, value).apply()
+    }
+
+    fun getFirstLaunch(): Boolean {
+        return sharedPreferences.getBoolean(KEY_FIRST_LAUNCH, true)
     }
 
     fun saveAccessToken(token: String) {
@@ -70,6 +79,21 @@ class UserPreferences(
 
     fun getUserPassword(): String? {
         return sharedPreferences.getString(KEY_USER_PASSWORD, null)
+    }
+
+    fun saveUserPin(pin: String) {
+        sharedPreferences.edit().putString(KEY_USER_PIN, pin).apply()
+    }
+
+    fun getUserPin(): String? {
+        return sharedPreferences.getString(KEY_USER_PIN, null)
+    }
+
+    fun clearUserCredentials() {
+        sharedPreferences.edit()
+            .remove(KEY_USER_EMAIL)
+            .remove(KEY_USER_PASSWORD)
+            .apply()
     }
 
     fun clear() {

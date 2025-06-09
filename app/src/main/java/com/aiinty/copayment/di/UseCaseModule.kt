@@ -2,6 +2,7 @@ package com.aiinty.copayment.di
 
 import com.aiinty.copayment.domain.repository.UserRepository
 import com.aiinty.copayment.domain.usecase.RecoverUseCase
+import com.aiinty.copayment.domain.usecase.RefreshTokenUseCase
 import com.aiinty.copayment.domain.usecase.SignInUseCase
 import com.aiinty.copayment.domain.usecase.SignUpUseCase
 import com.aiinty.copayment.domain.usecase.UpdateUserUseCase
@@ -20,6 +21,13 @@ object UseCaseModule {
         userRepository: UserRepository
     ): SignInUseCase {
         return SignInUseCase(userRepository)
+    }
+
+    @Provides
+    fun provideRefreshTokenUseCase(
+        userRepository: UserRepository
+    ): RefreshTokenUseCase {
+        return RefreshTokenUseCase(userRepository)
     }
 
     @Provides

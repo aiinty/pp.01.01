@@ -47,6 +47,8 @@ fun SignInScreen(
     onNavigateToForgotPassword: () -> Unit = {},
     onNavigateToSignUp: () -> Unit = {},
     onNavigateToVerify: (OTPType, String, String?) -> Unit = { _, _, _ -> },
+    onNavigateToPinCode: () -> Unit = {},
+    onNavigateToCreatePinCode: () -> Unit = {},
     onNavigateToHome: () -> Unit = {}
 ) {
     CollectNavigationEvents(
@@ -54,6 +56,8 @@ fun SignInScreen(
         onNavigateToVerify = { type, email, nextDestination ->
             onNavigateToVerify(type, email, nextDestination)
         },
+        onNavigateToPinCode = onNavigateToPinCode,
+        onNavigateToCreatePinCode = onNavigateToCreatePinCode,
         onNavigateToHome = onNavigateToHome
     )
     AuthErrorHandler(viewModel = viewModel)
@@ -194,6 +198,8 @@ fun NavGraphBuilder.signInScreen(
     onNavigateToForgotPassword: () -> Unit = {},
     onNavigateToSignUp: () -> Unit = {},
     onNavigateToVerify: (OTPType, String, String?) -> Unit,
+    onNavigateToPinCode: () -> Unit = {},
+    onNavigateToCreatePinCode: () -> Unit = {},
     onNavigateToHome: () -> Unit = {},
     ) {
     composable(
@@ -205,6 +211,8 @@ fun NavGraphBuilder.signInScreen(
             onNavigateToForgotPassword = onNavigateToForgotPassword,
             onNavigateToSignUp = onNavigateToSignUp,
             onNavigateToVerify = onNavigateToVerify,
+            onNavigateToPinCode = onNavigateToPinCode,
+            onNavigateToCreatePinCode = onNavigateToCreatePinCode,
             onNavigateToHome = onNavigateToHome
         )
     }

@@ -53,4 +53,16 @@
     <string name="error">Ошибка</string>
     <string name="ok">ОК</string>
     <string name="full_name">ФИО</string>
+    <string name="create_pin_desc">Мы используем современные меры безопасности, чтобы защищать вашу информацию</string>
+    <string name="create_pin_title">Установите ваш PIN-код</string>
+    <string name="pin_cell">Ячейка PIN-кода</string>
+    <string name="create_pin_comfirm_title">Подтвердите ваш PIN</string>
+    <string name="create_pin_cofirm_desc">Пожалуйста, введите ваш PIN еще раз для подтверждения. Это помогает обеспечить безопасность вашего аккаунта</string>
+    <string name="error_match_pins">Не совпадают PIN. Пожалуйста, попробуйте ещё раз</string>
+    <string name="next">Далее</string>
+    <string name="create_pin_confirm">Подтвердить PIN</string>
+    <string name="login">Войти</string>
+    <string name="error_invalid_pin">Неверный PIN. Пожалуйста, попробуйте снова</string>
+    <string name="error_invalid_pin_format">Неверный формат PIN</string>
+    <string name="pin_title">Введите ваш PIN</string>
 </resources>

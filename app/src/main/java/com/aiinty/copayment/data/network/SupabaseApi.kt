@@ -3,6 +3,7 @@ package com.aiinty.copayment.data.network
 import com.aiinty.copayment.data.model.AuthResponse
 import com.aiinty.copayment.data.model.EmptyResponse
 import com.aiinty.copayment.data.model.RecoverRequest
+import com.aiinty.copayment.data.model.RefreshTokenRequest
 import com.aiinty.copayment.data.model.SignInRequest
 import com.aiinty.copayment.data.model.SignUpRequest
 import com.aiinty.copayment.data.model.UserMetadataResponse
@@ -26,6 +27,12 @@ interface SupabaseApi {
     suspend fun signIn(
         @Query("grant_type") grantType: String = "password",
         @Body request: SignInRequest
+    ): Response<AuthResponse>
+
+    @POST("/auth/v1/token")
+    suspend fun refreshToken(
+        @Query("grant_type") grantType: String = "refresh_token",
+        @Body request: RefreshTokenRequest
     ): Response<AuthResponse>
 
     @POST("/auth/v1/verify")

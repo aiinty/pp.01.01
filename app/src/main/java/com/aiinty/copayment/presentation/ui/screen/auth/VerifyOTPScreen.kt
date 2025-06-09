@@ -107,7 +107,11 @@ fun VerifyOTPScreen(
                 },
                 enabled = canResend.value
             )
+        }
 
+        Column(
+            verticalArrangement = Arrangement.spacedBy(32.dp)
+        ) {
             BaseButton(
                 onClick = {
                     if (isValidatedInputs) {
@@ -124,15 +128,15 @@ fun VerifyOTPScreen(
                     color = Color.White
                 )
             }
-        }
 
-        NumericKeyboard(
-            input = token,
-            validateRules = { input ->
-                input.length < 6
-            },
-            keyboardInputType = KeyboardInputType.ONLY_NUMBERS
-        )
+            NumericKeyboard(
+                input = token,
+                validateRules = { input ->
+                    input.length < 6
+                },
+                keyboardInputType = KeyboardInputType.ONLY_NUMBERS
+            )
+        }
     }
 }
 

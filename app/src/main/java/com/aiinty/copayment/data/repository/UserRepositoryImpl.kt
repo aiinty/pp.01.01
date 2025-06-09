@@ -4,6 +4,7 @@ import com.aiinty.copayment.data.local.UserPreferences
 import com.aiinty.copayment.data.model.AuthResponse
 import com.aiinty.copayment.data.model.EmptyResponse
 import com.aiinty.copayment.data.model.RecoverRequest
+import com.aiinty.copayment.data.model.RefreshTokenRequest
 import com.aiinty.copayment.data.model.SignInRequest
 import com.aiinty.copayment.data.model.SignUpData
 import com.aiinty.copayment.data.model.SignUpRequest
@@ -55,6 +56,22 @@ class UserRepositoryImpl @Inject constructor(
             try {
                 val response = api.signIn(
                     request = SignInRequest(email, password)
+                )
+                handleAuthResponse(response).fold(
+                    onSuccess = { Result.success(Unit) },
+                    onFailure = { Result.failure(it) }
+                )
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    override suspend fun refreshToken(refreshToken: String): Result<Unit> {
+        return withContext(ioDispatcher) {
+            try {
+                val response = api.refreshToken(
+                    request = RefreshTokenRequest(refreshToken)
                 )
                 handleAuthResponse(response).fold(
                     onSuccess = { Result.success(Unit) },

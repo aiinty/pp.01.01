@@ -24,5 +24,7 @@ sealed class NavigationRoute(val route: String) {
 
     object RecoverScreen: NavigationRoute("recover")
     object PasswordChangeScreen: NavigationRoute("password_change")
+    object CreatePinCodeScreen: NavigationRoute("create_pin_code")
+    object PinCodeScreen: NavigationRoute("pin_code")
     object HomeScreen: NavigationRoute("home")
 }

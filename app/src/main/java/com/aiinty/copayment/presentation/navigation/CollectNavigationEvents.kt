@@ -8,18 +8,24 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun CollectNavigationEvents(
     navigationFlow: Flow<NavigationRoute>,
+    onNavigateToOnboarding: () -> Unit = {},
     onNavigateToSignIn: () -> Unit = {},
     onNavigateToVerify: (type: OTPType, email: String, nextDestination: String?) -> Unit =
         { _, _, _ -> },
+    onNavigateToCreatePinCode : () -> Unit = {},
+    onNavigateToPinCode : () -> Unit = {},
     onNavigateToHome: () -> Unit = {},
     onNavigateToNext: () -> Unit = {},
 ) {
     LaunchedEffect(Unit) {
         navigationFlow.collect { target ->
             when(target) {
+                is NavigationRoute.OnboardingScreen -> onNavigateToOnboarding()
                 is NavigationRoute.SignInScreen -> onNavigateToSignIn()
                 is NavigationRoute.VerifyOTPScreen ->
                     onNavigateToVerify(target.type, target.email, target.nextDestination)
+                is NavigationRoute.CreatePinCodeScreen -> onNavigateToCreatePinCode()
+                is NavigationRoute.PinCodeScreen -> onNavigateToPinCode()
                 is NavigationRoute.HomeScreen -> onNavigateToHome()
                 is NavigationRoute.NextScreen -> onNavigateToNext()
                 else -> {}

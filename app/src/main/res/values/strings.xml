@@ -55,4 +55,16 @@
     <string name="error">Error</string>
     <string name="ok">OK</string>
     <string name="full_name">Full name</string>
+    <string name="create_pin_desc">We use state-of-the-art security measures to protect your information at all times</string>
+    <string name="create_pin_title">Set your PIN code</string>
+    <string name="pin_cell">PIN cell</string>
+    <string name="create_pin_comfirm_title">Confirm Your PIN</string>
+    <string name="create_pin_cofirm_desc">Please re-enter your PIN to confirm. This helps us ensure your account remains secure.</string>
+    <string name="error_match_pins">PINs do not match. Please try again</string>
+    <string name="next">Next</string>
+    <string name="create_pin_confirm">Confirm PIN</string>
+    <string name="login">Login</string>
+    <string name="error_invalid_pin">Incorrect PIN. Please try again</string>
+    <string name="error_invalid_pin_format">Invalid PIN format</string>
+    <string name="pin_title">Enter your PIN</string>
 </resources>
