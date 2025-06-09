@@ -154,7 +154,7 @@ class AuthViewModel @Inject constructor(
             val result = verifyOTPUseCase.invoke(type, email, token)
             result.fold(
                 onSuccess = {
-                    _navigationEvent.emit(NavigationRoute.HomeScreen)
+                    _navigationEvent.emit(NavigationRoute.NextScreen)
                 },
                 onFailure = { e ->
                     handleError(e)

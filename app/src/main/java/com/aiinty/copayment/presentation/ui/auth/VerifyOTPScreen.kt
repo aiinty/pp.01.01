@@ -42,6 +42,7 @@ import androidx.navigation.navArgument
 import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.OTPType
 import com.aiinty.copayment.domain.utils.EmailUtils
+import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui.components.base.BaseButton
 import com.aiinty.copayment.presentation.ui.components.base.BaseIconButton
@@ -57,23 +58,17 @@ fun VerifyOTPScreen(
     modifier: Modifier = Modifier,
     type: OTPType,
     email: String,
-    nextDestination: String? = null,
+    nextDestination: String = "",
     viewModel: AuthViewModel = hiltViewModel(),
     onNavigateToBack: () -> Unit = {},
     onNavigateToNext: (String) -> Unit = {}
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.navigationEvent.collect { target ->
-            when(target) {
-                is NavigationRoute.HomeScreen -> {
-                    if (nextDestination != null) {
-                        onNavigateToNext(nextDestination)
-                    }
-                }
-                else -> {}
-            }
+    CollectNavigationEvents(
+        navigationFlow = viewModel.navigationEvent,
+        onNavigateToNext = {
+            onNavigateToNext(nextDestination)
         }
-    }
+    )
 
     var token = remember { mutableStateOf("") }
     val cooldown = viewModel.resendCooldownSeconds.collectAsState()
@@ -339,7 +334,7 @@ fun NavGraphBuilder.verifyOTPScreen(
             VerifyOTPScreen(
                 type = OTPType.otpTypeFromString(type),
                 email = email,
-                nextDestination = nextDestination,
+                nextDestination = nextDestination ?: "",
                 onNavigateToBack = onNavigateToBack,
                 onNavigateToNext = onNavigateToNext
             )

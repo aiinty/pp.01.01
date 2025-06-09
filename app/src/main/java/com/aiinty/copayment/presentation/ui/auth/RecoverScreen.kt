@@ -25,6 +25,7 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.OTPType
+import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui.components.auth.EmailTextField
 import com.aiinty.copayment.presentation.ui.components.base.BaseButton
@@ -37,22 +38,14 @@ fun RecoverScreen(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
     onNavigateToBack: () -> Unit = {},
-    onNavigateToVerify: (OTPType, String, String?) -> Unit =
-        { otpType: OTPType, s: String, s1: String? -> }
+    onNavigateToVerify: (OTPType, String, String?) -> Unit = { _, _, _ -> }
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.navigationEvent.collect { target ->
-            when(target) {
-                is NavigationRoute.VerifyOTPScreen -> {
-                    val otpType = target.type
-                    val email = target.email
-                    val nextDestination = target.nextDestination
-                    onNavigateToVerify(otpType, email, nextDestination)
-                }
-                else -> {}
-            }
+    CollectNavigationEvents(
+        navigationFlow = viewModel.navigationEvent,
+        onNavigateToVerify = { type, email, nextDestination ->
+            onNavigateToVerify(type, email, nextDestination)
         }
-    }
+    )
 
     val email = remember { mutableStateOf("") }
     val emailError = remember { mutableStateOf<String?>(null) }

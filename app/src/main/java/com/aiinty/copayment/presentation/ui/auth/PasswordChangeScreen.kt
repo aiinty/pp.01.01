@@ -24,6 +24,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
+import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui.components.auth.PasswordTextField
 import com.aiinty.copayment.presentation.ui.components.base.BaseButton
@@ -38,16 +39,10 @@ fun PasswordChangeScreen(
     onNavigateToBack: () -> Unit = {},
     onNavigateToSignIn: () -> Unit = {}
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.navigationEvent.collect { target ->
-            when(target) {
-                is NavigationRoute.SignInScreen -> {
-                    onNavigateToSignIn()
-                }
-                else -> {}
-            }
-        }
-    }
+    CollectNavigationEvents(
+        navigationFlow = viewModel.navigationEvent,
+        onNavigateToSignIn = onNavigateToSignIn
+    )
 
     val password = remember { mutableStateOf("") }
     val passwordError = remember { mutableStateOf<String?>(null) }

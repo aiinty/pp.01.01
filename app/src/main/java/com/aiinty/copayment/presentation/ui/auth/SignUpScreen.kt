@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +29,7 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.OTPType
+import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui.components.auth.EmailTextField
 import com.aiinty.copayment.presentation.ui.components.auth.FullNameTextField
@@ -47,22 +47,14 @@ fun SignUpScreen(
     viewModel: AuthViewModel = hiltViewModel(),
     onNavigateToBack: () -> Unit = {},
     onNavigateToSignIn: () -> Unit = {},
-    onNavigateToVerify: (OTPType, String, String?) -> Unit =
-        { _: OTPType, _: String, _: String? -> },
+    onNavigateToVerify: (OTPType, String, String?) -> Unit = { _, _, _ -> },
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.navigationEvent.collect { target ->
-            when(target) {
-                is NavigationRoute.VerifyOTPScreen -> {
-                    val otpType = target.type
-                    val email = target.email
-                    val nextDestination = target.nextDestination
-                    onNavigateToVerify(otpType, email, nextDestination)
-                }
-                else -> {}
-            }
+    CollectNavigationEvents(
+        navigationFlow = viewModel.navigationEvent,
+        onNavigateToVerify = { type, email, nextDestination ->
+            onNavigateToVerify(type, email, nextDestination)
         }
-    }
+    )
 
     val fullName = remember { mutableStateOf("") }
     val fullNameError = remember { mutableStateOf<String?>(null) }

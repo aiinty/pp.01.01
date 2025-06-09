@@ -20,6 +20,7 @@ sealed class NavigationRoute(val route: String) {
             params = mapOf("next" to nextDestination)
         )
     )
+    object NextScreen: NavigationRoute("next")
 
     object RecoverScreen: NavigationRoute("recover")
     object PasswordChangeScreen: NavigationRoute("password_change")
