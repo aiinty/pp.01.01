@@ -21,7 +21,7 @@
     <string name="sign_in_dont_have">Don’t have an account?</string>
     <string name="sign_up">Sign Up</string>
     <string name="verify_otp_resend_code">Resend Code</string>
-    <string name="verify_otp_wait_seconds">Wait %1$s seconds...</string>
+    <string name="verify_otp_wait_seconds">Wait %1$s seconds…</string>
     <string name="confirm">Confirm</string>
     <string name="verify_otp_desc">We send a code to ( %1$s ). Enter it here to verify your identity</string>
     <string name="verify_otp_title">Verify it’s you</string>

@@ -95,36 +95,39 @@ private fun KeyboardButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    if (key == "<") {
-        BaseIconButton(
-            modifier = modifier,
-            border = null,
-            onClick = onClick
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.backspace),
-                contentDescription = stringResource(R.string.backspace)
+    when (key) {
+        "<" -> {
+            BaseIconButton(
+                modifier = modifier,
+                border = null,
+                onClick = onClick
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.backspace),
+                    contentDescription = stringResource(R.string.backspace)
+                )
+            }
+        }
+        " " -> {
+            Text(
+                text = key,
+                modifier = modifier,
+                textAlign = TextAlign.Center,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Medium
             )
         }
-    } else if (key == " ") {
-        Text(
-            text = key,
-            modifier = modifier,
-            textAlign = TextAlign.Center,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Medium
-        )
-    }
-    else {
-        BaseTextButton(
-            text = key,
-            modifier = modifier,
-            contentModifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Medium,
-            enabledColor = Greyscale900,
-            onClick = onClick,
-        )
+        else -> {
+            BaseTextButton(
+                text = key,
+                modifier = modifier,
+                contentModifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Medium,
+                enabledColor = Greyscale900,
+                onClick = onClick,
+            )
+        }
     }
 }

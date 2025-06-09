@@ -12,8 +12,8 @@ import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
 fun AuthErrorHandler(
     viewModel: AuthViewModel
 ) {
-    var showDialog = remember { mutableStateOf(false) }
-    var dialogUiMessage = remember { mutableStateOf<UiMessage?>(null) }
+    val showDialog = remember { mutableStateOf(false) }
+    val dialogUiMessage = remember { mutableStateOf<UiMessage?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.errorEvent.collect { message ->

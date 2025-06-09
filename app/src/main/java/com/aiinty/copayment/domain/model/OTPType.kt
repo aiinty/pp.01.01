@@ -6,7 +6,7 @@ enum class OTPType(val code: String) {
 
     companion object {
         fun otpTypeFromString(code: String): OTPType {
-            return OTPType.values().find { it.code == code }
+            return entries.find { it.code == code }
                 ?: throw IllegalArgumentException("Unknown OTPType code: $code")
         }
     }

@@ -35,7 +35,7 @@ fun BaseTextField(
     singleLine: Boolean = true,
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
-    trailingIcon: @Composable() (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,

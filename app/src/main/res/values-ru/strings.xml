@@ -19,7 +19,7 @@
     <string name="sign_in_dont_have">Ещё нет аккаунта?</string>
     <string name="sign_up">Создать</string>
     <string name="verify_otp_resend_code">Отправить ещё раз</string>
-    <string name="verify_otp_wait_seconds">Подождите %1$s секунд...</string>
+    <string name="verify_otp_wait_seconds">Подождите %1$s секунд…</string>
     <string name="confirm">Подтвердить</string>
     <string name="verify_otp_desc">Мы отправили код на адрес ( %1$s ). Введите его здесь, чтобы подтвердить.</string>
     <string name="verify_otp_title">Подтвердите, что это вы</string>

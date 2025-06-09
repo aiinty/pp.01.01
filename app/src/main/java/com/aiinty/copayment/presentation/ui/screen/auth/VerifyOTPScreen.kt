@@ -7,14 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -28,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,7 +71,7 @@ fun VerifyOTPScreen(
     )
     AuthErrorHandler(viewModel = viewModel)
 
-    var token = remember { mutableStateOf("") }
+    val token = remember { mutableStateOf("") }
     val cooldown = viewModel.resendCooldownSeconds.collectAsState()
     val canResend = viewModel.canResend.collectAsState()
     val isValidatedInputs = token.value.length == 6
@@ -140,8 +137,7 @@ fun VerifyOTPScreen(
         NumericKeyboard(
             input = token,
             validateRules = { input ->
-                if (input.length >= 6) false
-                else true
+                input.length < 6
             },
             keyboardInputType = KeyboardInputType.ONLY_NUMBERS
         )
@@ -247,16 +243,16 @@ fun NavGraphBuilder.verifyOTPScreen(
         val type = backStackEntry.arguments?.getString("type")
         val email = backStackEntry.arguments?.getString("email")
         val nextDestination = backStackEntry.arguments?.getString("next")
-        if (type != null && email != null) {
+        if (type != null && email != null && nextDestination != null) {
             VerifyOTPScreen(
                 type = OTPType.otpTypeFromString(type),
                 email = email,
-                nextDestination = nextDestination ?: "",
+                nextDestination = nextDestination,
                 onNavigateToBack = onNavigateToBack,
                 onNavigateToNext = onNavigateToNext
             )
         } else {
-            //TODO
+            onNavigateToBack()
         }
     }
 }

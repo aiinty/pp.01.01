@@ -59,7 +59,7 @@ fun SplashScreen(
             painter = painterResource(R.drawable.splashlogo),
             contentDescription = stringResource(R.string.logo)
         )
-        Row() {
+        Row {
             Text(
                 text = stringResource(R.string.splash_title_part_1),
                 fontWeight = FontWeight.Bold,
