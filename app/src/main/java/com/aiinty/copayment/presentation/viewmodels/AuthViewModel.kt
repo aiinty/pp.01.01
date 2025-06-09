@@ -1,7 +1,10 @@
 package com.aiinty.copayment.presentation.viewmodels
 
+import android.util.Log
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aiinty.copayment.R
 import com.aiinty.copayment.data.local.UserPreferences
 import com.aiinty.copayment.data.model.SignUpData
 import com.aiinty.copayment.data.network.ApiErrorCode
@@ -13,6 +16,7 @@ import com.aiinty.copayment.domain.usecase.SignUpUseCase
 import com.aiinty.copayment.domain.usecase.UpdateUserUseCase
 import com.aiinty.copayment.domain.usecase.VerifyOTPUseCase
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
+import com.aiinty.copayment.presentation.ui.UiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,6 +25,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,124 +46,14 @@ class AuthViewModel @Inject constructor(
     val resendCooldownSeconds: StateFlow<Int> = _resendCooldownSeconds.asStateFlow()
     val canResend = MutableStateFlow(true)
 
-    fun signIn(email:String, password:String) {
-        //Saving in preferences because there is no endpoint for resending the email confirmation
-        userPreferences.saveUserPassword(password)
+    private val _errorEvent = MutableSharedFlow<UiMessage>()
+    val errorEvent = _errorEvent.asSharedFlow()
+
+    fun showError(@StringRes resId: Int? = null, message: String? = null) {
         viewModelScope.launch {
-            val result = signInUseCase.invoke(email, password)
-            result.fold(
-                onSuccess = {
-                    _navigationEvent.emit(NavigationRoute.HomeScreen)
-                },
-                onFailure = { e ->
-                    when(e) {
-                        is ApiException -> {
-                            if (e.apiError.error_code == ApiErrorCode.EMAIL_NOT_CONFIRMED.code) {
-                                _navigationEvent.emit(NavigationRoute.VerifyOTPScreen(
-                                    type = OTPType.EMAIL,
-                                    email = email,
-                                    nextDestination = NavigationRoute.HomeScreen.route
-                                ))
-                            }
-                        }
-                        else -> {
-
-                        }
-                    }
-                }
-            )
-        }
-    }
-
-    fun signUp(fullName: String, email: String, password: String) {
-        //Saving in preferences because there is no endpoint for resending the email confirmation
-        userPreferences.saveUserPassword(password)
-        viewModelScope.launch {
-            val data = SignUpData(full_name = fullName)
-            val result = signUpUseCase.invoke(email = email, password = password, data = data)
-            result.fold(
-                onSuccess = {
-                    _navigationEvent.emit(NavigationRoute.VerifyOTPScreen(
-                        type = OTPType.EMAIL,
-                        email = email,
-                        nextDestination = NavigationRoute.HomeScreen.route
-                    ))
-                },
-                onFailure = { e ->
-                    when(e) {
-                        is ApiException -> {
-                            if (e.apiError.error_code == ApiErrorCode.EMAIL_NOT_CONFIRMED.code) {
-                                _navigationEvent.emit(NavigationRoute.VerifyOTPScreen(
-                                    type = OTPType.EMAIL,
-                                    email = email,
-                                    nextDestination = NavigationRoute.OnboardingScreen.route
-                                ))
-                            }
-                            if (e.apiError.error_code == ApiErrorCode.USER_ALREADY_EXISTS.code) {
-                                _navigationEvent.emit(NavigationRoute.SplashScreen)
-                            }
-                        }
-                        else -> {
-
-                        }
-                    }
-                }
-            )
-        }
-    }
-
-    fun verifyOTP(type: OTPType, email: String, token: String) {
-        viewModelScope.launch {
-            val result = verifyOTPUseCase.invoke(type, email, token)
-            result.fold(
-                onSuccess = {
-                    _navigationEvent.emit(NavigationRoute.HomeScreen)
-                },
-                onFailure = { e ->
-                    when(e) {
-                        is ApiException -> {
-                            if (e.apiError.error_code == ApiErrorCode.OTP_EXPIRED.code) {
-
-                            }
-                            if (e.apiError.error_code == ApiErrorCode.VALIDATION_FAILED.code) {
-
-                            }
-                        }
-                        else -> {
-
-                        }
-                    }
-                }
-            )
-        }
-    }
-
-    fun resendOTP(type: OTPType, email: String) {
-        if (!canResend.value) return
-        canResend.value = false
-        viewModelScope.launch {
-            try {
-                val result = when(type) {
-                    OTPType.EMAIL -> {
-                        val password = userPreferences.getUserPassword()
-                        if (password != null) {
-                            signUpUseCase.invoke(email = email, password = password, data = null)
-                        } else {
-                            Result.failure(Exception())
-                        }
-                    }
-                    OTPType.RECOVERY -> recoverUseCase.invoke(email)
-                }
-                result.fold(
-                    onSuccess = {
-                        startResendCooldown(60)
-                    },
-                    onFailure = {
-                        startResendCooldown(60)
-                    }
-                )
-            } catch (e: Exception) {
-
+            when {
+                resId != null -> _errorEvent.emit(UiMessage.StringRes(resId))
+                message != null -> _errorEvent.emit(UiMessage.Text(message))
             }
         }
     }
@@ -174,6 +70,125 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    private fun handleError(e: Throwable) {
+        viewModelScope.launch {
+            when (e) {
+                is IOException -> {
+                    Log.e("AuthViewModel:handleError", "Network error or timeout: ${e.message}")
+                    showError(resId = R.string.check_your_internet)
+                }
+                is ApiException -> {
+                    if (e.apiError.error_code == ApiErrorCode.EMAIL_NOT_CONFIRMED.code) {
+                        val email = userPreferences.getUserEmail()
+                        if (email != null){
+                            _navigationEvent.emit(NavigationRoute.VerifyOTPScreen(
+                                type = OTPType.EMAIL,
+                                email = email,
+                                nextDestination = NavigationRoute.HomeScreen.route
+                            ))
+                        } else {
+                            showError(resId = R.string.try_signing_in_again)
+                        }
+                    } else if (e.apiError.error_code == ApiErrorCode.USER_ALREADY_EXISTS.code) {
+                        showError(resId = R.string.email_is_already_taken)
+                    } else if (e.apiError.error_code == ApiErrorCode.OTP_EXPIRED.code) {
+                        showError(resId = R.string.token_has_expired)
+                    } else if (e.apiError.error_code == ApiErrorCode.VALIDATION_FAILED.code) {
+                        showError(resId = R.string.verify_the_accuracy)
+                    }
+                    else {
+                        Log.e("AuthViewModel:handleError", "Unknown API error: code=${e.apiError.error_code}, message=${e.message}")
+                        if (e.message != null) showError(message = e.message)
+                        else showError(resId = R.string.unknown_api_error)
+                    }
+                }
+                else -> {
+                    Log.e("AuthViewModel:handleError", "Unknown error: ${e.message ?: e.toString()}")
+                    showError(resId = R.string.unknown_error)
+                }
+            }
+        }
+    }
+
+    fun signIn(email:String, password:String) {
+        //Saving in preferences because there is no endpoint for resending the email confirmation
+        userPreferences.saveUserEmail(email)
+        userPreferences.saveUserPassword(password)
+        viewModelScope.launch {
+            val result = signInUseCase.invoke(email, password)
+            result.fold(
+                onSuccess = {
+                    _navigationEvent.emit(NavigationRoute.HomeScreen)
+                },
+                onFailure = { e ->
+                    handleError(e)
+                }
+            )
+        }
+    }
+
+    fun signUp(fullName: String, email: String, password: String) {
+        //Saving in preferences because there is no endpoint for resending the email confirmation
+        userPreferences.saveUserEmail(email)
+        userPreferences.saveUserPassword(password)
+        viewModelScope.launch {
+            val data = SignUpData(full_name = fullName)
+            val result = signUpUseCase.invoke(email = email, password = password, data = data)
+            result.fold(
+                onSuccess = {
+                    _navigationEvent.emit(NavigationRoute.VerifyOTPScreen(
+                        type = OTPType.EMAIL,
+                        email = email,
+                        nextDestination = NavigationRoute.HomeScreen.route
+                    ))
+                },
+                onFailure = { e ->
+                    handleError(e)
+                }
+            )
+        }
+    }
+
+    fun verifyOTP(type: OTPType, email: String, token: String) {
+        viewModelScope.launch {
+            val result = verifyOTPUseCase.invoke(type, email, token)
+            result.fold(
+                onSuccess = {
+                    _navigationEvent.emit(NavigationRoute.HomeScreen)
+                },
+                onFailure = { e ->
+                    handleError(e)
+                }
+            )
+        }
+    }
+
+    fun resendOTP(type: OTPType, email: String) {
+        if (!canResend.value) return
+        canResend.value = false
+        viewModelScope.launch {
+            val result = when(type) {
+                OTPType.EMAIL -> {
+                    val password = userPreferences.getUserPassword()
+                    if (password != null) {
+                        signUpUseCase.invoke(email = email, password = password, data = null)
+                    } else {
+                        Result.failure(Exception())
+                    }
+                }
+                OTPType.RECOVERY -> recoverUseCase.invoke(email)
+            }
+            result.fold(
+                onSuccess = {
+                    startResendCooldown(60)
+                },
+                onFailure = { e ->
+                    handleError(e)
+                }
+            )
+        }
+    }
+
     fun recover(email: String) {
         viewModelScope.launch {
             val result = recoverUseCase.invoke(email)
@@ -186,14 +201,7 @@ class AuthViewModel @Inject constructor(
                     ))
                 },
                 onFailure = { e ->
-                    when(e) {
-                        is ApiException -> {
-
-                        }
-                        else -> {
-
-                        }
-                    }
+                    handleError(e)
                 }
             )
         }
@@ -208,14 +216,7 @@ class AuthViewModel @Inject constructor(
                     _navigationEvent.emit(NavigationRoute.SignInScreen)
                 },
                 onFailure = { e ->
-                    when(e) {
-                        is ApiException -> {
-
-                        }
-                        else -> {
-
-                        }
-                    }
+                    handleError(e)
                 }
             )
         }
