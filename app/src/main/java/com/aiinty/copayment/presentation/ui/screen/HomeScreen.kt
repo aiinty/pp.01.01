@@ -1,4 +1,4 @@
-package com.aiinty.copayment.presentation.ui
+package com.aiinty.copayment.presentation.ui.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

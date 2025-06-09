@@ -1,4 +1,4 @@
-package com.aiinty.copayment.presentation.ui
+package com.aiinty.copayment.presentation.model
 
 sealed class UiMessage {
     data class StringRes(val resId: Int) : UiMessage()

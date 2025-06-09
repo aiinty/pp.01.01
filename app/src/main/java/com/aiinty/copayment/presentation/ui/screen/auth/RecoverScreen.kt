@@ -1,4 +1,4 @@
-package com.aiinty.copayment.presentation.ui.auth
+package com.aiinty.copayment.presentation.ui.screen.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +27,7 @@ import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.OTPType
 import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
+import com.aiinty.copayment.presentation.ui.components.auth.AuthErrorHandler
 import com.aiinty.copayment.presentation.ui.components.auth.EmailTextField
 import com.aiinty.copayment.presentation.ui.components.base.BaseButton
 import com.aiinty.copayment.presentation.ui.components.base.BaseIconButton
@@ -46,6 +47,7 @@ fun RecoverScreen(
             onNavigateToVerify(type, email, nextDestination)
         }
     )
+    AuthErrorHandler(viewModel = viewModel)
 
     val email = remember { mutableStateOf("") }
     val emailError = remember { mutableStateOf<String?>(null) }

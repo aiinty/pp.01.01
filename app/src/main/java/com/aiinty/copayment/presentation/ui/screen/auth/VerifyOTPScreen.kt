@@ -1,4 +1,4 @@
-package com.aiinty.copayment.presentation.ui.auth
+package com.aiinty.copayment.presentation.ui.screen.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -44,6 +44,7 @@ import com.aiinty.copayment.domain.model.OTPType
 import com.aiinty.copayment.domain.utils.EmailUtils
 import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
+import com.aiinty.copayment.presentation.ui.components.auth.AuthErrorHandler
 import com.aiinty.copayment.presentation.ui.components.base.BaseButton
 import com.aiinty.copayment.presentation.ui.components.base.BaseIconButton
 import com.aiinty.copayment.presentation.ui.components.base.BaseTextButton
@@ -69,6 +70,7 @@ fun VerifyOTPScreen(
             onNavigateToNext(nextDestination)
         }
     )
+    AuthErrorHandler(viewModel = viewModel)
 
     var token = remember { mutableStateOf("") }
     val cooldown = viewModel.resendCooldownSeconds.collectAsState()

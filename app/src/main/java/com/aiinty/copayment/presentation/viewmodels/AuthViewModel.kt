@@ -16,7 +16,7 @@ import com.aiinty.copayment.domain.usecase.SignUpUseCase
 import com.aiinty.copayment.domain.usecase.UpdateUserUseCase
 import com.aiinty.copayment.domain.usecase.VerifyOTPUseCase
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
-import com.aiinty.copayment.presentation.ui.UiMessage
+import com.aiinty.copayment.presentation.model.UiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -78,28 +77,42 @@ class AuthViewModel @Inject constructor(
                     showError(resId = R.string.check_your_internet)
                 }
                 is ApiException -> {
-                    if (e.apiError.error_code == ApiErrorCode.EMAIL_NOT_CONFIRMED.code) {
-                        val email = userPreferences.getUserEmail()
-                        if (email != null){
-                            _navigationEvent.emit(NavigationRoute.VerifyOTPScreen(
-                                type = OTPType.EMAIL,
-                                email = email,
-                                nextDestination = NavigationRoute.HomeScreen.route
-                            ))
-                        } else {
-                            showError(resId = R.string.try_signing_in_again)
+                    when(e.apiError.error_code) {
+                        ApiErrorCode.EMAIL_NOT_CONFIRMED.code -> {
+                            val email = userPreferences.getUserEmail()
+                            if (email != null){
+                                _navigationEvent.emit(NavigationRoute.VerifyOTPScreen(
+                                    type = OTPType.EMAIL,
+                                    email = email,
+                                    nextDestination = NavigationRoute.HomeScreen.route
+                                ))
+                            } else {
+                                showError(resId = R.string.try_signing_in_again)
+                            }
                         }
-                    } else if (e.apiError.error_code == ApiErrorCode.USER_ALREADY_EXISTS.code) {
-                        showError(resId = R.string.email_is_already_taken)
-                    } else if (e.apiError.error_code == ApiErrorCode.OTP_EXPIRED.code) {
-                        showError(resId = R.string.token_has_expired)
-                    } else if (e.apiError.error_code == ApiErrorCode.VALIDATION_FAILED.code) {
-                        showError(resId = R.string.verify_the_accuracy)
-                    }
-                    else {
-                        Log.e("AuthViewModel:handleError", "Unknown API error: code=${e.apiError.error_code}, message=${e.message}")
-                        if (e.message != null) showError(message = e.message)
-                        else showError(resId = R.string.unknown_api_error)
+                        ApiErrorCode.USER_ALREADY_EXISTS.code -> {
+                            showError(resId = R.string.email_is_already_taken)
+                        }
+                        ApiErrorCode.OTP_EXPIRED.code -> {
+                            showError(resId = R.string.token_has_expired)
+                        }
+                        ApiErrorCode.VALIDATION_FAILED.code -> {
+                            showError(resId = R.string.verify_the_accuracy)
+                        }
+                        ApiErrorCode.INVALID_CREDENTIALS.code -> {
+                            showError(resId = R.string.invalid_credentials)
+                        }
+                        ApiErrorCode.OVER_EMAIL_SEND_RATE_LIMIT.code -> {
+                            showError(resId = R.string.send_rate_limit)
+                        }
+                        ApiErrorCode.WEAK_PASSWORD.code -> {
+                            showError(resId = R.string.weak_password)
+                        }
+                        else -> {
+                            Log.e("AuthViewModel:handleError", "Unknown API error: code=${e.apiError.error_code}, message=${e.message}")
+                            if (e.message != null) showError(message = e.message)
+                            else showError(resId = R.string.unknown_api_error)
+                        }
                     }
                 }
                 else -> {

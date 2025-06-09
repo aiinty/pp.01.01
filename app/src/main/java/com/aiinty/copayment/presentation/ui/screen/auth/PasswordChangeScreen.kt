@@ -1,4 +1,4 @@
-package com.aiinty.copayment.presentation.ui.auth
+package com.aiinty.copayment.presentation.ui.screen.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +26,7 @@ import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
 import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
+import com.aiinty.copayment.presentation.ui.components.auth.AuthErrorHandler
 import com.aiinty.copayment.presentation.ui.components.auth.PasswordTextField
 import com.aiinty.copayment.presentation.ui.components.base.BaseButton
 import com.aiinty.copayment.presentation.ui.components.base.BaseIconButton
@@ -43,6 +44,7 @@ fun PasswordChangeScreen(
         navigationFlow = viewModel.navigationEvent,
         onNavigateToSignIn = onNavigateToSignIn
     )
+    AuthErrorHandler(viewModel = viewModel)
 
     val password = remember { mutableStateOf("") }
     val passwordError = remember { mutableStateOf<String?>(null) }

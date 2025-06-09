@@ -1,4 +1,4 @@
-package com.aiinty.copayment.presentation.ui
+package com.aiinty.copayment.presentation.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
