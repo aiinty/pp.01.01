@@ -42,12 +42,14 @@ import androidx.navigation.navArgument
 import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.OTPType
 import com.aiinty.copayment.domain.utils.EmailUtils
+import com.aiinty.copayment.presentation.model.KeyboardInputType
 import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui.components.auth.AuthErrorHandler
 import com.aiinty.copayment.presentation.ui.components.base.BaseButton
 import com.aiinty.copayment.presentation.ui.components.base.BaseIconButton
 import com.aiinty.copayment.presentation.ui.components.base.BaseTextButton
+import com.aiinty.copayment.presentation.ui.components.base.NumericKeyboard
 import com.aiinty.copayment.presentation.ui.theme.Green
 import com.aiinty.copayment.presentation.ui.theme.Greyscale50
 import com.aiinty.copayment.presentation.ui.theme.Greyscale900
@@ -135,7 +137,14 @@ fun VerifyOTPScreen(
             }
         }
 
-        VerifyOTPKeyboard(token = token)
+        NumericKeyboard(
+            input = token,
+            validateRules = { input ->
+                if (input.length >= 6) false
+                else true
+            },
+            keyboardInputType = KeyboardInputType.ONLY_NUMBERS
+        )
     }
 }
 
@@ -206,100 +215,6 @@ private fun VerifyOTPFields(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun VerifyOTPKeyboard(
-    modifier: Modifier = Modifier,
-    token: MutableState<String>
-) {
-    val keys = listOf(
-        listOf("1", "4", "7", " "),
-        listOf("2", "5", "8", "0"),
-        listOf("3", "6", "9", "<")
-    )
-
-    fun handleKeyPress(key: String) {
-        when (key) {
-            "<" -> {
-                if (token.value.isNotEmpty()) {
-                    token.value = token.value.dropLast(1)
-                }
-            }
-            else -> {
-                if (token.value.length < 6) {
-                    token.value += key
-                }
-            }
-        }
-    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            keys.forEach { columnKeys ->
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    columnKeys.forEach { key ->
-                        if (key.isNotEmpty()) {
-                            KeyboardButton(
-                                key = key,
-                                modifier = Modifier
-                                    .height(56.dp)
-                                    .fillMaxWidth(),
-                                onClick = { handleKeyPress(key) }
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun KeyboardButton(
-    key: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    if (key == "<") {
-        BaseIconButton(
-            modifier = modifier,
-            border = null,
-            onClick = onClick
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.backspace),
-                contentDescription = stringResource(R.string.backspace)
-            )
-        }
-    } else if (key == " ") {
-        Text(
-            text = key,
-            modifier = modifier,
-            textAlign = TextAlign.Center,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Medium
-        )
-    }
-    else {
-        BaseTextButton(
-            text = key,
-            modifier = modifier,
-            contentModifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Medium,
-            enabledColor = Greyscale900,
-            onClick = onClick,
-        )
     }
 }
 
