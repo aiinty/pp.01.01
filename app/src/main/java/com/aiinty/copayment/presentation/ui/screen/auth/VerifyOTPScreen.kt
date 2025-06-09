@@ -1,25 +1,17 @@
 package com.aiinty.copayment.presentation.ui.screen.auth
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,12 +35,12 @@ import com.aiinty.copayment.presentation.model.KeyboardInputType
 import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui.components.auth.AuthErrorHandler
+import com.aiinty.copayment.presentation.ui.components.auth.OTPInput
 import com.aiinty.copayment.presentation.ui.components.base.BaseButton
 import com.aiinty.copayment.presentation.ui.components.base.BaseIconButton
 import com.aiinty.copayment.presentation.ui.components.base.BaseTextButton
 import com.aiinty.copayment.presentation.ui.components.base.NumericKeyboard
 import com.aiinty.copayment.presentation.ui.theme.Green
-import com.aiinty.copayment.presentation.ui.theme.Greyscale50
 import com.aiinty.copayment.presentation.ui.theme.Greyscale900
 import com.aiinty.copayment.presentation.ui.theme.Typography
 import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
@@ -94,7 +86,7 @@ fun VerifyOTPScreen(
 
             VerifyOTPHeader(email = email)
 
-            VerifyOTPFields(
+            OTPInput(
                 modifier = Modifier.fillMaxWidth(),
                 token = token
             )
@@ -177,40 +169,6 @@ private fun VerifyOTPHeader(
             text = annotatedDesc,
             style = Typography.bodyMedium
         )
-    }
-}
-
-@Composable
-private fun VerifyOTPFields(
-    modifier: Modifier = Modifier,
-    token: MutableState<String>
-) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        repeat(6) { index ->
-            val tokenLength = token.value.length
-            val isFilled = tokenLength - 1 >= index
-            val borderColor = when {
-                index == tokenLength - 1 -> Green
-                else -> Color.Transparent
-            }
-
-            Box(
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Greyscale50)
-                    .border(1.dp, borderColor, RoundedCornerShape(12.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = if (isFilled) token.value[index].toString() else ""
-                )
-            }
-        }
     }
 }
 
