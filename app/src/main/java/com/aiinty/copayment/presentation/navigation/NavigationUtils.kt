@@ -16,7 +16,11 @@ object NavigationUtils {
     }
 }
 
-fun NavOptionsBuilder.withPopUpTo(route: String, isInclusive: Boolean = true, isLaunchSingleTop: Boolean = true) {
+fun NavOptionsBuilder.withPopUpTo(
+    route: String,
+    isInclusive: Boolean = true,
+    isLaunchSingleTop: Boolean = true
+) {
     popUpTo(route) { this.inclusive = isInclusive }
     launchSingleTop = isLaunchSingleTop
 }

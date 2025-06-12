@@ -1,4 +1,4 @@
-package com.aiinty.copayment.presentation.ui.screen
+package com.aiinty.copayment.presentation.ui.screen.auth
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn

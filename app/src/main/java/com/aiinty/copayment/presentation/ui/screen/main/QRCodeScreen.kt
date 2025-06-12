@@ -1,4 +1,4 @@
-package com.aiinty.copayment.presentation.ui.screen
+package com.aiinty.copayment.presentation.ui.screen.main
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +19,7 @@ import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui.components.base.BaseIconButton
 
 @Composable
-fun HomeScreen(
+fun QRCodeScreen(
     modifier: Modifier = Modifier,
     onNavigateToBack: () -> Unit = {},
 ) {
@@ -38,17 +38,17 @@ fun HomeScreen(
 }
 
 
-fun NavController.navigateToHome(navOptions: NavOptionsBuilder.() -> Unit = {}) =
-    navigate(route = NavigationRoute.HomeScreen.route, navOptions)
+fun NavController.navigateToQRCode(navOptions: NavOptionsBuilder.() -> Unit = {}) =
+    navigate(route = NavigationRoute.QRCodeScreen.route, navOptions)
 
-fun NavGraphBuilder.homeScreen(
+fun NavGraphBuilder.qrCodeScreen(
     modifier: Modifier = Modifier,
     onNavigateToBack: () -> Unit = {}
 ) {
     composable(
-        route = NavigationRoute.HomeScreen.route
+        route = NavigationRoute.QRCodeScreen.route
     ){
-        HomeScreen(
+        QRCodeScreen(
             modifier = modifier,
             onNavigateToBack = onNavigateToBack
         )
@@ -58,7 +58,7 @@ fun NavGraphBuilder.homeScreen(
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
-    HomeScreen(
+    QRCodeScreen(
         Modifier.fillMaxSize()
     )
 }

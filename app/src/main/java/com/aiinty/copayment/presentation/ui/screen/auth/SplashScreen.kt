@@ -1,4 +1,4 @@
-package com.aiinty.copayment.presentation.ui.screen
+package com.aiinty.copayment.presentation.ui.screen.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,7 +28,6 @@ import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui.components.auth.AuthErrorHandler
 import com.aiinty.copayment.presentation.ui.theme.Green
 import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
-import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
