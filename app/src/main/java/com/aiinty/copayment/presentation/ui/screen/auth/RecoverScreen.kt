@@ -37,7 +37,6 @@ import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
 fun RecoverScreen(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToBack: () -> Unit = {},
     onNavigateToVerify: (OTPType, String, String?) -> Unit = { _, _, _ -> }
 ) {
     CollectNavigationEvents(
@@ -59,15 +58,6 @@ fun RecoverScreen(
         Column(
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            BaseIconButton(
-                onClick = onNavigateToBack
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.chevron_left),
-                    contentDescription = stringResource(R.string.back)
-                )
-            }
-
             RecoverHeader()
 
             RecoverFields(
@@ -139,7 +129,6 @@ fun NavController.navigateToRecover(navOptions: NavOptionsBuilder.() -> Unit = {
 
 fun NavGraphBuilder.recoverScreen(
     modifier: Modifier = Modifier,
-    onNavigateToBack: () -> Unit = {},
     onNavigateToVerify: (OTPType, String, String?) -> Unit
 ) {
     composable(
@@ -147,7 +136,6 @@ fun NavGraphBuilder.recoverScreen(
     ){
         RecoverScreen(
             modifier = modifier,
-            onNavigateToBack = onNavigateToBack,
             onNavigateToVerify = onNavigateToVerify
         )
     }

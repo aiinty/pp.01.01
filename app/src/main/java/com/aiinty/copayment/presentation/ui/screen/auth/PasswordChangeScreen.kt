@@ -36,7 +36,6 @@ import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
 fun PasswordChangeScreen(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToBack: () -> Unit = {},
     onNavigateToSignIn: () -> Unit = {}
 ) {
     CollectNavigationEvents(
@@ -59,14 +58,6 @@ fun PasswordChangeScreen(
         Column(
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            BaseIconButton(
-                onClick = onNavigateToBack
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.chevron_left),
-                    contentDescription = stringResource(R.string.back)
-                )
-            }
 
             PasswordChangeHeader()
 
@@ -158,7 +149,6 @@ fun NavController.navigateToPasswordChange(navOptions: NavOptionsBuilder.() -> U
 
 fun NavGraphBuilder.passwordChangeScreen(
     modifier: Modifier = Modifier,
-    onNavigateToBack: () -> Unit = {},
     onNavigateToSignIn: () -> Unit = {}
 ) {
     composable(
@@ -166,7 +156,6 @@ fun NavGraphBuilder.passwordChangeScreen(
     ){
         PasswordChangeScreen(
             modifier = modifier,
-            onNavigateToBack = onNavigateToBack,
             onNavigateToSignIn = onNavigateToSignIn
         )
     }

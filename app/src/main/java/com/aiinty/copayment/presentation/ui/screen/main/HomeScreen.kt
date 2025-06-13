@@ -21,19 +21,11 @@ import com.aiinty.copayment.presentation.ui.components.base.BaseIconButton
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    onNavigateToBack: () -> Unit = {},
 ) {
     Column(
         modifier = modifier.padding(16.dp)
     ) {
-        BaseIconButton(
-            onClick = onNavigateToBack
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.chevron_left),
-                contentDescription = stringResource(R.string.back)
-            )
-        }
+
     }
 }
 
@@ -43,14 +35,12 @@ fun NavController.navigateToHome(navOptions: NavOptionsBuilder.() -> Unit = {}) 
 
 fun NavGraphBuilder.homeScreen(
     modifier: Modifier = Modifier,
-    onNavigateToBack: () -> Unit = {}
 ) {
     composable(
         route = NavigationRoute.HomeScreen.route
     ){
         HomeScreen(
-            modifier = modifier,
-            onNavigateToBack = onNavigateToBack
+            modifier = modifier
         )
     }
 }

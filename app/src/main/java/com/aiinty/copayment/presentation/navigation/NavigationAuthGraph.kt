@@ -1,5 +1,6 @@
 package com.aiinty.copayment.presentation.navigation
 
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.aiinty.copayment.domain.model.OTPType
@@ -21,8 +22,12 @@ import com.aiinty.copayment.presentation.ui.screen.auth.navigateToOnboarding
 import com.aiinty.copayment.presentation.ui.screen.auth.onboardingScreen
 import com.aiinty.copayment.presentation.ui.screen.auth.splashScreen
 
-fun NavGraphBuilder.authGraph(navController: NavHostController) {
+fun NavGraphBuilder.authGraph(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
     splashScreen(
+        modifier = modifier,
         onNavigateToOnboarding = { navController.navigateToOnboarding(
             navOptions = {
                 withPopUpTo(NavigationRoute.SplashScreen.route)
@@ -46,11 +51,12 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
     )
 
     onboardingScreen(
+        modifier = modifier,
         onNavigateToSignIn = { navController.navigateToSignIn() }
     )
 
     signInScreen(
-        onNavigateToBack = { navController.popBackStack() },
+        modifier = modifier,
         onNavigateToForgotPassword = { navController.navigateToRecover() },
         onNavigateToSignUp = { navController.navigateToSignUp() },
         onNavigateToVerify = { otpType: OTPType, email: String, nextDestination: String? ->
@@ -62,7 +68,7 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
     )
 
     signUpScreen(
-        onNavigateToBack = { navController.popBackStack() },
+        modifier = modifier,
         onNavigateToSignIn = { navController.navigateToSignIn() },
         onNavigateToVerify = { otpType: OTPType, email: String, nextDestination: String? ->
             navController.navigateToVerifyOTP(otpType, email, nextDestination)
@@ -70,21 +76,21 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
     )
 
     verifyOTPScreen(
-        onNavigateToBack = { navController.popBackStack() },
+        modifier = modifier,
         onNavigateToNext = { nextDestination ->
             navController.navigate(nextDestination)
         }
     )
 
     recoverScreen(
-        onNavigateToBack = { navController.popBackStack() },
+        modifier = modifier,
         onNavigateToVerify = { otpType: OTPType, email: String, nextDestination: String? ->
             navController.navigateToVerifyOTP(otpType, email, nextDestination)
         }
     )
 
     passwordChangeScreen(
-        onNavigateToBack = { navController.popBackStack() },
+        modifier = modifier,
         onNavigateToSignIn = { navController.navigateToSignIn(
             navOptions = {
                 popUpTo(NavigationRoute.PasswordChangeScreen.route) { inclusive = true }
@@ -94,11 +100,12 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
     )
 
     createPinCodeScreen(
-        onNavigateToBack = { navController.popBackStack() },
+        modifier = modifier,
         onNavigateToHome = { navController.navigateToHome() }
     )
 
     pinCodeScreen(
+        modifier = modifier,
         onNavigateToCreatePinCode = { navController.navigateToCreatePinCode(
             navOptions = {
                 withPopUpTo(NavigationRoute.PinCodeScreen.route)

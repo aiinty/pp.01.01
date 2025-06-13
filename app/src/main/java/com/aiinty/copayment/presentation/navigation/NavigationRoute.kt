@@ -41,5 +41,9 @@ sealed class NavigationRoute(
             RecoverScreen, PasswordChangeScreen, CreatePinCodeScreen, PinCodeScreen,
             HomeScreen, CardsScreen, QRCodeScreen, ActivityScreen, ProfileScreen
         ).associateBy { it.route }
+
+        fun findByRoute(route: String?): NavigationRoute? {
+            return route?.let { routes[it] }
+        }
     }
 }

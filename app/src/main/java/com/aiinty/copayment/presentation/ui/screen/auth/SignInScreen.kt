@@ -43,7 +43,6 @@ import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
 fun SignInScreen(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToBack: () -> Unit = {},
     onNavigateToForgotPassword: () -> Unit = {},
     onNavigateToSignUp: () -> Unit = {},
     onNavigateToVerify: (OTPType, String, String?) -> Unit = { _, _, _ -> },
@@ -76,15 +75,6 @@ fun SignInScreen(
         Column(
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            BaseIconButton(
-                onClick = onNavigateToBack
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.chevron_left),
-                    contentDescription = stringResource(R.string.back)
-                )
-            }
-
             SignInHeader()
 
             SignInFields(
@@ -194,7 +184,6 @@ fun NavController.navigateToSignIn(navOptions: NavOptionsBuilder.() -> Unit = {}
 
 fun NavGraphBuilder.signInScreen(
     modifier: Modifier = Modifier,
-    onNavigateToBack: () -> Unit = {},
     onNavigateToForgotPassword: () -> Unit = {},
     onNavigateToSignUp: () -> Unit = {},
     onNavigateToVerify: (OTPType, String, String?) -> Unit,
@@ -207,7 +196,6 @@ fun NavGraphBuilder.signInScreen(
     ){
         SignInScreen(
             modifier = modifier,
-            onNavigateToBack = onNavigateToBack,
             onNavigateToForgotPassword = onNavigateToForgotPassword,
             onNavigateToSignUp = onNavigateToSignUp,
             onNavigateToVerify = onNavigateToVerify,

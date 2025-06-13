@@ -2,6 +2,7 @@ package com.aiinty.copayment.presentation.ui.components.base
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButtonColors
@@ -18,8 +19,7 @@ import com.aiinty.copayment.presentation.ui.theme.Greyscale200
 fun BaseIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
-        .width(40.dp)
-        .height(40.dp),
+        .size(40.dp),
     enabled: Boolean = true,
     shape: Shape = RoundedCornerShape(12.dp),
     colors: IconButtonColors = IconButtonDefaults.outlinedIconButtonColors(

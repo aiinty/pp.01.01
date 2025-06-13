@@ -1,5 +1,6 @@
 package com.aiinty.copayment.presentation.navigation
 
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.aiinty.copayment.presentation.ui.screen.main.activityScreen
@@ -8,24 +9,27 @@ import com.aiinty.copayment.presentation.ui.screen.main.homeScreen
 import com.aiinty.copayment.presentation.ui.screen.main.profileScreen
 import com.aiinty.copayment.presentation.ui.screen.main.qrCodeScreen
 
-fun NavGraphBuilder.mainGraph(navController: NavHostController) {
+fun NavGraphBuilder.mainGraph(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
     homeScreen(
-        onNavigateToBack = { navController.popBackStack() },
+        modifier = modifier,
     )
 
     cardsScreen(
-        onNavigateToBack = { navController.popBackStack() },
+        modifier = modifier,
     )
 
     qrCodeScreen(
-        onNavigateToBack = { navController.popBackStack() },
+        modifier = modifier,
     )
 
     activityScreen(
-        onNavigateToBack = { navController.popBackStack() },
+        modifier = modifier,
     )
 
     profileScreen(
-        onNavigateToBack = { navController.popBackStack() },
+        modifier = modifier,
     )
 }

@@ -187,6 +187,7 @@ fun NavController.navigateToVerifyOTP(
 }
 
 fun NavGraphBuilder.verifyOTPScreen(
+    modifier: Modifier,
     onNavigateToBack: () -> Unit = {},
     onNavigateToNext: (String) -> Unit
 ) {
@@ -207,6 +208,7 @@ fun NavGraphBuilder.verifyOTPScreen(
         val nextDestination = backStackEntry.arguments?.getString("next")
         if (type != null && email != null && nextDestination != null) {
             VerifyOTPScreen(
+                modifier = modifier,
                 type = OTPType.otpTypeFromString(type),
                 email = email,
                 nextDestination = nextDestination,

@@ -21,19 +21,11 @@ import com.aiinty.copayment.presentation.ui.components.base.BaseIconButton
 @Composable
 fun QRCodeScreen(
     modifier: Modifier = Modifier,
-    onNavigateToBack: () -> Unit = {},
 ) {
     Column(
         modifier = modifier.padding(16.dp)
     ) {
-        BaseIconButton(
-            onClick = onNavigateToBack
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.chevron_left),
-                contentDescription = stringResource(R.string.back)
-            )
-        }
+
     }
 }
 
@@ -43,14 +35,12 @@ fun NavController.navigateToQRCode(navOptions: NavOptionsBuilder.() -> Unit = {}
 
 fun NavGraphBuilder.qrCodeScreen(
     modifier: Modifier = Modifier,
-    onNavigateToBack: () -> Unit = {}
 ) {
     composable(
         route = NavigationRoute.QRCodeScreen.route
     ){
         QRCodeScreen(
             modifier = modifier,
-            onNavigateToBack = onNavigateToBack
         )
     }
 }

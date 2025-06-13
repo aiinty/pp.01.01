@@ -50,7 +50,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun OnboardingScreen(
     modifier: Modifier = Modifier,
-    onNavigateToLogin: () -> Unit = {}
+    onNavigateToSignIn: () -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
     val onboardingContent = listOf(
@@ -84,7 +84,7 @@ fun OnboardingScreen(
             text = stringResource(R.string.onboarding_skip),
             modifier = Modifier
                 .padding(16.dp),
-            onClick = onNavigateToLogin
+            onClick = onNavigateToSignIn
         )
 
         Box(
@@ -139,7 +139,7 @@ fun OnboardingScreen(
                         onClick = {
                             scope.launch {
                                 if (pagerState.currentPage == pageCount - 1) {
-                                    onNavigateToLogin()
+                                    onNavigateToSignIn()
                                 } else {
                                     pagerState.animateScrollToPage(pagerState.currentPage + 1)
                                 }
@@ -208,7 +208,7 @@ fun NavGraphBuilder.onboardingScreen(
     ) {
         OnboardingScreen(
             modifier = modifier,
-            onNavigateToLogin = onNavigateToSignIn
+            onNavigateToSignIn = onNavigateToSignIn
         )
     }
 }

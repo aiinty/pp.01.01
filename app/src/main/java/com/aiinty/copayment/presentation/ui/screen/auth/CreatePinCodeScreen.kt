@@ -39,7 +39,6 @@ import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
 fun CreatePinCodeScreen(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToBack: () -> Unit = {},
     onNavigateToHome: () -> Unit = {}
 ) {
     CollectNavigationEvents(
@@ -61,15 +60,6 @@ fun CreatePinCodeScreen(
         Column(
             verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
-            BaseIconButton(
-                onClick = onNavigateToBack
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.chevron_left),
-                    contentDescription = stringResource(R.string.back)
-                )
-            }
-
             CreatePinCodeHeader(
                 isConfirmStep = isConfirmStep
             )
@@ -167,7 +157,6 @@ fun NavController.navigateToCreatePinCode(navOptions: NavOptionsBuilder.() -> Un
 
 fun NavGraphBuilder.createPinCodeScreen(
     modifier: Modifier = Modifier,
-    onNavigateToBack: () -> Unit = {},
     onNavigateToHome: () -> Unit = {}
 ) {
     composable(
@@ -175,7 +164,6 @@ fun NavGraphBuilder.createPinCodeScreen(
     ){
         CreatePinCodeScreen(
             modifier = modifier,
-            onNavigateToBack = onNavigateToBack,
             onNavigateToHome = onNavigateToHome
         )
     }
