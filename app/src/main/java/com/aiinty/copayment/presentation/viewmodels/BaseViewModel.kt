@@ -1,0 +1,37 @@
+package com.aiinty.copayment.presentation.viewmodels
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.aiinty.copayment.presentation.common.ErrorHandler
+import com.aiinty.copayment.presentation.common.UiMessage
+import com.aiinty.copayment.presentation.navigation.NavigationRoute
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
+
+open class BaseViewModel(
+    private val errorHandler: ErrorHandler,
+): ViewModel() {
+
+    private val _navigationEvent = MutableSharedFlow<NavigationRoute>()
+    val navigationEvent = _navigationEvent.asSharedFlow()
+
+    private val _errorEvent = MutableSharedFlow<UiMessage>()
+    val errorEvent = _errorEvent.asSharedFlow()
+
+    protected fun emitNavigation(route: NavigationRoute) {
+        viewModelScope.launch {
+            _navigationEvent.emit(route)
+        }
+    }
+
+    protected fun handleError(e: Throwable) {
+        viewModelScope.launch {
+            errorHandler.handle(
+                throwable = e,
+                onNavigate = { _navigationEvent.emit(it) },
+                onErrorMessage = { _errorEvent.emit(it) }
+            )
+        }
+    }
+}

@@ -1,65 +1,43 @@
 package com.aiinty.copayment.presentation.viewmodels
 
-import android.util.Log
-import androidx.annotation.StringRes
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aiinty.copayment.R
 import com.aiinty.copayment.data.local.UserPreferences
 import com.aiinty.copayment.data.model.SignUpData
-import com.aiinty.copayment.data.network.ApiErrorCode
-import com.aiinty.copayment.data.network.ApiException
+import com.aiinty.copayment.domain.model.AppException
 import com.aiinty.copayment.domain.model.OTPType
-import com.aiinty.copayment.domain.usecase.RecoverUseCase
-import com.aiinty.copayment.domain.usecase.RefreshTokenUseCase
-import com.aiinty.copayment.domain.usecase.SignInUseCase
-import com.aiinty.copayment.domain.usecase.SignUpUseCase
-import com.aiinty.copayment.domain.usecase.UpdateUserUseCase
-import com.aiinty.copayment.domain.usecase.VerifyOTPUseCase
+import com.aiinty.copayment.domain.usecase.auth.RecoverUseCase
+import com.aiinty.copayment.domain.usecase.auth.RefreshTokenUseCase
+import com.aiinty.copayment.domain.usecase.auth.SignInUseCase
+import com.aiinty.copayment.domain.usecase.auth.SignUpUseCase
+import com.aiinty.copayment.domain.usecase.auth.UpdateUserUseCase
+import com.aiinty.copayment.domain.usecase.auth.VerifyOTPUseCase
+import com.aiinty.copayment.presentation.common.ErrorHandler
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
-import com.aiinty.copayment.presentation.model.UiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
+    private val errorHandler: ErrorHandler,
     private val userPreferences: UserPreferences,
     private val signInUseCase: SignInUseCase,
     private val refreshTokenUseCase: RefreshTokenUseCase,
     private val signUpUseCase: SignUpUseCase,
     private val verifyOTPUseCase: VerifyOTPUseCase,
     private val recoverUseCase: RecoverUseCase,
-    private val updateUserUseCase: UpdateUserUseCase
-): ViewModel() {
-
-    private val _navigationEvent = MutableSharedFlow<NavigationRoute>()
-    val navigationEvent = _navigationEvent.asSharedFlow()
-
+    private val updateUserUseCase: UpdateUserUseCase,
+): BaseViewModel(errorHandler) {
     private val _resendCooldownSeconds = MutableStateFlow(0)
     val resendCooldownSeconds: StateFlow<Int> = _resendCooldownSeconds.asStateFlow()
     val canResend = MutableStateFlow(true)
-
-    private val _errorEvent = MutableSharedFlow<UiMessage>()
-    val errorEvent = _errorEvent.asSharedFlow()
-
-    fun showError(@StringRes resId: Int? = null, message: String? = null) {
-        viewModelScope.launch {
-            when {
-                resId != null -> _errorEvent.emit(UiMessage.StringRes(resId))
-                message != null -> _errorEvent.emit(UiMessage.Text(message))
-            }
-        }
-    }
 
     fun startResendCooldown(seconds: Int) {
         viewModelScope.launch {
@@ -83,9 +61,11 @@ class AuthViewModel @Inject constructor(
                 if (result.isSuccess) {
                     val storedPin = userPreferences.getUserPin()
                     if (storedPin == null) {
-                        _navigationEvent.emit(NavigationRoute.CreatePinCodeScreen)
+                        emitNavigation(NavigationRoute.CreatePinCodeScreen(
+                            nextDestination = NavigationRoute.PinCodeScreen.route
+                        ))
                     } else {
-                        _navigationEvent.emit(NavigationRoute.PinCodeScreen)
+                        emitNavigation(NavigationRoute.PinCodeScreen)
                     }
                     return@launch
                 }
@@ -93,81 +73,14 @@ class AuthViewModel @Inject constructor(
 
             when {
                 !firstLaunch -> {
-                    _navigationEvent.emit(NavigationRoute.SignInScreen)
+                    emitNavigation(NavigationRoute.SignInScreen)
                 }
                 else -> {
-                    _navigationEvent.emit(NavigationRoute.OnboardingScreen)
+                    emitNavigation(NavigationRoute.OnboardingScreen)
                 }
             }
             if (firstLaunch) {
                 userPreferences.saveFirstLaunch(false)
-            }
-        }
-    }
-
-    private fun handleError(e: Throwable) {
-        viewModelScope.launch {
-            when (e) {
-                is IOException -> {
-                    Log.e("AuthViewModel:handleError", "Network error or timeout: ${e.message}")
-                    showError(resId = R.string.check_your_internet)
-                }
-                is ApiException -> {
-                    when(e.apiError.error_code) {
-                        ApiErrorCode.EMAIL_NOT_CONFIRMED.code -> {
-                            val email = userPreferences.getUserEmail()
-                            if (email != null) {
-                                _navigationEvent.emit(NavigationRoute.VerifyOTPScreen(
-                                    type = OTPType.EMAIL,
-                                    email = email,
-                                    nextDestination = NavigationRoute.HomeScreen.route
-                                ))
-                            } else {
-                                showError(resId = R.string.try_signing_in_again)
-                            }
-                        }
-                        ApiErrorCode.USER_ALREADY_EXISTS.code -> {
-                            showError(resId = R.string.email_is_already_taken)
-                        }
-                        ApiErrorCode.OTP_EXPIRED.code -> {
-                            showError(resId = R.string.token_has_expired)
-                        }
-                        ApiErrorCode.VALIDATION_FAILED.code -> {
-                            showError(resId = R.string.verify_the_accuracy)
-                        }
-                        ApiErrorCode.INVALID_CREDENTIALS.code -> {
-                            showError(resId = R.string.invalid_credentials)
-                        }
-                        ApiErrorCode.OVER_EMAIL_SEND_RATE_LIMIT.code -> {
-                            showError(resId = R.string.send_rate_limit)
-                        }
-                        ApiErrorCode.WEAK_PASSWORD.code -> {
-                            showError(resId = R.string.weak_password)
-                        }
-                        ApiErrorCode.BAD_JWT.code -> {
-                            val refreshToken = userPreferences.getRefreshToken()
-                            if (refreshToken == null) {
-                                _navigationEvent.emit(NavigationRoute.SignInScreen)
-                                showError(resId = R.string.try_signing_in_again)
-                            } else {
-                                refreshToken(refreshToken)
-                            }
-                        }
-                        ApiErrorCode.REFRESH_TOKEN_NOT_FOUND.code -> {
-                            _navigationEvent.emit(NavigationRoute.SignInScreen)
-                            showError(resId = R.string.try_signing_in_again)
-                        }
-                        else -> {
-                            Log.e("AuthViewModel:handleError", "Unknown API error: code=${e.apiError.error_code}, message=${e.message}")
-                            if (e.message != null) showError(message = e.message)
-                            else showError(resId = R.string.unknown_api_error)
-                        }
-                    }
-                }
-                else -> {
-                    Log.e("AuthViewModel:handleError", "Unknown error: ${e.message ?: e.toString()}")
-                    showError(resId = R.string.unknown_error)
-                }
             }
         }
     }
@@ -182,9 +95,11 @@ class AuthViewModel @Inject constructor(
                 onSuccess = {
                     val storedPin = userPreferences.getUserPin()
                     if (storedPin == null) {
-                        _navigationEvent.emit(NavigationRoute.CreatePinCodeScreen)
+                        emitNavigation(NavigationRoute.CreatePinCodeScreen(
+                            nextDestination = NavigationRoute.PinCodeScreen.route
+                        ))
                     } else {
-                        _navigationEvent.emit(NavigationRoute.PinCodeScreen)
+                        emitNavigation(NavigationRoute.PinCodeScreen)
                     }
                 },
                 onFailure = { e ->
@@ -218,10 +133,12 @@ class AuthViewModel @Inject constructor(
             val result = signUpUseCase.invoke(email = email, password = password, data = data)
             result.fold(
                 onSuccess = {
-                    _navigationEvent.emit(NavigationRoute.VerifyOTPScreen(
+                    emitNavigation(NavigationRoute.VerifyOTPScreen(
                         type = OTPType.EMAIL,
                         email = email,
-                        nextDestination = NavigationRoute.CreatePinCodeScreen.route
+                        nextDestination = NavigationRoute.CreatePinCodeScreen(
+                            nextDestination = NavigationRoute.PinCodeScreen.route
+                        ).route
                     ))
                 },
                 onFailure = { e ->
@@ -236,7 +153,7 @@ class AuthViewModel @Inject constructor(
             val result = verifyOTPUseCase.invoke(type, email, token)
             result.fold(
                 onSuccess = {
-                    _navigationEvent.emit(NavigationRoute.NextScreen)
+                    emitNavigation(NavigationRoute.NextScreen)
                 },
                 onFailure = { e ->
                     handleError(e)
@@ -254,6 +171,14 @@ class AuthViewModel @Inject constructor(
                     val password = userPreferences.getUserPassword()
                     if (password != null) {
                         signUpUseCase.invoke(email = email, password = password, data = null)
+                    } else {
+                        Result.failure(Exception())
+                    }
+                }
+                OTPType.EMAIL_CHANGE -> {
+                    val newEmail = userPreferences.getUserNewEmail()
+                    if (newEmail != null) {
+                        updateUserUseCase.invoke(email = newEmail, password = null)
                     } else {
                         Result.failure(Exception())
                     }
@@ -276,10 +201,12 @@ class AuthViewModel @Inject constructor(
             val result = recoverUseCase.invoke(email)
             result.fold(
                 onSuccess = {
-                    _navigationEvent.emit(NavigationRoute.VerifyOTPScreen(
+                    emitNavigation(NavigationRoute.VerifyOTPScreen(
                         type = OTPType.RECOVERY,
                         email = email,
-                        nextDestination = NavigationRoute.PasswordChangeScreen.route
+                        nextDestination = NavigationRoute.PasswordChangeScreen(
+                            nextDestination = NavigationRoute.SignInScreen.route
+                        ).route
                     ))
                 },
                 onFailure = { e ->
@@ -294,8 +221,7 @@ class AuthViewModel @Inject constructor(
             val result = updateUserUseCase.invoke(email, password)
             result.fold(
                 onSuccess = {
-                    userPreferences.clear()
-                    _navigationEvent.emit(NavigationRoute.SignInScreen)
+                    emitNavigation(NavigationRoute.NextScreen)
                 },
                 onFailure = { e ->
                     handleError(e)
@@ -306,24 +232,34 @@ class AuthViewModel @Inject constructor(
 
     fun createPin(pin: String) {
         viewModelScope.launch {
-            if (pin.length == 5 && pin.all { it.isDigit() }) {
-                userPreferences.saveUserPin(pin)
-                _navigationEvent.emit(NavigationRoute.HomeScreen)
-            } else {
-                showError(resId = R.string.error_invalid_pin_format)
+            try {
+                if (pin.length == 5 && pin.all { it.isDigit() }) {
+                    userPreferences.saveUserPin(pin)
+                    emitNavigation(NavigationRoute.NextScreen)
+                } else {
+                   throw AppException.UiResError(R.string.error_invalid_pin_format)
+                }
+            } catch (e: Exception) {
+                handleError(e)
             }
         }
     }
 
     fun loginWithPin(pin: String) {
         viewModelScope.launch {
-            val storedPin = userPreferences.getUserPin()
-            if (storedPin == null) {
-                _navigationEvent.emit(NavigationRoute.CreatePinCodeScreen)
-            } else if (pin == storedPin) {
-                _navigationEvent.emit(NavigationRoute.HomeScreen)
-            } else {
-                showError(resId = R.string.error_invalid_pin)
+            try {
+                val storedPin = userPreferences.getUserPin()
+                if (storedPin == null) {
+                    emitNavigation(NavigationRoute.CreatePinCodeScreen(
+                        nextDestination = NavigationRoute.PinCodeScreen.route
+                    ))
+                } else if (pin == storedPin) {
+                    emitNavigation(NavigationRoute.HomeScreen)
+                } else {
+                    throw AppException.UiResError(R.string.error_invalid_pin)
+                }
+            } catch (e: Exception) {
+                handleError(e)
             }
         }
     }

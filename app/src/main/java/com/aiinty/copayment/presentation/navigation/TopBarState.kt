@@ -4,9 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
+import com.aiinty.copayment.R
 
 data class TopBarState(
-    val title: String? = null,
+    val titleResId: Int? = null,
     val showBackButton: Boolean = true,
     val actionIcon: ImageVector? = null,
     val actionIconContentDescriptionResId: Int? = null,
@@ -26,21 +27,23 @@ fun rememberTopBarState(
         if (currentNavigationRoute == null || currentNavigationRoute in listOf(
                 NavigationRoute.SplashScreen,
                 NavigationRoute.OnboardingScreen,
-                NavigationRoute.PinCodeScreen
+                NavigationRoute.PinCodeScreen,
             )
         ) {
             return@remember TopBarState(isVisible = false)
         }
 
-        val titleMap = mapOf(
-            NavigationRoute.CardsScreen to "My Card",
-            NavigationRoute.QRCodeScreen to "Scan QR Code",
-            NavigationRoute.ActivityScreen to "Activity",
-            NavigationRoute.ProfileScreen to "Profile"
+        val titleResIdMap = mapOf(
+            NavigationRoute.CardsScreen to R.string.my_card,
+            NavigationRoute.QRCodeScreen to R.string.scan_qr_code,
+            NavigationRoute.ActivityScreen to R.string.activity,
+            NavigationRoute.ProfileScreen to R.string.profile,
+            NavigationRoute.EditProfileScreen to R.string.edit_profile,
+            NavigationRoute.ContactScreen to R.string.contacts,
         )
 
         TopBarState(
-            title = titleMap[currentNavigationRoute],
+            titleResId = titleResIdMap[currentNavigationRoute],
             showBackButton = true,
             onBackClick = defaultBackClick
         )

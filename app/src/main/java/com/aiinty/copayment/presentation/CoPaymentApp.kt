@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -25,10 +24,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.aiinty.copayment.presentation.navigation.CoPaymentNavHost
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
-import com.aiinty.copayment.presentation.navigation.TopBarState
 import com.aiinty.copayment.presentation.navigation.rememberTopBarState
-import com.aiinty.copayment.presentation.ui.components.base.BaseTopBar
-import com.aiinty.copayment.presentation.ui.components.base.BottomNavigationBar
+import com.aiinty.copayment.presentation.ui._components.base.BaseTopBar
+import com.aiinty.copayment.presentation.ui._components.base.BottomNavigationBar
 
 @Composable
 fun CoPaymentApp(

@@ -3,24 +3,25 @@ package com.aiinty.copayment.presentation.navigation
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import com.aiinty.copayment.domain.model.OTPType
-import com.aiinty.copayment.presentation.ui.screen.auth.createPinCodeScreen
-import com.aiinty.copayment.presentation.ui.screen.auth.navigateToCreatePinCode
-import com.aiinty.copayment.presentation.ui.screen.auth.navigateToPinCode
-import com.aiinty.copayment.presentation.ui.screen.auth.navigateToRecover
-import com.aiinty.copayment.presentation.ui.screen.auth.navigateToSignIn
-import com.aiinty.copayment.presentation.ui.screen.auth.navigateToSignUp
-import com.aiinty.copayment.presentation.ui.screen.auth.navigateToVerifyOTP
-import com.aiinty.copayment.presentation.ui.screen.auth.passwordChangeScreen
-import com.aiinty.copayment.presentation.ui.screen.auth.pinCodeScreen
-import com.aiinty.copayment.presentation.ui.screen.auth.recoverScreen
-import com.aiinty.copayment.presentation.ui.screen.auth.signInScreen
-import com.aiinty.copayment.presentation.ui.screen.auth.signUpScreen
-import com.aiinty.copayment.presentation.ui.screen.auth.verifyOTPScreen
-import com.aiinty.copayment.presentation.ui.screen.main.navigateToHome
-import com.aiinty.copayment.presentation.ui.screen.auth.navigateToOnboarding
-import com.aiinty.copayment.presentation.ui.screen.auth.onboardingScreen
-import com.aiinty.copayment.presentation.ui.screen.auth.splashScreen
+import com.aiinty.copayment.presentation.ui.auth.createPinCodeScreen
+import com.aiinty.copayment.presentation.ui.auth.navigateToCreatePinCode
+import com.aiinty.copayment.presentation.ui.auth.navigateToPinCode
+import com.aiinty.copayment.presentation.ui.auth.navigateToRecover
+import com.aiinty.copayment.presentation.ui.auth.navigateToSignIn
+import com.aiinty.copayment.presentation.ui.auth.navigateToSignUp
+import com.aiinty.copayment.presentation.ui.auth.navigateToVerifyOTP
+import com.aiinty.copayment.presentation.ui.auth.passwordChangeScreen
+import com.aiinty.copayment.presentation.ui.auth.pinCodeScreen
+import com.aiinty.copayment.presentation.ui.auth.recoverScreen
+import com.aiinty.copayment.presentation.ui.auth.signInScreen
+import com.aiinty.copayment.presentation.ui.auth.signUpScreen
+import com.aiinty.copayment.presentation.ui.auth.verifyOTPScreen
+import com.aiinty.copayment.presentation.ui.main.navigateToHome
+import com.aiinty.copayment.presentation.ui.auth.navigateToOnboarding
+import com.aiinty.copayment.presentation.ui.auth.onboardingScreen
+import com.aiinty.copayment.presentation.ui.auth.splashScreen
 
 fun NavGraphBuilder.authGraph(
     modifier: Modifier = Modifier,
@@ -91,17 +92,26 @@ fun NavGraphBuilder.authGraph(
 
     passwordChangeScreen(
         modifier = modifier,
-        onNavigateToSignIn = { navController.navigateToSignIn(
-            navOptions = {
-                popUpTo(NavigationRoute.PasswordChangeScreen.route) { inclusive = true }
-                launchSingleTop = true
-            })
+        onNavigateToNext = { nextDestination ->
+            navController.navigate(
+                route = nextDestination,
+                navOptions = NavOptions.Builder().apply {
+                    withPopUpTo(NavigationRoute.PasswordChangeScreen().route)
+                }.build()
+            )
         }
     )
 
     createPinCodeScreen(
         modifier = modifier,
-        onNavigateToHome = { navController.navigateToHome() }
+        onNavigateToNext = { nextDestination ->
+            navController.navigate(
+                route = nextDestination,
+                navOptions = NavOptions.Builder().apply {
+                    withPopUpTo(NavigationRoute.CreatePinCodeScreen().route)
+                }.build()
+            )
+        }
     )
 
     pinCodeScreen(

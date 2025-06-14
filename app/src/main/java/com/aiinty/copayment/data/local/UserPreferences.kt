@@ -3,6 +3,8 @@ package com.aiinty.copayment.data.local
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.aiinty.copayment.domain.model.Profile
+import com.google.gson.Gson
 
 class UserPreferences(
     private val context: Context
@@ -15,8 +17,10 @@ class UserPreferences(
         private const val KEY_REFRESH_TOKEN = "refresh_token"
         private const val KEY_USER_ID = "user_id"
         private const val KEY_USER_EMAIL = "user_email"
+        private const val KEY_USER_EMAIL_NEW = "user_email_new"
         private const val KEY_USER_PASSWORD = "user_password"
         private const val KEY_USER_PIN = "user_pin"
+        private const val KEY_PROFILE = "profile"
     }
 
     private val sharedPreferences by lazy {
@@ -73,6 +77,14 @@ class UserPreferences(
         return sharedPreferences.getString(KEY_USER_EMAIL, null)
     }
 
+    fun saveUserNewEmail(email: String) {
+        sharedPreferences.edit().putString(KEY_USER_EMAIL_NEW, email).apply()
+    }
+
+    fun getUserNewEmail(): String? {
+        return sharedPreferences.getString(KEY_USER_EMAIL_NEW, null)
+    }
+
     fun saveUserPassword(password: String) {
         sharedPreferences.edit().putString(KEY_USER_PASSWORD, password).apply()
     }
@@ -87,6 +99,22 @@ class UserPreferences(
 
     fun getUserPin(): String? {
         return sharedPreferences.getString(KEY_USER_PIN, null)
+    }
+
+    fun saveProfile(profile: Profile) {
+        val json = Gson().toJson(profile)
+        sharedPreferences.edit().putString(KEY_PROFILE, json).apply()
+    }
+
+    fun getProfile(): Profile? {
+        val json = sharedPreferences.getString(KEY_PROFILE, null)
+        return json?.let {
+            try {
+                Gson().fromJson(it, Profile::class.java)
+            } catch (e: Exception) {
+                null
+            }
+        }
     }
 
     fun clearUserCredentials() {

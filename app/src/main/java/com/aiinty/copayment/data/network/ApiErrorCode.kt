@@ -10,4 +10,7 @@ enum class ApiErrorCode(val code: String) {
     INVALID_CREDENTIALS("invalid_credentials"),
     REFRESH_TOKEN_NOT_FOUND("refresh_token_not_found"),
     BAD_JWT("bad_jwt"),
+    NOT_FOUND("not_found"),
+    UNAUTHORIZED("Unauthorized"),
+    INVALID_MIME_TYPE("invalid_mime_type"),
 }

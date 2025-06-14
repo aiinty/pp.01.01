@@ -2,7 +2,6 @@ package com.aiinty.copayment.data.repository
 
 import com.aiinty.copayment.data.local.UserPreferences
 import com.aiinty.copayment.data.model.AuthResponse
-import com.aiinty.copayment.data.model.EmptyResponse
 import com.aiinty.copayment.data.model.RecoverRequest
 import com.aiinty.copayment.data.model.RefreshTokenRequest
 import com.aiinty.copayment.data.model.SignInRequest
@@ -14,10 +13,10 @@ import com.aiinty.copayment.data.model.VerifyOTPRequest
 import com.aiinty.copayment.data.network.ApiError
 import com.aiinty.copayment.data.network.ApiErrorCode
 import com.aiinty.copayment.data.network.ApiException
-import com.aiinty.copayment.data.network.ApiUtils.parseApiError
 import com.aiinty.copayment.data.network.SupabaseApi
 import com.aiinty.copayment.domain.model.OTPType
 import com.aiinty.copayment.domain.repository.UserRepository
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -26,9 +25,11 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val api: SupabaseApi,
+    private val gson: Gson,
     private val prefs: UserPreferences,
-) : UserRepository {
+) : BaseRepositoryImpl(gson), UserRepository {
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val bearerToken = { "Bearer ${prefs.getAccessToken()}" }
 
     override suspend fun signUp(email: String, password: String, data: SignUpData?): Result<Unit> {
         return withContext(ioDispatcher) {
@@ -115,7 +116,7 @@ class UserRepositoryImpl @Inject constructor(
             try {
                 val response = api.updateUser(
                     request = UpdateUserRequest(email, password),
-                    authHeader = "Bearer ${prefs.getAccessToken()}"
+                    authHeader = bearerToken.invoke()
                 )
                 handleUserMetadataResponse(response).fold(
                     onSuccess = { Result.success(Unit) },
@@ -127,33 +128,18 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun <T> handleApiResponse(response: Response<T>): Result<T> {
-        return if (response.isSuccessful) {
-            if (response.body() != null) {
-                Result.success(response.body() as T)
-            } else {
-                Result.success(Unit as T)
-            }
-        } else {
-            val errorBodyString = response.errorBody()?.string()
-            val apiError = parseApiError(errorBodyString)
-            if (apiError != null) {
-                Result.failure(ApiException(apiError))
-            } else {
-                Result.failure(Exception("Unknown error with code ${response.code()}"))
-            }
-        }
-    }
-
     private fun handleAuthResponse(response: Response<AuthResponse>): Result<AuthResponse> {
         val result = handleApiResponse(response)
         return if (result.isSuccess) {
             val auth = result.getOrNull()
             if (auth != null){
-                if (auth.user.user_metadata.email_verified) {
-                    prefs.saveAccessToken(auth.access_token)
-                    prefs.saveRefreshToken(auth.refresh_token)
+                if (auth.user?.user_metadata?.email_verified == true) {
+                    if (auth.access_token != null && auth.refresh_token != null) {
+                        prefs.saveAccessToken(auth.access_token)
+                        prefs.saveRefreshToken(auth.refresh_token)
+                    }
                     prefs.saveUserId(auth.user.id)
+                    prefs.saveUserEmail(auth.user.email)
                 }
                 Result.success(auth)
             } else {
@@ -175,15 +161,6 @@ class UserRepositoryImpl @Inject constructor(
             }
         } else {
             result
-        }
-    }
-
-    private fun handleEmptyResponse(response: Response<EmptyResponse>): Result<Unit> {
-        val result = handleApiResponse(response)
-        return if (response.isSuccessful) {
-            Result.success(Unit)
-        } else {
-            result as Result<Unit>
         }
     }
 }

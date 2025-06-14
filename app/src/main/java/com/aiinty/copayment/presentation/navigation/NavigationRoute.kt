@@ -8,10 +8,12 @@ sealed class NavigationRoute(
     val route: String,
     val showBottomBar: Boolean = false,
     ) {
+    data object NextScreen: NavigationRoute("next")
     data object SplashScreen: NavigationRoute("splash_screen")
     data object OnboardingScreen: NavigationRoute("onboarding_screen")
     data object SignUpScreen: NavigationRoute("sign_up")
     data object SignInScreen: NavigationRoute("sign_in_screen")
+    data object RecoverScreen: NavigationRoute("recover")
 
     data class VerifyOTPScreen(
         val type: OTPType,
@@ -23,27 +25,52 @@ sealed class NavigationRoute(
             params = mapOf("next" to nextDestination)
         )
     )
-    data object NextScreen: NavigationRoute("next")
-
-    data object RecoverScreen: NavigationRoute("recover")
-    data object PasswordChangeScreen: NavigationRoute("password_change")
-    data object CreatePinCodeScreen: NavigationRoute("create_pin_code")
+    data class PasswordChangeScreen(
+        val nextDestination: String? = null
+    ): NavigationRoute(
+        route = NavigationUtils.buildRoute(
+            routeBase = "password_change",
+            params = mapOf("next" to nextDestination)
+        )
+    )
+    data class CreatePinCodeScreen(
+        val nextDestination: String? = null
+    ): NavigationRoute(
+        route = NavigationUtils.buildRoute(
+            routeBase = "pin_code_create",
+            params = mapOf("next" to nextDestination)
+        )
+    )
     data object PinCodeScreen: NavigationRoute("pin_code")
+
     data object HomeScreen: NavigationRoute("home", true)
     data object CardsScreen: NavigationRoute("cards", true)
     data object QRCodeScreen: NavigationRoute("qr_code")
     data object ActivityScreen: NavigationRoute("activity", true)
     data object ProfileScreen: NavigationRoute("profile", true)
+    data object ContactScreen: NavigationRoute("contacts", true)
+    data object EditProfileScreen: NavigationRoute("edit_profile")
 
     companion object {
-        val routes: Map<String, NavigationRoute> = listOfNotNull(
+        private val routes: Map<String, NavigationRoute> = listOfNotNull(
             SplashScreen, OnboardingScreen, SignUpScreen, SignInScreen, NextScreen,
-            RecoverScreen, PasswordChangeScreen, CreatePinCodeScreen, PinCodeScreen,
-            HomeScreen, CardsScreen, QRCodeScreen, ActivityScreen, ProfileScreen
+            RecoverScreen, PasswordChangeScreen(), CreatePinCodeScreen(), PinCodeScreen,
+            HomeScreen, CardsScreen, QRCodeScreen, ActivityScreen, ProfileScreen,
+            ContactScreen, EditProfileScreen
         ).associateBy { it.route }
 
         fun findByRoute(route: String?): NavigationRoute? {
-            return route?.let { routes[it] }
+            return when {
+                route == null -> null
+                route.startsWith("verify_otp/") -> VerifyOTPScreen(
+                    type = OTPType.EMAIL,
+                    email = "",
+                    nextDestination = null
+                )
+                route.startsWith("password_change") -> PasswordChangeScreen()
+                route.startsWith("pin_code_create") -> CreatePinCodeScreen()
+                else -> routes[route]
+            }
         }
     }
 }

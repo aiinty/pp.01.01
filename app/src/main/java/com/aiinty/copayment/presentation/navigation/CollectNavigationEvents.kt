@@ -16,6 +16,7 @@ fun CollectNavigationEvents(
     onNavigateToPinCode : () -> Unit = {},
     onNavigateToHome: () -> Unit = {},
     onNavigateToNext: () -> Unit = {},
+    onNavigateToProfile: () -> Unit = {},
 ) {
     LaunchedEffect(Unit) {
         navigationFlow.collect { target ->
@@ -27,6 +28,7 @@ fun CollectNavigationEvents(
                 is NavigationRoute.CreatePinCodeScreen -> onNavigateToCreatePinCode()
                 is NavigationRoute.PinCodeScreen -> onNavigateToPinCode()
                 is NavigationRoute.HomeScreen -> onNavigateToHome()
+                is NavigationRoute.ProfileScreen -> onNavigateToProfile()
                 is NavigationRoute.NextScreen -> onNavigateToNext()
                 else -> {}
             }

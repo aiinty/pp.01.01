@@ -1,5 +1,6 @@
 package com.aiinty.copayment.presentation.navigation
 
+import androidx.navigation.NavOptions
 import androidx.navigation.NavOptionsBuilder
 
 object NavigationUtils {
@@ -23,4 +24,14 @@ fun NavOptionsBuilder.withPopUpTo(
 ) {
     popUpTo(route) { this.inclusive = isInclusive }
     launchSingleTop = isLaunchSingleTop
+}
+
+fun NavOptions.Builder.withPopUpTo(
+    route: String,
+    isInclusive: Boolean = true,
+    isLaunchSingleTop: Boolean = true
+): NavOptions.Builder {
+    setPopUpTo(route, isInclusive)
+    setLaunchSingleTop(isLaunchSingleTop)
+    return this
 }

@@ -67,4 +67,24 @@
     <string name="error_invalid_pin">Incorrect PIN. Please try again</string>
     <string name="error_invalid_pin_format">Invalid PIN format</string>
     <string name="pin_title">Enter your PIN</string>
+    <string name="old_password">Old password</string>
+    <string name="phone_number">Phone number</string>
+    <string name="error_empty_phone">Phone number cannot be empty</string>
+    <string name="error_invalid_phone">Invalid phone number</string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="activity">Activity</string>
+    <string name="scan">Scan</string>
+    <string name="my_card">My Card</string>
+    <string name="bar_item">Bar Item</string>
+    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="contacts">Contacts</string>
+    <string name="edit_avatar">Edit avatar</string>
+    <string name="something_went_wrong">Something went wrong...</string>
+    <string name="save">Save</string>
+    <string name="contact_list">Contact List</string>
+    <string name="change_password">Change Password</string>
+    <string name="change_log_in_pin">Change Log In PIN</string>
+    <string name="navigate">Navigate</string>
 </resources>

@@ -65,4 +65,24 @@
     <string name="error_invalid_pin">Неверный PIN. Пожалуйста, попробуйте снова</string>
     <string name="error_invalid_pin_format">Неверный формат PIN</string>
     <string name="pin_title">Введите ваш PIN</string>
+    <string name="old_password">Старый пароль</string>
+    <string name="phone_number">Номер телефона</string>
+    <string name="error_invalid_phone">Неверный номер телефона</string>
+    <string name="home">Главная</string>
+    <string name="profile">Профиль</string>
+    <string name="activity">Активности</string>
+    <string name="scan">Сканировать</string>
+    <string name="my_card">Мои Карты</string>
+    <string name="bar_item">Пункт меню</string>
+    <string name="scan_qr_code">Сканировать QR</string>
+    <string name="edit_profile">Редактировать профиль</string>
+    <string name="contacts">Контакты</string>
+    <string name="edit_avatar">Редактировать аватар</string>
+    <string name="something_went_wrong">Что-то пошло не так...</string>
+    <string name="save">Сохранить</string>
+    <string name="contact_list">Список контактов</string>
+    <string name="change_password">Сменить пароль</string>
+    <string name="change_log_in_pin">Сменить ПИН-код</string>
+    <string name="navigate">Перейти</string>
+    <string name="error_empty_phone">Номер телефона не может быть пустым</string>
 </resources>

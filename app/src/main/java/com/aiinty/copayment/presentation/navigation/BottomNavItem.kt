@@ -5,33 +5,35 @@ import com.aiinty.copayment.R
 sealed class BottomNavItem(
     val route: String,
     val iconResId: Int? = null,
-    val label: String
+    val labelResId: Int? = null
 ) {
     data object Home : BottomNavItem(
         route = NavigationRoute.HomeScreen.route,
         iconResId = R.drawable.home,
-        label = "Home"
+        labelResId = R.string.home
     )
 
     data object Cards : BottomNavItem(
         route =NavigationRoute.CardsScreen.route,
         iconResId = R.drawable.cards,
-        label = "My Card"
+        labelResId = R.string.my_card
     )
 
     data object QRCode : BottomNavItem(
         route = NavigationRoute.QRCodeScreen.route,
         iconResId = R.drawable.qr_code,
-        label = "Scan")
+        labelResId = R.string.scan
+    )
 
     data object Activity : BottomNavItem(
         route = NavigationRoute.ActivityScreen.route,
         iconResId = R.drawable.activity,
-        label = "Activity")
+        labelResId = R.string.activity
+    )
 
     data object Profile : BottomNavItem(
         route = NavigationRoute.ProfileScreen.route,
         iconResId = R.drawable.profile,
-        label = "Profile"
+        labelResId = R.string.profile
     )
 }
