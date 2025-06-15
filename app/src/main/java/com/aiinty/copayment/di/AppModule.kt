@@ -2,11 +2,11 @@ package com.aiinty.copayment.di
 
 import android.content.Context
 import com.aiinty.copayment.data.local.UserPreferences
-import com.aiinty.copayment.data.network.RetrofitInstance
 import com.aiinty.copayment.data.network.AuthApi
 import com.aiinty.copayment.data.network.AvatarApi
 import com.aiinty.copayment.data.network.CardApi
 import com.aiinty.copayment.data.network.ProfileApi
+import com.aiinty.copayment.data.network.RetrofitInstance
 import com.aiinty.copayment.data.repository.AvatarRepositoryImpl
 import com.aiinty.copayment.data.repository.ProfileRepositoryImpl
 import com.aiinty.copayment.data.repository.UserRepositoryImpl
@@ -96,4 +96,15 @@ object AppModule {
     ): AvatarRepository {
         return AvatarRepositoryImpl(api, gson, userPrefs)
     }
+
+    @Provides
+    @Singleton
+    fun provideCardRepository(
+        api: CardApi,
+        gson: Gson,
+        userPrefs: UserPreferences,
+    ): AvatarRepository {
+        return provideCardRepository(api, gson, userPrefs)
+    }
+
 }
