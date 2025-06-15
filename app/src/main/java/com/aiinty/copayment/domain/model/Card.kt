@@ -1,7 +1,5 @@
 package com.aiinty.copayment.domain.model
 
-import java.util.Date
-
 data class Card(
     val id: String,
     val cardNumber: String,
