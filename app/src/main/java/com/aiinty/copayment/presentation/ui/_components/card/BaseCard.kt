@@ -13,6 +13,7 @@ import com.aiinty.copayment.domain.model.CardStyle
 fun BaseCard(
     modifier: Modifier = Modifier,
     card: Card,
+    showCardNumber: Boolean = false,
     showBalance: Boolean = false,
     aspectRatio: Float = 981f / 570f
 ) {
@@ -24,7 +25,8 @@ fun BaseCard(
             modifier = Modifier
                 .weight(2f)
                 .fillMaxWidth(),
-            card = card
+            card = card,
+            showCardNumber = showCardNumber
         )
         BaseCardBot(
             modifier = Modifier
@@ -42,9 +44,9 @@ private fun BaseCardPreview() {
     BaseCard(
         card = Card(
             id = "1",
-            cardNumber = "1234 5678 9012 3456",
+            cardNumber = "1234567890123456",
             cardHolderName = "John Doe",
-            expirationDate = "13/24",
+            expirationDate = "1324",
             cvv = "123",
             isActive = true,
             balance = 1000.0,

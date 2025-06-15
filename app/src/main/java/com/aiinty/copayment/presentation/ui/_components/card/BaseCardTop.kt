@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.CardStyle
+import com.aiinty.copayment.presentation.common.CardUtils
 import com.aiinty.copayment.presentation.ui._components.card.styles.classic.CardTopClassic
 import com.aiinty.copayment.presentation.ui._components.card.styles.minimal.CardTopMinimal
 import com.aiinty.copayment.presentation.ui._components.card.styles.split.CardTopSplit
@@ -15,8 +16,20 @@ import com.aiinty.copayment.presentation.ui._components.card.styles.split.CardTo
 @Composable
 fun BaseCardTop(
     modifier: Modifier = Modifier,
-    card: Card
+    card: Card,
+    showCardNumber: Boolean = false
 ) {
+    val displayedCardNumber = if (showCardNumber) {
+        CardUtils.formatCardNumberWithSpaces(card.cardNumber)
+    } else {
+        CardUtils.formatCardNumberWithSpaces(CardUtils.maskCardNumber(card.cardNumber))
+    }
+    val displayedExpiry = CardUtils.formatExpiryToSlash(card.expirationDate)
+    val formattedCard = card.copy(
+        cardNumber = displayedCardNumber,
+        expirationDate = displayedExpiry
+    )
+
     Box(
         modifier = modifier
             .aspectRatio(981f / 378f)
@@ -24,15 +37,15 @@ fun BaseCardTop(
     ) {
         when (card.cardStyle) {
             CardStyle.CLASSIC -> CardTopClassic(
-                card = card
+                card = formattedCard
             )
 
             CardStyle.SPLIT -> CardTopSplit(
-                card = card
+                card = formattedCard
             )
 
             CardStyle.MINIMAL -> CardTopMinimal(
-                card = card
+                card = formattedCard
             )
         }
     }
@@ -44,9 +57,9 @@ private fun BaseCardTopPreview() {
     BaseCardTop(
         card = Card(
             id = "1",
-            cardNumber = "1234 5678 9012 3456",
+            cardNumber = "1234567890123456",
             cardHolderName = "John Doe",
-            expirationDate = "13/24",
+            expirationDate = "1324",
             cvv = "123",
             isActive = true,
             balance = 1000.0,
