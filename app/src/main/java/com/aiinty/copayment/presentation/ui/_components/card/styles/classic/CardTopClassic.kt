@@ -2,9 +2,12 @@ package com.aiinty.copayment.presentation.ui._components.card.styles.classic
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,57 +28,35 @@ import com.aiinty.copayment.domain.model.CardStyle
 import com.aiinty.copayment.presentation.ui.theme.Greyscale400
 
 @Composable
-fun CardTopClassic(
-    modifier: Modifier = Modifier,
+fun BoxScope.CardTopClassic(
     card: Card
 ) {
-    Box(
-        modifier = modifier
-            .size(width = 327.dp, height = 126.dp)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.card_top_0),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(horizontal = 20.dp)
-        ) {
-            Text(
-                text = card.cardNumber,
-                color = Color.White,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = card.expirationDate,
-                color = Color.White.copy(alpha = 0.6f),
-                fontSize = 14.sp
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun CardTopClassicPreview() {
-    CardTopClassic(
-        card = Card(
-            id = "1",
-            cardNumber = "1234 5678 9012 3456",
-            cardHolderName = "John Doe",
-            expirationDate = "13/24",
-            cvv = "123",
-            isActive = true,
-            balance = 1000.0,
-            cardStyle = CardStyle.CLASSIC
-        )
+    Image(
+        painter = painterResource(id = R.drawable.card_top_0),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxSize()
     )
+
+    Column(
+        modifier = Modifier
+            .align(Alignment.BottomStart)
+            .padding(horizontal = 20.dp)
+    ) {
+        Text(
+            text = card.cardNumber,
+            color = Color.White,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = card.expirationDate,
+            color = Color.White.copy(alpha = 0.6f),
+            fontSize = 14.sp
+        )
+    }
+
 }

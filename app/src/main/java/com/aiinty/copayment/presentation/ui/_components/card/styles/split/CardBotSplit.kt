@@ -2,9 +2,12 @@ package com.aiinty.copayment.presentation.ui._components.card.styles.split
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,68 +28,44 @@ import com.aiinty.copayment.domain.model.CardStyle
 import com.aiinty.copayment.presentation.ui.theme.Greyscale400
 
 @Composable
-fun CardBotSplit(
-    modifier: Modifier = Modifier,
+fun BoxScope.CardBotSplit(
     card: Card,
     showBalance: Boolean = false
 ) {
-    Box(
-        modifier = modifier
-            .size(width = 327.dp, height = 64.dp)
+    Image(
+        painter = painterResource(id = R.drawable.card_bot_1),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxSize()
+    )
+
+    Column(
+        modifier = Modifier
+            .align(Alignment.CenterStart)
+            .padding(horizontal = 20.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.card_bot_1),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
+        if (showBalance) {
+            Text(
+                text = "$${card.balance.toString()}",
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+        } else {
+            Text(
+                text = card.cardHolderName,
+                color = Color.White,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold
+            )
 
-        Column(
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(horizontal = 20.dp)
-        ) {
-            if (showBalance) {
-                Text(
-                    text = "$${card.balance.toString()}",
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            } else {
-                Text(
-                    text = card.cardHolderName,
-                    color = Color.White,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+            Spacer(modifier = Modifier.height(4.dp))
 
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = card.expirationDate,
-                    color = Color.White.copy(alpha = 0.6f),
-                    fontSize = 14.sp
-                )
-            }
+            Text(
+                text = card.expirationDate,
+                color = Color.White.copy(alpha = 0.6f),
+                fontSize = 14.sp
+            )
         }
     }
-}
-
-@Preview
-@Composable
-private fun CardBotSplitPreview() {
-    CardBotSplit(
-        card = Card(
-            id = "1",
-            cardNumber = "1234 5678 9012 3456",
-            cardHolderName = "John Doe",
-            expirationDate = "13/24",
-            cvv = "123",
-            isActive = true,
-            balance = 1000.0,
-            cardStyle = CardStyle.CLASSIC
-        ),
-        showBalance = true
-    )
 }

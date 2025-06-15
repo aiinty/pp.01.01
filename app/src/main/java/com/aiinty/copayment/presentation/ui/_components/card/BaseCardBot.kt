@@ -1,5 +1,9 @@
 package com.aiinty.copayment.presentation.ui._components.card
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -15,22 +19,27 @@ fun BaseCardBot(
     card: Card,
     showBalance: Boolean = false,
 ) {
-    when(card.cardStyle) {
-        CardStyle.CLASSIC -> CardBotClassic(
-            modifier = modifier,
-            card = card,
-            showBalance = showBalance
-        )
-        CardStyle.SPLIT -> CardBotSplit(
-            modifier = modifier,
-            card = card,
-            showBalance = showBalance
-        )
-        CardStyle.MINIMAL -> CardBotMinimal(
-            modifier = modifier,
-            card = card,
-            showBalance = showBalance
-        )
+    Box(
+        modifier = modifier
+            .aspectRatio(981f / 192f)
+            .fillMaxWidth()
+    ) {
+        when (card.cardStyle) {
+            CardStyle.CLASSIC -> CardBotClassic(
+                card = card,
+                showBalance = showBalance
+            )
+
+            CardStyle.SPLIT -> CardBotSplit(
+                card = card,
+                showBalance = showBalance
+            )
+
+            CardStyle.MINIMAL -> CardBotMinimal(
+                card = card,
+                showBalance = showBalance
+            )
+        }
     }
 }
 
