@@ -1,4 +1,4 @@
-package com.aiinty.copayment.presentation.ui.main
+package com.aiinty.copayment.presentation.ui.main.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,14 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 
 @Composable
-fun ActivityScreen(
+fun HomeScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -24,17 +22,14 @@ fun ActivityScreen(
     }
 }
 
-fun NavController.navigateToActivity(navOptions: NavOptionsBuilder.() -> Unit = {}) =
-    navigate(route = NavigationRoute.ActivityScreen.route, navOptions)
-
-fun NavGraphBuilder.activityScreen(
+fun NavGraphBuilder.homeScreen(
     modifier: Modifier = Modifier,
 ) {
     composable(
-        route = NavigationRoute.ActivityScreen.route
+        route = NavigationRoute.HomeScreen.route
     ){
-        ActivityScreen(
-            modifier = modifier,
+        HomeScreen(
+            modifier = modifier
         )
     }
 }
@@ -42,7 +37,7 @@ fun NavGraphBuilder.activityScreen(
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
-    ActivityScreen(
+    HomeScreen(
         Modifier.fillMaxSize()
     )
 }

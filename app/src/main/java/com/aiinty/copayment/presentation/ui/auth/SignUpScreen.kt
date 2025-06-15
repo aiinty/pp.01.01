@@ -21,20 +21,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
-import com.aiinty.copayment.domain.model.OTPType
-import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
-import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.auth.EmailTextField
 import com.aiinty.copayment.presentation.ui._components.auth.FullNameTextField
 import com.aiinty.copayment.presentation.ui._components.auth.PasswordTextField
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
 import com.aiinty.copayment.presentation.ui._components.base.BaseTextButton
+import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui.theme.Green
 import com.aiinty.copayment.presentation.ui.theme.Typography
 import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
@@ -43,15 +39,7 @@ import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
 fun SignUpScreen(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToSignIn: () -> Unit = {},
-    onNavigateToVerify: (OTPType, String, String?) -> Unit = { _, _, _ -> },
 ) {
-    CollectNavigationEvents(
-        navigationFlow = viewModel.navigationEvent,
-        onNavigateToVerify = { type, email, nextDestination ->
-            onNavigateToVerify(type, email, nextDestination)
-        }
-    )
     UiErrorHandler(viewModel = viewModel)
 
     val fullName = remember { mutableStateOf("") }
@@ -118,7 +106,7 @@ fun SignUpScreen(
                 modifier = Modifier.padding(horizontal = 2.dp),
                 text = stringResource(R.string.sign_in),
                 enabledColor = Green,
-                onClick = onNavigateToSignIn
+                onClick = { viewModel.navigateToSignIn() }
             )
         }
     }
@@ -212,21 +200,14 @@ private fun SignUpFields(
     }
 }
 
-fun NavController.navigateToSignUp(navOptions: NavOptionsBuilder.() -> Unit = {}) =
-    navigate(route = NavigationRoute.SignUpScreen.route, navOptions)
-
 fun NavGraphBuilder.signUpScreen(
-    modifier: Modifier = Modifier,
-    onNavigateToSignIn: () -> Unit = {},
-    onNavigateToVerify: (OTPType, String, String?) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     composable(
         route = NavigationRoute.SignUpScreen.route
     ){
         SignUpScreen(
             modifier = modifier,
-            onNavigateToSignIn = onNavigateToSignIn,
-            onNavigateToVerify = onNavigateToVerify,
         )
     }
 }

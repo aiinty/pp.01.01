@@ -14,6 +14,8 @@ import com.aiinty.copayment.domain.usecase.profile.UpdateProfileUseCase
 import com.aiinty.copayment.domain.usecase.profile.UploadAvatarUseCase
 import com.aiinty.copayment.domain.utils.FileUtils
 import com.aiinty.copayment.presentation.common.ErrorHandler
+import com.aiinty.copayment.presentation.navigation.NavigationEvent
+import com.aiinty.copayment.presentation.navigation.NavigationEventBus
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -23,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val errorHandler: ErrorHandler,
+    private val navigationEventBus: NavigationEventBus,
     private val userPreferences: UserPreferences,
     private val getProfileUseCase: GetProfileUseCase,
     private val getCachedProfileUseCase: GetCachedProfileUseCase,
@@ -35,6 +38,58 @@ class ProfileViewModel @Inject constructor(
 
     init {
         loadUser()
+    }
+
+    private suspend fun navigateTo(route: String) {
+        navigationEventBus.send(NavigationEvent.ToRoute(route))
+    }
+
+    private suspend fun navigateToProfileInternal() {
+        navigateTo(NavigationRoute.ProfileScreen.route)
+    }
+
+    private fun navigateToVerifyOTP(type: OTPType, email: String, nextDestination: String?) {
+        viewModelScope.launch {
+            navigateTo(
+                NavigationRoute.VerifyOTPScreen(
+                    type = type,
+                    email = email,
+                    nextDestination = nextDestination
+                ).route
+            )
+        }
+    }
+
+    fun navigateToContact() {
+        viewModelScope.launch {
+            navigateTo(NavigationRoute.ContactScreen.route)
+        }
+    }
+
+    fun navigateToEditProfile() {
+        viewModelScope.launch {
+            navigateTo(NavigationRoute.EditProfileScreen.route)
+        }
+    }
+
+    fun navigateToChangePassword() {
+        viewModelScope.launch {
+            navigateTo(
+                NavigationRoute.PasswordChangeScreen(
+                    nextDestination = NavigationRoute.ProfileScreen.route
+                ).route
+            )
+        }
+    }
+
+    fun navigateToChangeLogInPin() {
+        viewModelScope.launch {
+            navigateTo(
+                NavigationRoute.CreatePinCodeScreen(
+                    nextDestination = NavigationRoute.ProfileScreen.route
+                ).route
+            )
+        }
     }
 
     fun loadUser() {
@@ -77,9 +132,7 @@ class ProfileViewModel @Inject constructor(
 
                 if (avatarResult.isFailure) {
                     val errorMessage = "Error uploading avatar"
-                    handleError(avatarResult.exceptionOrNull() ?: AppException.UiTextError(
-                        errorMessage
-                    ))
+                    handleError(avatarResult.exceptionOrNull() ?: AppException.UiTextError(errorMessage))
                     _uiState.value = ProfileUiState.Error
                     return@launch
                 }
@@ -93,9 +146,7 @@ class ProfileViewModel @Inject constructor(
 
             if (profileResult.isFailure) {
                 val errorMessage = "Profile update failed."
-                handleError(profileResult.exceptionOrNull() ?: AppException.UiTextError(
-                    errorMessage
-                ))
+                handleError(profileResult.exceptionOrNull() ?: AppException.UiTextError(errorMessage))
                 _uiState.value = ProfileUiState.Error
                 return@launch
             }
@@ -107,24 +158,24 @@ class ProfileViewModel @Inject constructor(
                 userResult = updateUserUseCase.invoke(email = profile.email, password = null)
                 if (userResult.isFailure) {
                     val errorMessage = "Email update failed."
-                    handleError(userResult.exceptionOrNull() ?: AppException.UiTextError(
-                        errorMessage
-                    ))
+                    handleError(userResult.exceptionOrNull() ?: AppException.UiTextError(errorMessage))
                     _uiState.value = ProfileUiState.Error
                     return@launch
                 }
-                //Saving in preferences because there is no endpoint for resending the email confirmation
+                // Saving in preferences because there is no endpoint for resending the email confirmation
                 userPreferences.saveUserNewEmail(email = profile.email)
 
-                emitNavigation(NavigationRoute.VerifyOTPScreen(
-                    type = OTPType.EMAIL_CHANGE,
-                    email = cached.email,
-                    nextDestination = NavigationRoute.VerifyOTPScreen(
+                navigateToVerifyOTP(
+                    OTPType.EMAIL_CHANGE,
+                    cached.email,
+                    NavigationRoute.VerifyOTPScreen(
                         type = OTPType.EMAIL_CHANGE,
                         email = profile.email,
                         nextDestination = NavigationRoute.ProfileScreen.route
                     ).route
-                ))
+                )
+            } else {
+                navigateToProfileInternal()
             }
 
             loadUser()

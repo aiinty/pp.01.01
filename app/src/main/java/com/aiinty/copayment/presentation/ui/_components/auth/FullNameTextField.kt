@@ -22,7 +22,7 @@ fun FullNameTextField(
     validateRules: (String) -> Int? = { name ->
         val pattern = "^[a-zA-Zа-яА-ЯёЁ\\s-]+$".toRegex()
         when {
-            name.isEmpty() -> R.string.error_empty_full_name
+            name.isBlank() -> R.string.error_empty_full_name
             !pattern.matches(name) -> R.string.error_invalid_full_name
             else -> null
         }

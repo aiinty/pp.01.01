@@ -18,12 +18,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
-import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui.theme.Green
@@ -33,18 +30,7 @@ import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
 fun SplashScreen(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToOnboarding: () -> Unit = {},
-    onNavigateToSignIn: () -> Unit = {},
-    onNavigateToCreatePinCode: () -> Unit = {},
-    onNavigateToPinCode: () -> Unit = {},
 ) {
-    CollectNavigationEvents(
-        navigationFlow = viewModel.navigationEvent,
-        onNavigateToOnboarding = onNavigateToOnboarding,
-        onNavigateToSignIn = onNavigateToSignIn,
-        onNavigateToCreatePinCode = onNavigateToCreatePinCode,
-        onNavigateToPinCode = onNavigateToPinCode
-    )
     UiErrorHandler(viewModel = viewModel)
 
     LaunchedEffect(Unit) {
@@ -78,25 +64,14 @@ fun SplashScreen(
     }
 }
 
-fun NavController.navigateToSplash(navOptions: NavOptionsBuilder.() -> Unit = {}) =
-    navigate(route = NavigationRoute.SplashScreen.route, navOptions)
-
 fun NavGraphBuilder.splashScreen(
     modifier: Modifier = Modifier,
-    onNavigateToOnboarding: () -> Unit = {},
-    onNavigateToSignIn: () -> Unit = {},
-    onNavigateToCreatePinCode: () -> Unit = {},
-    onNavigateToPinCode: () -> Unit = {},
     ) {
     composable(
         route = NavigationRoute.SplashScreen.route
     ) {
         SplashScreen(
             modifier = modifier,
-            onNavigateToOnboarding = onNavigateToOnboarding,
-            onNavigateToSignIn = onNavigateToSignIn,
-            onNavigateToCreatePinCode = onNavigateToCreatePinCode,
-            onNavigateToPinCode = onNavigateToPinCode,
         )
     }
 }

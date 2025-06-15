@@ -17,15 +17,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.aiinty.copayment.R
 import com.aiinty.copayment.presentation.model.KeyboardInputType
-import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.auth.PinCodeInput
@@ -39,12 +36,7 @@ fun CreatePinCodeScreen(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
     nextDestination: String = "",
-    onNavigateToNext: (String) -> Unit
 ) {
-    CollectNavigationEvents(
-        navigationFlow = viewModel.navigationEvent,
-        onNavigateToNext = { onNavigateToNext(nextDestination) }
-    )
     UiErrorHandler(viewModel = viewModel)
 
     val firstPin = remember { mutableStateOf<String?>(null) }
@@ -91,7 +83,7 @@ fun CreatePinCodeScreen(
                         pin.value = ""
                     } else {
                         if (firstPin.value == pin.value) {
-                            viewModel.createPin(pin.value)
+                            viewModel.createPin(pin.value, nextDestination)
                         } else {
                             showError.value = true
                             pin.value = ""
@@ -152,16 +144,8 @@ private fun CreatePinCodeHeader(
     }
 }
 
-fun NavController.navigateToCreatePinCode(
-    nextDestination: String? = null,
-    navOptions: NavOptionsBuilder.() -> Unit = {}
-) =
-    navigate(route = NavigationRoute.CreatePinCodeScreen(nextDestination).route, navOptions)
-
 fun NavGraphBuilder.createPinCodeScreen(
     modifier: Modifier = Modifier,
-    onNavigateToBack: () -> Unit = {},
-    onNavigateToNext: (String) -> Unit
 ) {
     composable(
         route = "${NavigationRoute.CreatePinCodeScreen().route}?next={next}",
@@ -178,10 +162,7 @@ fun NavGraphBuilder.createPinCodeScreen(
             CreatePinCodeScreen(
                 modifier = modifier,
                 nextDestination = nextDestination,
-                onNavigateToNext = onNavigateToNext
             )
-        } else {
-            onNavigateToBack()
         }
     }
 }
@@ -191,6 +172,5 @@ fun NavGraphBuilder.createPinCodeScreen(
 private fun CreatePinCodeScreenPreview() {
     CreatePinCodeScreen(
         Modifier.fillMaxSize(),
-        onNavigateToNext = {}
     )
 }

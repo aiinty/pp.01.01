@@ -19,18 +19,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
 import com.aiinty.copayment.presentation.model.KeyboardInputType
-import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
-import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.auth.PinCodeInput
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
 import com.aiinty.copayment.presentation.ui._components.base.NumericKeyboard
+import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui.theme.Typography
 import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
 
@@ -38,14 +35,7 @@ import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
 fun PinCodeScreen(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToCreatePinCode: () -> Unit = {},
-    onNavigateToHome: () -> Unit = {},
 ) {
-    CollectNavigationEvents(
-        navigationFlow = viewModel.navigationEvent,
-        onNavigateToCreatePinCode = onNavigateToCreatePinCode,
-        onNavigateToHome = onNavigateToHome
-    )
     UiErrorHandler(viewModel = viewModel)
 
     val pin = remember { mutableStateOf("") }
@@ -104,21 +94,14 @@ fun PinCodeScreen(
     }
 }
 
-fun NavController.navigateToPinCode(navOptions: NavOptionsBuilder.() -> Unit = {}) =
-    navigate(route = NavigationRoute.PinCodeScreen.route, navOptions)
-
 fun NavGraphBuilder.pinCodeScreen(
     modifier: Modifier = Modifier,
-    onNavigateToCreatePinCode: () -> Unit = {},
-    onNavigateToHome: () -> Unit = {},
 ) {
     composable(
         route = NavigationRoute.PinCodeScreen.route
     ){
         PinCodeScreen(
             modifier = modifier,
-            onNavigateToCreatePinCode = onNavigateToCreatePinCode,
-            onNavigateToHome = onNavigateToHome,
         )
     }
 }

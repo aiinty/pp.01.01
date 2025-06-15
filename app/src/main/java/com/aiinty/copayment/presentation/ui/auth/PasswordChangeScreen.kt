@@ -16,18 +16,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.aiinty.copayment.R
-import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
-import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.auth.PasswordTextField
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
+import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui.theme.Typography
 import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
 
@@ -36,12 +33,7 @@ fun PasswordChangeScreen(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
     nextDestination: String = "",
-    onNavigateToNext: (String) -> Unit
 ) {
-    CollectNavigationEvents(
-        navigationFlow = viewModel.navigationEvent,
-        onNavigateToNext = { onNavigateToNext(nextDestination) }
-    )
     UiErrorHandler(viewModel = viewModel)
 
     val password = remember { mutableStateOf("") }
@@ -72,7 +64,7 @@ fun PasswordChangeScreen(
         BaseButton(
             onClick = {
                 if (isInputsValidated) {
-                    viewModel.updateUser(null, password.value)
+                    viewModel.updateUser(null, password.value, nextDestination)
                 }
             },
             enabled = isInputsValidated
@@ -144,17 +136,8 @@ private fun PasswordChangeFields(
 }
 
 
-fun NavController.navigateToPasswordChange(
-    nextDestination: String? = null,
-    navOptions: NavOptionsBuilder.() -> Unit = {}
-) {
-    navigate(NavigationRoute.PasswordChangeScreen(nextDestination).route, navOptions)
-}
-
 fun NavGraphBuilder.passwordChangeScreen(
     modifier: Modifier = Modifier,
-    onNavigateToBack: () -> Unit = {},
-    onNavigateToNext: (String) -> Unit
 ) {
     composable(
         route = "${NavigationRoute.PasswordChangeScreen().route}?next={next}",
@@ -170,11 +153,8 @@ fun NavGraphBuilder.passwordChangeScreen(
         if (nextDestination != null) {
             PasswordChangeScreen(
                 modifier = modifier,
-                nextDestination = nextDestination,
-                onNavigateToNext = onNavigateToNext
+                nextDestination = nextDestination
             )
-        } else {
-            onNavigateToBack()
         }
     }
 }

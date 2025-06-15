@@ -1,7 +1,6 @@
 package com.aiinty.copayment.data.repository
 
 import com.aiinty.copayment.data.local.UserPreferences
-import com.aiinty.copayment.data.network.AuthApi
 import com.aiinty.copayment.data.network.AvatarApi
 import com.aiinty.copayment.domain.repository.AvatarRepository
 import com.google.gson.Gson

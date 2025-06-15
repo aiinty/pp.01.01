@@ -11,7 +11,7 @@ import com.aiinty.copayment.presentation.ui.theme.Green
 import com.aiinty.copayment.presentation.ui.theme.Greyscale100
 
 @Composable
-fun BasePullToRefreshBox(
+fun BaseSwitch(
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,

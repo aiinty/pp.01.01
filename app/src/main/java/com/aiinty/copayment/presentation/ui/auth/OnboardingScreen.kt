@@ -32,11 +32,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
+import com.aiinty.copayment.presentation.navigation.NavigationEvent
+import com.aiinty.copayment.presentation.navigation.NavigationEventBus
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
 import com.aiinty.copayment.presentation.ui._components.base.BaseTextButton
@@ -50,9 +50,18 @@ import kotlinx.coroutines.launch
 @Composable
 fun OnboardingScreen(
     modifier: Modifier = Modifier,
-    onNavigateToSignIn: () -> Unit = {}
+    navigationEventBus: NavigationEventBus,
 ) {
     val scope = rememberCoroutineScope()
+
+    fun navigateToSignIn() {
+        scope.launch {
+            navigationEventBus.send(NavigationEvent.ToRoute(
+                NavigationRoute.SignInScreen.route
+            ))
+        }
+    }
+
     val onboardingContent = listOf(
         Triple(
             stringResource(R.string.onboarding_item_title_1),
@@ -84,7 +93,7 @@ fun OnboardingScreen(
             text = stringResource(R.string.onboarding_skip),
             modifier = Modifier
                 .padding(16.dp),
-            onClick = onNavigateToSignIn
+            onClick = { navigateToSignIn() }
         )
 
         Box(
@@ -139,7 +148,7 @@ fun OnboardingScreen(
                         onClick = {
                             scope.launch {
                                 if (pagerState.currentPage == pageCount - 1) {
-                                    onNavigateToSignIn()
+                                    navigateToSignIn()
                                 } else {
                                     pagerState.animateScrollToPage(pagerState.currentPage + 1)
                                 }
@@ -196,19 +205,16 @@ private fun AnimatedOnboardingDescItem(
     }
 }
 
-fun NavController.navigateToOnboarding(navOptions: NavOptionsBuilder.() -> Unit = {}) =
-    navigate(route = NavigationRoute.OnboardingScreen.route, navOptions)
-
 fun NavGraphBuilder.onboardingScreen(
     modifier: Modifier = Modifier,
-    onNavigateToSignIn: () -> Unit = {}
+    navigationEventBus: NavigationEventBus
 ) {
     composable(
         route = NavigationRoute.OnboardingScreen.route
     ) {
         OnboardingScreen(
             modifier = modifier,
-            onNavigateToSignIn = onNavigateToSignIn
+            navigationEventBus = navigationEventBus
         )
     }
 }
@@ -217,6 +223,7 @@ fun NavGraphBuilder.onboardingScreen(
 @Composable
 private fun OnboardingScreenPreview() {
     OnboardingScreen(
-        Modifier.fillMaxSize()
+        Modifier.fillMaxSize(),
+        NavigationEventBus()
     )
 }

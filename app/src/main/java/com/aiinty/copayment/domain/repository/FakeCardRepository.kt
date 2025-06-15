@@ -2,7 +2,6 @@ package com.aiinty.copayment.domain.repository
 
 import com.aiinty.copayment.domain.model.Card
 import kotlinx.coroutines.delay
-import java.io.File
 
 class FakeCardRepository : CardRepository {
 

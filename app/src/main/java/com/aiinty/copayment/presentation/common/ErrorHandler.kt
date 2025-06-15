@@ -6,16 +6,18 @@ import com.aiinty.copayment.data.network.ApiErrorCode
 import com.aiinty.copayment.data.network.ApiException
 import com.aiinty.copayment.domain.model.AppException
 import com.aiinty.copayment.domain.model.OTPType
+import com.aiinty.copayment.presentation.navigation.NavigationEventBus
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import java.io.IOException
 import javax.inject.Inject
 
 class ErrorHandler @Inject constructor(
     private val userPreferences: UserPreferences,
+    private val navigationEventBus: NavigationEventBus,
 ) {
     suspend fun handle(
         throwable: Throwable,
-        onNavigate: suspend (NavigationRoute) -> Unit,
+        onNavigate: suspend (NavigationRoute) -> Unit = {},
         onErrorMessage: suspend (UiMessage) -> Unit
     ) {
         when (throwable) {

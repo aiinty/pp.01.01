@@ -16,17 +16,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
-import com.aiinty.copayment.domain.model.OTPType
-import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
-import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.auth.EmailTextField
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
+import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui.theme.Typography
 import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
 
@@ -34,14 +30,7 @@ import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
 fun RecoverScreen(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToVerify: (OTPType, String, String?) -> Unit = { _, _, _ -> }
 ) {
-    CollectNavigationEvents(
-        navigationFlow = viewModel.navigationEvent,
-        onNavigateToVerify = { type, email, nextDestination ->
-            onNavigateToVerify(type, email, nextDestination)
-        }
-    )
     UiErrorHandler(viewModel = viewModel)
 
     val email = remember { mutableStateOf("") }
@@ -121,19 +110,14 @@ private fun RecoverFields(
     }
 }
 
-fun NavController.navigateToRecover(navOptions: NavOptionsBuilder.() -> Unit = {}) =
-    navigate(route = NavigationRoute.RecoverScreen.route, navOptions)
-
 fun NavGraphBuilder.recoverScreen(
     modifier: Modifier = Modifier,
-    onNavigateToVerify: (OTPType, String, String?) -> Unit
 ) {
     composable(
         route = NavigationRoute.RecoverScreen.route
     ){
         RecoverScreen(
-            modifier = modifier,
-            onNavigateToVerify = onNavigateToVerify
+            modifier = modifier
         )
     }
 }

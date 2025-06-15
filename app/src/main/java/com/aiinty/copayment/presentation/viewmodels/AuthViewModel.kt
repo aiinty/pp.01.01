@@ -13,6 +13,8 @@ import com.aiinty.copayment.domain.usecase.auth.SignUpUseCase
 import com.aiinty.copayment.domain.usecase.auth.UpdateUserUseCase
 import com.aiinty.copayment.domain.usecase.auth.VerifyOTPUseCase
 import com.aiinty.copayment.presentation.common.ErrorHandler
+import com.aiinty.copayment.presentation.navigation.NavigationEvent
+import com.aiinty.copayment.presentation.navigation.NavigationEventBus
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val errorHandler: ErrorHandler,
+    private val navigationEventBus: NavigationEventBus,
     private val userPreferences: UserPreferences,
     private val signInUseCase: SignInUseCase,
     private val refreshTokenUseCase: RefreshTokenUseCase,
@@ -35,9 +38,52 @@ class AuthViewModel @Inject constructor(
     private val recoverUseCase: RecoverUseCase,
     private val updateUserUseCase: UpdateUserUseCase,
 ): BaseViewModel(errorHandler) {
+
     private val _resendCooldownSeconds = MutableStateFlow(0)
     val resendCooldownSeconds: StateFlow<Int> = _resendCooldownSeconds.asStateFlow()
     val canResend = MutableStateFlow(true)
+
+    private suspend fun navigateTo(route: String) {
+        navigationEventBus.send(NavigationEvent.ToRoute(route))
+    }
+
+    private suspend fun navigateToCreatePinInternal(next: String = NavigationRoute.PinCodeScreen.route) {
+        navigateTo(NavigationRoute.CreatePinCodeScreen(nextDestination = next).route)
+    }
+
+    private suspend fun navigateToPinInternal() {
+        navigateTo(NavigationRoute.PinCodeScreen.route)
+    }
+
+    private suspend fun navigateToHomeInternal() {
+        navigateTo(NavigationRoute.HomeScreen.route)
+    }
+
+    private suspend fun navigateToSignInInternal() {
+        navigateTo(NavigationRoute.SignInScreen.route)
+    }
+
+    private suspend fun navigateToOnboardingInternal() {
+        navigateTo(NavigationRoute.OnboardingScreen.route)
+    }
+
+    fun navigateToForgotPassword() {
+        viewModelScope.launch {
+            navigateTo(NavigationRoute.RecoverScreen.route)
+        }
+    }
+
+    fun navigateToSignIn() {
+        viewModelScope.launch {
+            navigateTo(NavigationRoute.SignInScreen.route)
+        }
+    }
+
+    fun navigateToSignUp() {
+        viewModelScope.launch {
+            navigateTo(NavigationRoute.SignUpScreen.route)
+        }
+    }
 
     fun startResendCooldown(seconds: Int) {
         viewModelScope.launch {
@@ -55,29 +101,22 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             val refreshToken = userPreferences.getRefreshToken()
             val firstLaunch = userPreferences.getFirstLaunch()
-
             if (refreshToken != null)  {
                 val result = refreshToken(refreshToken)
                 if (result.isSuccess) {
                     val storedPin = userPreferences.getUserPin()
                     if (storedPin == null) {
-                        emitNavigation(NavigationRoute.CreatePinCodeScreen(
-                            nextDestination = NavigationRoute.PinCodeScreen.route
-                        ))
+                        navigateToCreatePinInternal()
                     } else {
-                        emitNavigation(NavigationRoute.PinCodeScreen)
+                        navigateToPinInternal()
                     }
                     return@launch
                 }
             }
-
-            when {
-                !firstLaunch -> {
-                    emitNavigation(NavigationRoute.SignInScreen)
-                }
-                else -> {
-                    emitNavigation(NavigationRoute.OnboardingScreen)
-                }
+            if (!firstLaunch) {
+                navigateToSignInInternal()
+            } else {
+                navigateToOnboardingInternal()
             }
             if (firstLaunch) {
                 userPreferences.saveFirstLaunch(false)
@@ -90,35 +129,28 @@ class AuthViewModel @Inject constructor(
         userPreferences.saveUserEmail(email)
         userPreferences.saveUserPassword(password)
         viewModelScope.launch {
-            val result = signInUseCase.invoke(email, password)
+            val result = signInUseCase(email, password)
             result.fold(
                 onSuccess = {
                     val storedPin = userPreferences.getUserPin()
                     if (storedPin == null) {
-                        emitNavigation(NavigationRoute.CreatePinCodeScreen(
-                            nextDestination = NavigationRoute.PinCodeScreen.route
-                        ))
+                        navigateToCreatePinInternal()
                     } else {
-                        emitNavigation(NavigationRoute.PinCodeScreen)
+                        navigateToPinInternal()
                     }
                 },
-                onFailure = { e ->
-                    handleError(e)
-                }
+                onFailure = ::handleError
             )
         }
     }
 
-    suspend fun refreshToken(refreshToken: String) : Result<Unit> {
+    suspend fun refreshToken(refreshToken: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
-            val result = refreshTokenUseCase.invoke(refreshToken)
-            result.fold(
-                onSuccess = {
-                    Result.success(Unit)
-                },
-                onFailure = { e ->
-                    handleError(e)
-                    Result.failure(e)
+            refreshTokenUseCase(refreshToken).fold(
+                onSuccess = { Result.success(Unit) },
+                onFailure = {
+                    handleError(it)
+                    Result.failure(it)
                 }
             )
         }
@@ -130,34 +162,30 @@ class AuthViewModel @Inject constructor(
         userPreferences.saveUserPassword(password)
         viewModelScope.launch {
             val data = SignUpData(full_name = fullName)
-            val result = signUpUseCase.invoke(email = email, password = password, data = data)
+            val result = signUpUseCase(email = email, password = password, data = data)
             result.fold(
                 onSuccess = {
-                    emitNavigation(NavigationRoute.VerifyOTPScreen(
+                    val nextRoute = NavigationRoute.CreatePinCodeScreen(
+                        nextDestination = NavigationRoute.PinCodeScreen.route
+                    ).route
+                    val otpRoute = NavigationRoute.VerifyOTPScreen(
                         type = OTPType.EMAIL,
                         email = email,
-                        nextDestination = NavigationRoute.CreatePinCodeScreen(
-                            nextDestination = NavigationRoute.PinCodeScreen.route
-                        ).route
-                    ))
+                        nextDestination = nextRoute
+                    ).route
+                    navigateTo(otpRoute)
                 },
-                onFailure = { e ->
-                    handleError(e)
-                }
+                onFailure = ::handleError
             )
         }
     }
 
-    fun verifyOTP(type: OTPType, email: String, token: String) {
+    fun verifyOTP(type: OTPType, email: String, token: String, next: String) {
         viewModelScope.launch {
-            val result = verifyOTPUseCase.invoke(type, email, token)
+            val result = verifyOTPUseCase(type, email, token)
             result.fold(
-                onSuccess = {
-                    emitNavigation(NavigationRoute.NextScreen)
-                },
-                onFailure = { e ->
-                    handleError(e)
-                }
+                onSuccess = { navigateTo(next) },
+                onFailure = ::handleError
             )
         }
     }
@@ -170,74 +198,66 @@ class AuthViewModel @Inject constructor(
                 OTPType.EMAIL -> {
                     val password = userPreferences.getUserPassword()
                     if (password != null) {
-                        signUpUseCase.invoke(email = email, password = password, data = null)
+                        signUpUseCase(email = email, password = password, data = null)
                     } else {
-                        Result.failure(Exception())
+                        Result.failure(Exception("Missing password"))
                     }
                 }
                 OTPType.EMAIL_CHANGE -> {
                     val newEmail = userPreferences.getUserNewEmail()
                     if (newEmail != null) {
-                        updateUserUseCase.invoke(email = newEmail, password = null)
+                        updateUserUseCase(newEmail, null)
                     } else {
-                        Result.failure(Exception())
+                        Result.failure(Exception("Missing new email"))
                     }
                 }
-                OTPType.RECOVERY -> recoverUseCase.invoke(email)
+                OTPType.RECOVERY -> recoverUseCase(email)
             }
             result.fold(
-                onSuccess = {
-                    startResendCooldown(60)
-                },
-                onFailure = { e ->
-                    handleError(e)
-                }
+                onSuccess = { startResendCooldown(60) },
+                onFailure = ::handleError
             )
         }
     }
 
     fun recover(email: String) {
         viewModelScope.launch {
-            val result = recoverUseCase.invoke(email)
+            val result = recoverUseCase(email)
             result.fold(
                 onSuccess = {
-                    emitNavigation(NavigationRoute.VerifyOTPScreen(
+                    val nextRoute = NavigationRoute.PasswordChangeScreen(
+                        nextDestination = NavigationRoute.SignInScreen.route
+                    ).route
+                    val otpRoute = NavigationRoute.VerifyOTPScreen(
                         type = OTPType.RECOVERY,
                         email = email,
-                        nextDestination = NavigationRoute.PasswordChangeScreen(
-                            nextDestination = NavigationRoute.SignInScreen.route
-                        ).route
-                    ))
+                        nextDestination = nextRoute
+                    ).route
+                    navigateTo(otpRoute)
                 },
-                onFailure = { e ->
-                    handleError(e)
-                }
+                onFailure = ::handleError
             )
         }
     }
 
-    fun updateUser(email: String?, password: String?) {
+    fun updateUser(email: String?, password: String?, next: String) {
         viewModelScope.launch {
-            val result = updateUserUseCase.invoke(email, password)
+            val result = updateUserUseCase(email, password)
             result.fold(
-                onSuccess = {
-                    emitNavigation(NavigationRoute.NextScreen)
-                },
-                onFailure = { e ->
-                    handleError(e)
-                }
+                onSuccess = { navigateTo(next) },
+                onFailure = ::handleError
             )
         }
     }
 
-    fun createPin(pin: String) {
+    fun createPin(pin: String, next: String) {
         viewModelScope.launch {
             try {
                 if (pin.length == 5 && pin.all { it.isDigit() }) {
                     userPreferences.saveUserPin(pin)
-                    emitNavigation(NavigationRoute.NextScreen)
+                    navigateTo(next)
                 } else {
-                   throw AppException.UiResError(R.string.error_invalid_pin_format)
+                    throw AppException.UiResError(R.string.error_invalid_pin_format)
                 }
             } catch (e: Exception) {
                 handleError(e)
@@ -250,11 +270,9 @@ class AuthViewModel @Inject constructor(
             try {
                 val storedPin = userPreferences.getUserPin()
                 if (storedPin == null) {
-                    emitNavigation(NavigationRoute.CreatePinCodeScreen(
-                        nextDestination = NavigationRoute.PinCodeScreen.route
-                    ))
+                    navigateToCreatePinInternal()
                 } else if (pin == storedPin) {
-                    emitNavigation(NavigationRoute.HomeScreen)
+                    navigateToHomeInternal()
                 } else {
                     throw AppException.UiResError(R.string.error_invalid_pin)
                 }

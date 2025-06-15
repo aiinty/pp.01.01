@@ -44,6 +44,7 @@ private fun BaseCardPreview() {
     BaseCard(
         card = Card(
             id = "1",
+            userId = "1",
             cardNumber = "1234567890123456",
             cardHolderName = "John Doe",
             expirationDate = "1324",

@@ -18,7 +18,7 @@ import com.aiinty.copayment.presentation.ui.theme.Greyscale900
 @Composable
 fun BaseButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier.fillMaxWidth().height(53.dp),
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: Shape = RoundedCornerShape(16.dp),
     colors: ButtonColors = ButtonDefaults.buttonColors(
@@ -32,7 +32,9 @@ fun BaseButton(
 ) {
     Button(
         onClick = { onClick() },
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(53.dp),
         enabled = enabled,
         shape = shape,
         colors = colors,

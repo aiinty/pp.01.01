@@ -16,8 +16,7 @@ import com.aiinty.copayment.presentation.ui.theme.Greyscale200
 @Composable
 fun BaseIconButton(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
-        .size(40.dp),
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: Shape = RoundedCornerShape(12.dp),
     colors: IconButtonColors = IconButtonDefaults.outlinedIconButtonColors(
@@ -31,7 +30,8 @@ fun BaseIconButton(
 ) {
     OutlinedIconButton (
         onClick = { onClick() },
-        modifier = modifier,
+        modifier = modifier
+            .size(40.dp),
         enabled = enabled,
         shape = shape,
         colors = colors,

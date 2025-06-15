@@ -28,9 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
@@ -51,10 +49,6 @@ import com.aiinty.copayment.presentation.viewmodels.ProfileViewModel
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel(),
-    onNavigateToContact: () -> Unit = {},
-    onNavigateToEditProfile: () -> Unit = {},
-    onNavigateToChangePassword: () -> Unit = {},
-    onNavigateToChangeLogInPin: () -> Unit = {}
 ) {
     val uiState = viewModel.uiState
     UiErrorHandler(viewModel = viewModel)
@@ -115,7 +109,7 @@ fun ProfileScreen(
                 SettingItem(
                     iconResId = R.drawable.contacts,
                     label = stringResource(R.string.contact_list),
-                    onClick = onNavigateToContact
+                    onClick = { viewModel.navigateToContact() }
                 )
 
                 HorizontalDivider(thickness = 1.dp, color = Color(0xFFF3F4F6))
@@ -127,19 +121,19 @@ fun ProfileScreen(
                         iconResId = R.drawable.settings,
                         iconTintColor = Blue,
                         label = stringResource(R.string.edit_profile),
-                        onClick = onNavigateToEditProfile
+                        onClick = { viewModel.navigateToEditProfile() }
                     )
                     SettingItem(
                         iconResId = R.drawable.password,
                         iconTintColor = Orange,
                         label = stringResource(R.string.change_password),
-                        onClick = onNavigateToChangePassword
+                        onClick = { viewModel.navigateToChangePassword() }
                     )
                     SettingItem(
                         iconResId = R.drawable.qr_code,
                         iconTintColor = Purple,
                         label = stringResource(R.string.change_log_in_pin),
-                        onClick = onNavigateToChangeLogInPin
+                        onClick = { viewModel.navigateToChangeLogInPin() }
                     )
                 }
             }
@@ -201,32 +195,21 @@ private fun SettingItem(
     }
 }
 
-fun NavController.navigateToProfile(navOptions: NavOptionsBuilder.() -> Unit = {}) =
-    navigate(route = NavigationRoute.ProfileScreen.route, navOptions)
-
 fun NavGraphBuilder.profileScreen(
     modifier: Modifier = Modifier,
-    onNavigateToContact: () -> Unit = {},
-    onNavigateToEditProfile: () -> Unit = {},
-    onNavigateToChangePassword: () -> Unit = {},
-    onNavigateToChangeLogInPin: () -> Unit = {}
 ) {
     composable(
         route = NavigationRoute.ProfileScreen.route
     ){
         ProfileScreen(
             modifier = modifier,
-            onNavigateToContact = onNavigateToContact,
-            onNavigateToEditProfile = onNavigateToEditProfile,
-            onNavigateToChangePassword = onNavigateToChangePassword,
-            onNavigateToChangeLogInPin = onNavigateToChangeLogInPin
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun HomeScreenPreview() {
+private fun ProfileScreenPreview() {
     ProfileScreen(
         Modifier.fillMaxSize()
     )

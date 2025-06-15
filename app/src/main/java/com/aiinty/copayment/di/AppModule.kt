@@ -8,12 +8,15 @@ import com.aiinty.copayment.data.network.CardApi
 import com.aiinty.copayment.data.network.ProfileApi
 import com.aiinty.copayment.data.network.RetrofitInstance
 import com.aiinty.copayment.data.repository.AvatarRepositoryImpl
+import com.aiinty.copayment.data.repository.CardRepositoryImpl
 import com.aiinty.copayment.data.repository.ProfileRepositoryImpl
 import com.aiinty.copayment.data.repository.UserRepositoryImpl
 import com.aiinty.copayment.domain.repository.AvatarRepository
+import com.aiinty.copayment.domain.repository.CardRepository
 import com.aiinty.copayment.domain.repository.ProfileRepository
 import com.aiinty.copayment.domain.repository.UserRepository
 import com.aiinty.copayment.presentation.common.ErrorHandler
+import com.aiinty.copayment.presentation.navigation.NavigationEventBus
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -29,43 +32,34 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserPreferences(@ApplicationContext context: Context): UserPreferences {
-        return UserPreferences(context)
-    }
-
-    @Provides
-    fun provideAuthApi(): AuthApi {
-        return RetrofitInstance.authApi
-    }
-
-    @Provides
-    fun provideCardApi(): CardApi {
-        return RetrofitInstance.cardApi
-    }
-
-    @Provides
-    fun provideProfileApi(): ProfileApi {
-        return RetrofitInstance.profileApi
-    }
-
-    @Provides
-    fun provideAvatarApi(): AvatarApi {
-        return RetrofitInstance.avatarApi
-    }
-
-    @Provides
-    fun provideErrorHandler(
-        userPrefs: UserPreferences
-    ): ErrorHandler {
-        return ErrorHandler(userPrefs)
-    }
+    fun provideNavigationEventBus(): NavigationEventBus = NavigationEventBus()
 
     @Provides
     @Singleton
-    fun provideGson(): Gson {
-        return GsonBuilder()
-            .create()
-    }
+    fun provideGson(): Gson = GsonBuilder().create()
+
+    @Provides
+    fun provideAuthApi(): AuthApi = RetrofitInstance.authApi
+
+    @Provides
+    fun provideCardApi(): CardApi = RetrofitInstance.cardApi
+
+    @Provides
+    fun provideProfileApi(): ProfileApi = RetrofitInstance.profileApi
+
+    @Provides
+    fun provideAvatarApi(): AvatarApi = RetrofitInstance.avatarApi
+
+    @Provides
+    @Singleton
+    fun provideUserPreferences(@ApplicationContext context: Context): UserPreferences =
+        UserPreferences(context)
+
+    @Provides
+    fun provideErrorHandler(
+        navigationEventBus: NavigationEventBus,
+        userPrefs: UserPreferences
+    ): ErrorHandler = ErrorHandler(userPrefs, navigationEventBus)
 
     @Provides
     @Singleton
@@ -73,9 +67,7 @@ object AppModule {
         api: AuthApi,
         gson: Gson,
         userPrefs: UserPreferences
-    ): UserRepository {
-        return UserRepositoryImpl(api, gson, userPrefs)
-    }
+    ): UserRepository = UserRepositoryImpl(api, gson, userPrefs)
 
     @Provides
     @Singleton
@@ -83,28 +75,22 @@ object AppModule {
         api: ProfileApi,
         gson: Gson,
         userPrefs: UserPreferences
-    ): ProfileRepository {
-        return ProfileRepositoryImpl(api, gson, userPrefs)
-    }
+    ): ProfileRepository = ProfileRepositoryImpl(api, gson, userPrefs)
 
     @Provides
     @Singleton
     fun provideAvatarRepository(
         api: AvatarApi,
         gson: Gson,
-        userPrefs: UserPreferences,
-    ): AvatarRepository {
-        return AvatarRepositoryImpl(api, gson, userPrefs)
-    }
+        userPrefs: UserPreferences
+    ): AvatarRepository = AvatarRepositoryImpl(api, gson, userPrefs)
 
     @Provides
     @Singleton
     fun provideCardRepository(
         api: CardApi,
         gson: Gson,
-        userPrefs: UserPreferences,
-    ): AvatarRepository {
-        return provideCardRepository(api, gson, userPrefs)
-    }
+        userPrefs: UserPreferences
+    ): CardRepository = CardRepositoryImpl(api, gson, userPrefs)
 
 }

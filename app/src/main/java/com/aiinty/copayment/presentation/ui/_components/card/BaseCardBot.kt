@@ -2,7 +2,6 @@ package com.aiinty.copayment.presentation.ui._components.card
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -55,6 +54,7 @@ private fun BaseCardBotPreview() {
     BaseCardBot(
         card = Card(
             id = "1",
+            userId = "1",
             cardNumber = "1234567890123456",
             cardHolderName = "John Doe",
             expirationDate = "1324",

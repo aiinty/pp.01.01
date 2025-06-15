@@ -26,15 +26,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
-import com.aiinty.copayment.domain.model.OTPType
 import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.domain.utils.FileUtils.uriToFile
-import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui._components.auth.EmailTextField
 import com.aiinty.copayment.presentation.ui._components.auth.FullNameTextField
@@ -50,16 +46,7 @@ import java.io.File
 fun EditProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel(),
-    onNavigateToProfile: () -> Unit = {},
-    onNavigateToVerify: (OTPType, String, String?) -> Unit = { _, _, _ -> }
 ) {
-    CollectNavigationEvents(
-        navigationFlow = viewModel.navigationEvent,
-        onNavigateToProfile = onNavigateToProfile,
-        onNavigateToVerify = { type, email, nextDestination ->
-            onNavigateToVerify(type, email, nextDestination)
-        }
-    )
     UiErrorHandler(viewModel = viewModel)
 
     val uiState = viewModel.uiState
@@ -211,28 +198,21 @@ private fun EditProfileFields(
     }
 }
 
-fun NavController.navigateToEditProfile(navOptions: NavOptionsBuilder.() -> Unit = {}) =
-    navigate(route = NavigationRoute.EditProfileScreen.route, navOptions)
-
 fun NavGraphBuilder.editProfileScreen(
     modifier: Modifier = Modifier,
-    onNavigateToProfile: () -> Unit,
-    onNavigateToVerify: (OTPType, String, String?) -> Unit
 ) {
     composable(
         route = NavigationRoute.EditProfileScreen.route
     ){
         EditProfileScreen(
             modifier = modifier,
-            onNavigateToProfile = onNavigateToProfile,
-            onNavigateToVerify = onNavigateToVerify
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun HomeScreenPreview() {
+private fun EditProfileScreenPreview() {
     EditProfileScreen(
         Modifier.fillMaxSize()
     )

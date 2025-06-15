@@ -19,19 +19,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
-import com.aiinty.copayment.domain.model.OTPType
-import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
-import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.auth.EmailTextField
 import com.aiinty.copayment.presentation.ui._components.auth.PasswordTextField
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
 import com.aiinty.copayment.presentation.ui._components.base.BaseTextButton
+import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui.theme.Green
 import com.aiinty.copayment.presentation.ui.theme.Typography
 import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
@@ -40,22 +36,7 @@ import com.aiinty.copayment.presentation.viewmodels.AuthViewModel
 fun SignInScreen(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToForgotPassword: () -> Unit = {},
-    onNavigateToSignUp: () -> Unit = {},
-    onNavigateToVerify: (OTPType, String, String?) -> Unit = { _, _, _ -> },
-    onNavigateToPinCode: () -> Unit = {},
-    onNavigateToCreatePinCode: () -> Unit = {},
-    onNavigateToHome: () -> Unit = {}
 ) {
-    CollectNavigationEvents(
-        navigationFlow = viewModel.navigationEvent,
-        onNavigateToVerify = { type, email, nextDestination ->
-            onNavigateToVerify(type, email, nextDestination)
-        },
-        onNavigateToPinCode = onNavigateToPinCode,
-        onNavigateToCreatePinCode = onNavigateToCreatePinCode,
-        onNavigateToHome = onNavigateToHome
-    )
     UiErrorHandler(viewModel = viewModel)
 
     val email = remember { mutableStateOf("") }
@@ -84,7 +65,7 @@ fun SignInScreen(
             BaseTextButton(
                 text = stringResource(R.string.sign_in_forgot_password),
                 enabledColor = Green,
-                onClick = onNavigateToForgotPassword
+                onClick = { viewModel.navigateToForgotPassword() }
             )
 
             BaseButton(
@@ -118,7 +99,7 @@ fun SignInScreen(
                 modifier = Modifier.padding(horizontal = 2.dp),
                 text = stringResource(R.string.sign_up),
                 enabledColor = Green,
-                onClick = onNavigateToSignUp
+                onClick = { viewModel.navigateToSignUp() }
             )
         }
     }
@@ -176,29 +157,14 @@ private fun SignInFields(
 }
 
 
-fun NavController.navigateToSignIn(navOptions: NavOptionsBuilder.() -> Unit = {}) =
-    navigate(route = NavigationRoute.SignInScreen.route, navOptions)
-
 fun NavGraphBuilder.signInScreen(
     modifier: Modifier = Modifier,
-    onNavigateToForgotPassword: () -> Unit = {},
-    onNavigateToSignUp: () -> Unit = {},
-    onNavigateToVerify: (OTPType, String, String?) -> Unit,
-    onNavigateToPinCode: () -> Unit = {},
-    onNavigateToCreatePinCode: () -> Unit = {},
-    onNavigateToHome: () -> Unit = {},
     ) {
     composable(
         route = NavigationRoute.SignInScreen.route
     ){
         SignInScreen(
             modifier = modifier,
-            onNavigateToForgotPassword = onNavigateToForgotPassword,
-            onNavigateToSignUp = onNavigateToSignUp,
-            onNavigateToVerify = onNavigateToVerify,
-            onNavigateToPinCode = onNavigateToPinCode,
-            onNavigateToCreatePinCode = onNavigateToCreatePinCode,
-            onNavigateToHome = onNavigateToHome
         )
     }
 }

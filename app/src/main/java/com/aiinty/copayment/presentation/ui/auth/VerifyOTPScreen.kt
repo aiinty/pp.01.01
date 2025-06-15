@@ -20,9 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -30,13 +28,11 @@ import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.OTPType
 import com.aiinty.copayment.domain.utils.EmailUtils
 import com.aiinty.copayment.presentation.model.KeyboardInputType
-import com.aiinty.copayment.presentation.navigation.CollectNavigationEvents
-import com.aiinty.copayment.presentation.navigation.NavigationRoute
-import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.auth.OTPInput
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
 import com.aiinty.copayment.presentation.ui._components.base.BaseTextButton
 import com.aiinty.copayment.presentation.ui._components.base.NumericKeyboard
+import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui.theme.Green
 import com.aiinty.copayment.presentation.ui.theme.Greyscale900
 import com.aiinty.copayment.presentation.ui.theme.Typography
@@ -49,14 +45,7 @@ fun VerifyOTPScreen(
     email: String,
     nextDestination: String = "",
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToNext: (String) -> Unit = {}
 ) {
-    CollectNavigationEvents(
-        navigationFlow = viewModel.navigationEvent,
-        onNavigateToNext = {
-            onNavigateToNext(nextDestination)
-        }
-    )
     UiErrorHandler(viewModel = viewModel)
 
     val token = remember { mutableStateOf("") }
@@ -102,7 +91,7 @@ fun VerifyOTPScreen(
             BaseButton(
                 onClick = {
                     if (isValidatedInputs) {
-                        viewModel.verifyOTP(type, email, token.value)
+                        viewModel.verifyOTP(type, email, token.value, nextDestination)
                         token.value = ""
                     }
                 },
@@ -163,20 +152,8 @@ private fun VerifyOTPHeader(
     }
 }
 
-fun NavController.navigateToVerifyOTP(
-    type: OTPType,
-    email: String,
-    nextDestination: String? = null,
-    navOptions: NavOptionsBuilder.() -> Unit = {}
-) {
-    val route = NavigationRoute.VerifyOTPScreen(type, email, nextDestination).route
-    navigate(route = route, navOptions)
-}
-
 fun NavGraphBuilder.verifyOTPScreen(
     modifier: Modifier,
-    onNavigateToBack: () -> Unit = {},
-    onNavigateToNext: (String) -> Unit
 ) {
     composable(
         route = "verify_otp/{type}/{email}?next={next}",
@@ -198,11 +175,8 @@ fun NavGraphBuilder.verifyOTPScreen(
                 modifier = modifier,
                 type = OTPType.otpTypeFromString(type),
                 email = email,
-                nextDestination = nextDestination,
-                onNavigateToNext = onNavigateToNext
+                nextDestination = nextDestination
             )
-        } else {
-            onNavigateToBack()
         }
     }
 }

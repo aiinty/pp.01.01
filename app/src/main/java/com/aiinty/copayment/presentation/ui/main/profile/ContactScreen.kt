@@ -8,9 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.viewmodels.ProfileViewModel
@@ -27,9 +25,6 @@ fun ContactScreen(
     }
 }
 
-fun NavController.navigateToContact(navOptions: NavOptionsBuilder.() -> Unit = {}) =
-    navigate(route = NavigationRoute.ContactScreen.route, navOptions)
-
 fun NavGraphBuilder.contactScreen(
     modifier: Modifier = Modifier,
 ) {
@@ -44,7 +39,7 @@ fun NavGraphBuilder.contactScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun HomeScreenPreview() {
+private fun ContactScreenPreview() {
     ContactScreen(
         Modifier.fillMaxSize()
     )

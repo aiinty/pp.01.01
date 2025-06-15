@@ -3,6 +3,7 @@ package com.aiinty.copayment.presentation.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val Greyscale50 = Color(0xFFF9FAFB)
+val Greyscale100 = Color(0xFFF3F4F6)
 val Greyscale200 = Color(0xFFE5E7EB)
 val Greyscale400 = Color(0xFF9CA3AF)
 val Greyscale500 = Color(0xFF6B7280)

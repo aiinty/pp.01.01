@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.aiinty.copayment.presentation.navigation.CoPaymentNavHost
+import com.aiinty.copayment.presentation.navigation.NavigationEventBus
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.navigation.rememberTopBarState
 import com.aiinty.copayment.presentation.ui._components.base.BaseTopBar
@@ -30,7 +31,8 @@ import com.aiinty.copayment.presentation.ui._components.base.BottomNavigationBar
 
 @Composable
 fun CoPaymentApp(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigationEventBus: NavigationEventBus,
 ){
     val navController = rememberNavController()
     val navBackStackEntry  = navController.currentBackStackEntryAsState()
@@ -38,10 +40,11 @@ fun CoPaymentApp(
     val currentNavigationRoute = remember(currentDestination) {
         NavigationRoute.findByRoute(currentDestination?.route)
     }
+
     val topBarState = rememberTopBarState(currentNavigationRoute, navController)
     val showBottomBar = currentNavigationRoute?.showBottomBar ?: false
 
-    val targetTopPadding = if (topBarState.isVisible) 80.dp else 0.dp
+    val targetTopPadding = if (topBarState.isVisible) 60.dp else 0.dp
     val animatedTopPadding = animateDpAsState(
         targetValue = targetTopPadding,
         label = "top-padding"
@@ -65,7 +68,7 @@ fun CoPaymentApp(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .statusBarsPadding()
-                    .height(80.dp),
+                    .height(60.dp),
                 visible = topBarState.isVisible,
                 enter = fadeIn() + slideInVertically(initialOffsetY = { -it }),
                 exit = fadeOut() + slideOutVertically(targetOffsetY = { -it })
@@ -83,7 +86,8 @@ fun CoPaymentApp(
                         top = animatedTopPadding.value,
                         bottom = animatedBottomPadding.value
                     ),
-                navController = navController
+                navController = navController,
+                navigationEventBus = navigationEventBus
             )
 
             AnimatedVisibility(
@@ -107,6 +111,7 @@ fun CoPaymentApp(
 @Composable
 fun MainActivityPreview() {
     CoPaymentApp(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        navigationEventBus = NavigationEventBus()
     )
 }

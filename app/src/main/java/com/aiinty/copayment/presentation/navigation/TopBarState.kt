@@ -3,7 +3,6 @@ package com.aiinty.copayment.presentation.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.aiinty.copayment.R
 
@@ -20,7 +19,7 @@ data class TopBarState(
 @Composable
 fun rememberTopBarState(
     currentNavigationRoute: NavigationRoute?,
-    navController: NavHostController
+    n: NavHostController
 ): TopBarState {
     return remember(currentNavigationRoute) {
         val defaultBackClick: () -> Unit = { navController.popBackStack() }
