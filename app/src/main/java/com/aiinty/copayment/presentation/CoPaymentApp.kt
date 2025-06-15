@@ -41,7 +41,7 @@ fun CoPaymentApp(
         NavigationRoute.findByRoute(currentDestination?.route)
     }
 
-    val topBarState = rememberTopBarState(currentNavigationRoute, navController)
+    val topBarState = rememberTopBarState(currentNavigationRoute, navigationEventBus)
     val showBottomBar = currentNavigationRoute?.showBottomBar ?: false
 
     val targetTopPadding = if (topBarState.isVisible) 60.dp else 0.dp
@@ -100,7 +100,8 @@ fun CoPaymentApp(
                 exit = fadeOut() + slideOutVertically(targetOffsetY = { it })
             ) {
                 BottomNavigationBar(
-                    navController = navController
+                    navigationEventBus = navigationEventBus,
+                    currentRoute = currentNavigationRoute?.route
                 )
             }
         }

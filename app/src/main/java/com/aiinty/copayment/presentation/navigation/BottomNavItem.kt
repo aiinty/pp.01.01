@@ -14,7 +14,7 @@ sealed class BottomNavItem(
     )
 
     data object Cards : BottomNavItem(
-        route =NavigationRoute.CardsScreen.route,
+        route = NavigationRoute.CardsScreen.route,
         iconResId = R.drawable.cards,
         labelResId = R.string.my_card
     )

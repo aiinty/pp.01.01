@@ -11,18 +11,20 @@ data class TopBarState(
     val showBackButton: Boolean = true,
     val actionIcon: ImageVector? = null,
     val actionIconContentDescriptionResId: Int? = null,
-    val onActionClick: () -> Unit = {},
-    val onBackClick: () -> Unit = {},
+    val onActionClick: suspend () -> Unit = {},
+    val onBackClick: suspend () -> Unit = {},
     val isVisible: Boolean = true
 )
 
 @Composable
 fun rememberTopBarState(
     currentNavigationRoute: NavigationRoute?,
-    n: NavHostController
+    navigationEventBus: NavigationEventBus
 ): TopBarState {
     return remember(currentNavigationRoute) {
-        val defaultBackClick: () -> Unit = { navController.popBackStack() }
+        val defaultBackClick: suspend () -> Unit = {
+            navigationEventBus.send(NavigationEvent.Back)
+        }
 
         if (currentNavigationRoute == null || currentNavigationRoute in listOf(
                 NavigationRoute.SplashScreen,

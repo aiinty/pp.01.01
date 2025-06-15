@@ -9,6 +9,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aiinty.copayment.R
 import com.aiinty.copayment.presentation.navigation.TopBarState
+import kotlinx.coroutines.launch
 
 @Composable
 fun BaseTopBar(
@@ -27,6 +29,8 @@ fun BaseTopBar(
     state: TopBarState
 ) {
     if (!state.isVisible) return
+
+    val scope = rememberCoroutineScope()
 
     Row(
         modifier = modifier
@@ -39,7 +43,11 @@ fun BaseTopBar(
         ) {
             if (state.showBackButton) {
                 BaseIconButton(
-                    onClick = state.onBackClick
+                    onClick = {
+                        scope.launch {
+                            state.onBackClick()
+                        }
+                    }
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.chevron_left),
@@ -65,7 +73,13 @@ fun BaseTopBar(
             modifier = Modifier.size(40.dp)
         ) {
             state.actionIcon?.let { icon ->
-                IconButton(onClick = state.onActionClick) {
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            state.onActionClick()
+                        }
+                    }
+                ) {
                     Icon(
                         imageVector = icon,
                         contentDescription = state.actionIconContentDescriptionResId?.let {
