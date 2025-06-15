@@ -13,7 +13,7 @@ import com.aiinty.copayment.data.model.VerifyOTPRequest
 import com.aiinty.copayment.data.network.ApiError
 import com.aiinty.copayment.data.network.ApiErrorCode
 import com.aiinty.copayment.data.network.ApiException
-import com.aiinty.copayment.data.network.SupabaseApi
+import com.aiinty.copayment.data.network.AuthApi
 import com.aiinty.copayment.domain.model.OTPType
 import com.aiinty.copayment.domain.repository.UserRepository
 import com.google.gson.Gson
@@ -24,7 +24,7 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
-    private val api: SupabaseApi,
+    private val api: AuthApi,
     private val gson: Gson,
     private val prefs: UserPreferences,
 ) : BaseRepositoryImpl(gson), UserRepository {

@@ -1,7 +1,8 @@
 package com.aiinty.copayment.data.repository
 
 import com.aiinty.copayment.data.local.UserPreferences
-import com.aiinty.copayment.data.network.SupabaseApi
+import com.aiinty.copayment.data.network.AuthApi
+import com.aiinty.copayment.data.network.AvatarApi
 import com.aiinty.copayment.domain.repository.AvatarRepository
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaType
@@ -10,7 +11,7 @@ import java.io.File
 import javax.inject.Inject
 
 class AvatarRepositoryImpl @Inject constructor(
-    private val api: SupabaseApi,
+    private val api: AvatarApi,
     private val gson: Gson,
     private val prefs: UserPreferences,
 ) :  BaseRepositoryImpl(gson), AvatarRepository {

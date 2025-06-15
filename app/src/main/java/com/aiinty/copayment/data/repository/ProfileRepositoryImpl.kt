@@ -2,7 +2,8 @@ package com.aiinty.copayment.data.repository
 
 import com.aiinty.copayment.data.local.UserPreferences
 import com.aiinty.copayment.data.model.UpdateProfileRequest
-import com.aiinty.copayment.data.network.SupabaseApi
+import com.aiinty.copayment.data.network.AuthApi
+import com.aiinty.copayment.data.network.ProfileApi
 import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.domain.repository.ProfileRepository
 import com.google.gson.Gson
@@ -12,7 +13,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(
-    private val api: SupabaseApi,
+    private val api: ProfileApi,
     private val gson: Gson,
     private val prefs: UserPreferences,
 ) : BaseRepositoryImpl(gson), ProfileRepository {

@@ -33,7 +33,16 @@ object RetrofitInstance {
             .build()
     }
 
-    val api: SupabaseApi by lazy {
-        retrofit.create(SupabaseApi::class.java)
+    val authApi: AuthApi by lazy {
+        retrofit.create(AuthApi::class.java)
     }
+
+    val profileApi: ProfileApi by lazy {
+        retrofit.create(ProfileApi::class.java)
+    }
+
+    val avatarApi: AvatarApi by lazy {
+        retrofit.create(AvatarApi::class.java)
+    }
+
 }

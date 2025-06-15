@@ -3,7 +3,9 @@ package com.aiinty.copayment.di
 import android.content.Context
 import com.aiinty.copayment.data.local.UserPreferences
 import com.aiinty.copayment.data.network.RetrofitInstance
-import com.aiinty.copayment.data.network.SupabaseApi
+import com.aiinty.copayment.data.network.AuthApi
+import com.aiinty.copayment.data.network.AvatarApi
+import com.aiinty.copayment.data.network.ProfileApi
 import com.aiinty.copayment.data.repository.AvatarRepositoryImpl
 import com.aiinty.copayment.data.repository.ProfileRepositoryImpl
 import com.aiinty.copayment.data.repository.UserRepositoryImpl
@@ -31,8 +33,18 @@ object AppModule {
     }
 
     @Provides
-    fun provideApi(): SupabaseApi {
-        return RetrofitInstance.api
+    fun provideAuthApi(): AuthApi {
+        return RetrofitInstance.authApi
+    }
+
+    @Provides
+    fun provideProfileApi(): ProfileApi {
+        return RetrofitInstance.profileApi
+    }
+
+    @Provides
+    fun provideAvatarApi(): AvatarApi {
+        return RetrofitInstance.avatarApi
     }
 
     @Provides
@@ -52,7 +64,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideUserRepository(
-        api: SupabaseApi,
+        api: AuthApi,
         gson: Gson,
         userPrefs: UserPreferences
     ): UserRepository {
@@ -62,7 +74,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideProfileRepository(
-        api: SupabaseApi,
+        api: ProfileApi,
         gson: Gson,
         userPrefs: UserPreferences
     ): ProfileRepository {
@@ -72,7 +84,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAvatarRepository(
-        api: SupabaseApi,
+        api: AvatarApi,
         gson: Gson,
         userPrefs: UserPreferences,
     ): AvatarRepository {
