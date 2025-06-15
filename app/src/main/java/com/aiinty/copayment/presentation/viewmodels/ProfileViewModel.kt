@@ -128,7 +128,6 @@ class ProfileViewModel @Inject constructor(
             }
 
             loadUser()
-            emitNavigation(NavigationRoute.ProfileScreen)
         }
     }
 }
