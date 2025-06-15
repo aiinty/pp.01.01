@@ -20,7 +20,7 @@ sealed class BottomNavItem(
     )
 
     data object QRCode : BottomNavItem(
-        route = NavigationRoute.QRCodeScreen.route,
+        route = NavigationRoute.ShowQRCodeScreen.route,
         iconResId = R.drawable.qr_code,
         labelResId = R.string.scan
     )

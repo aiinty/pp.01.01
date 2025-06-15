@@ -6,16 +6,23 @@ import androidx.navigation.NavHostController
 import com.aiinty.copayment.presentation.ui.auth.navigateToCreatePinCode
 import com.aiinty.copayment.presentation.ui.auth.navigateToPasswordChange
 import com.aiinty.copayment.presentation.ui.auth.navigateToVerifyOTP
-import com.aiinty.copayment.presentation.ui.main.activityScreen
-import com.aiinty.copayment.presentation.ui.main.cardsScreen
-import com.aiinty.copayment.presentation.ui.main.homeScreen
+import com.aiinty.copayment.presentation.ui.main.activity.activityScreen
+import com.aiinty.copayment.presentation.ui.main.card.cardsScreen
+import com.aiinty.copayment.presentation.ui.main.card.createCardOnboardingScreen
+import com.aiinty.copayment.presentation.ui.main.card.createCardScreen
+import com.aiinty.copayment.presentation.ui.main.card.createCardStyleScreen
+import com.aiinty.copayment.presentation.ui.main.card.navigateToCreateCard
+import com.aiinty.copayment.presentation.ui.main.card.navigateToCreateCardStyle
+import com.aiinty.copayment.presentation.ui.main.home.homeScreen
+import com.aiinty.copayment.presentation.ui.main.home.navigateToHome
 import com.aiinty.copayment.presentation.ui.main.profile.contactScreen
 import com.aiinty.copayment.presentation.ui.main.profile.editProfileScreen
 import com.aiinty.copayment.presentation.ui.main.profile.navigateToContact
 import com.aiinty.copayment.presentation.ui.main.profile.navigateToEditProfile
 import com.aiinty.copayment.presentation.ui.main.profile.navigateToProfile
 import com.aiinty.copayment.presentation.ui.main.profile.profileScreen
-import com.aiinty.copayment.presentation.ui.main.qrCodeScreen
+import com.aiinty.copayment.presentation.ui.main.qr.scanQRCodeScreen
+import com.aiinty.copayment.presentation.ui.main.qr.showQRCodeScreen
 
 fun NavGraphBuilder.mainGraph(
     modifier: Modifier = Modifier,
@@ -27,9 +34,34 @@ fun NavGraphBuilder.mainGraph(
 
     cardsScreen(
         modifier = modifier,
+        onNavigateToCreateCard = {
+            navController.navigateToCreateCardStyle()
+        }
+    )
+    createCardOnboardingScreen(
+        modifier = modifier,
+        onNavigateToCreateCard = {
+            navController.navigateToCreateCardStyle()
+        }
+
+    )
+    createCardStyleScreen(
+        modifier = modifier,
+        onNavigateToCreateCard = { cardStyle ->
+            navController.navigateToCreateCard(cardStyle)
+        }
+    )
+    createCardScreen(
+        modifier = modifier,
+        onNavigateToHome = {
+            navController.navigateToHome()
+        }
     )
 
-    qrCodeScreen(
+    showQRCodeScreen(
+        modifier = modifier,
+    )
+    scanQRCodeScreen(
         modifier = modifier,
     )
 
@@ -48,7 +80,6 @@ fun NavGraphBuilder.mainGraph(
             nextDestination = NavigationRoute.ProfileScreen.route
         ) }
     )
-
     editProfileScreen(
         modifier = modifier,
         onNavigateToProfile = { navController.navigateToProfile(
@@ -60,7 +91,6 @@ fun NavGraphBuilder.mainGraph(
             navController.navigateToVerifyOTP(type, email, nextDestination)
         }
     )
-
     contactScreen(
         modifier = modifier,
     )

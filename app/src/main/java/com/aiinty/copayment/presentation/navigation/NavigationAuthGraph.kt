@@ -18,7 +18,7 @@ import com.aiinty.copayment.presentation.ui.auth.recoverScreen
 import com.aiinty.copayment.presentation.ui.auth.signInScreen
 import com.aiinty.copayment.presentation.ui.auth.signUpScreen
 import com.aiinty.copayment.presentation.ui.auth.verifyOTPScreen
-import com.aiinty.copayment.presentation.ui.main.navigateToHome
+import com.aiinty.copayment.presentation.ui.main.home.navigateToHome
 import com.aiinty.copayment.presentation.ui.auth.navigateToOnboarding
 import com.aiinty.copayment.presentation.ui.auth.onboardingScreen
 import com.aiinty.copayment.presentation.ui.auth.splashScreen
