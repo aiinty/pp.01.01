@@ -1,27 +1,12 @@
 package com.aiinty.copayment.data.network
 
-import com.aiinty.copayment.data.model.AuthResponse
-import com.aiinty.copayment.data.model.EmptyResponse
-import com.aiinty.copayment.data.model.RecoverRequest
-import com.aiinty.copayment.data.model.RefreshTokenRequest
-import com.aiinty.copayment.data.model.SignInRequest
-import com.aiinty.copayment.data.model.SignUpRequest
-import com.aiinty.copayment.data.model.UserMetadataResponse
-import com.aiinty.copayment.data.model.UpdateUserRequest
-import com.aiinty.copayment.data.model.ProfileResponse
-import com.aiinty.copayment.data.model.UpdateProfileRequest
-import com.aiinty.copayment.data.model.UploadImageResponse
-import com.aiinty.copayment.data.model.VerifyOTPRequest
+import com.aiinty.copayment.data.model.avatar.UploadImageResponse
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface AvatarApi {
 

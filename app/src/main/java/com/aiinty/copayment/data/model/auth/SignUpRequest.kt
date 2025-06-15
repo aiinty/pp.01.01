@@ -1,4 +1,4 @@
-package com.aiinty.copayment.data.model
+package com.aiinty.copayment.data.model.auth
 
 data class SignUpRequest(
     val email: String,

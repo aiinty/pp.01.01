@@ -5,6 +5,7 @@ import com.aiinty.copayment.data.local.UserPreferences
 import com.aiinty.copayment.data.network.RetrofitInstance
 import com.aiinty.copayment.data.network.AuthApi
 import com.aiinty.copayment.data.network.AvatarApi
+import com.aiinty.copayment.data.network.CardApi
 import com.aiinty.copayment.data.network.ProfileApi
 import com.aiinty.copayment.data.repository.AvatarRepositoryImpl
 import com.aiinty.copayment.data.repository.ProfileRepositoryImpl
@@ -35,6 +36,11 @@ object AppModule {
     @Provides
     fun provideAuthApi(): AuthApi {
         return RetrofitInstance.authApi
+    }
+
+    @Provides
+    fun provideCardApi(): CardApi {
+        return RetrofitInstance.cardApi
     }
 
     @Provides

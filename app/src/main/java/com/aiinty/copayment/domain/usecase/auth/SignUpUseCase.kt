@@ -1,6 +1,6 @@
 package com.aiinty.copayment.domain.usecase.auth
 
-import com.aiinty.copayment.data.model.SignUpData
+import com.aiinty.copayment.data.model.auth.SignUpData
 import com.aiinty.copayment.domain.repository.UserRepository
 
 class SignUpUseCase(

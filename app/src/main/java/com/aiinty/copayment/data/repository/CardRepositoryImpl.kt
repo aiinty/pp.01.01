@@ -1,0 +1,80 @@
+package com.aiinty.copayment.data.repository
+
+import com.aiinty.copayment.data.local.UserPreferences
+import com.aiinty.copayment.data.model.card.CardInsertRequest
+import com.aiinty.copayment.data.network.AuthApi
+import com.aiinty.copayment.data.network.AvatarApi
+import com.aiinty.copayment.data.network.CardApi
+import com.aiinty.copayment.domain.model.Card
+import com.aiinty.copayment.domain.model.CardStyle
+import com.aiinty.copayment.domain.repository.AvatarRepository
+import com.aiinty.copayment.domain.repository.CardRepository
+import com.google.gson.Gson
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
+import javax.inject.Inject
+
+class CardRepositoryImpl @Inject constructor(
+    private val api: CardApi,
+    private val gson: Gson,
+    private val prefs: UserPreferences,
+) :  BaseRepositoryImpl(gson), CardRepository {
+    private val bearerToken = { "Bearer ${prefs.getAccessToken()}" }
+
+    override suspend fun getCards(userId: String): Result<List<Card>> {
+        val response = api.getCards(
+            userId = userId,
+            authHeader = bearerToken.invoke()
+        )
+
+        return handleApiResponse(response).fold(
+            onSuccess = { cardsList ->
+                 val cards = cardsList.map { card ->
+                     Card(
+                         id = card.id,
+                         userId = card.user_id,
+                         cardNumber = card.card_number,
+                         cardStyle = CardStyle.entries[card.card_style],
+                         cardHolderName = card.cardholder_name,
+                         expirationDate = card.expiration_date,
+                         cvv = card.cvv,
+                         isActive = card.is_active,
+                         balance = card.balance
+                     )
+                 }
+
+                Result.success(cards)
+            },
+            onFailure = {
+                Result.failure(it)
+            }
+        )
+    }
+
+    override suspend fun insertCard(card: Card): Result<Unit> {
+        val userId = prefs.getUserId()
+
+        if (userId != null) {
+            val requestBody = CardInsertRequest(
+                user_id = userId,
+                card_number = card.cardNumber,
+                card_style = card.cardStyle.ordinal,
+                cardholder_name = card.cardHolderName,
+                expiration_date = card.expirationDate,
+                cvv = card.cvv,
+                is_active = card.isActive,
+            )
+
+            val response = api.insertCard(
+                authHeader = bearerToken.invoke(),
+                body = requestBody
+            )
+
+            return handleEmptyResponse(response)
+        } else {
+            return Result.failure(Exception("User ID not found"))
+        }
+    }
+
+}

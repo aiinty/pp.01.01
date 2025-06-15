@@ -1,4 +1,4 @@
-package com.aiinty.copayment.data.model
+package com.aiinty.copayment.data.model.auth
 
 data class SignUpData(
     val full_name: String? = null,

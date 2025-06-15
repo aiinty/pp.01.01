@@ -1,6 +1,6 @@
 package com.aiinty.copayment.domain.repository
 
-import com.aiinty.copayment.data.model.SignUpData
+import com.aiinty.copayment.data.model.auth.SignUpData
 import com.aiinty.copayment.domain.model.OTPType
 
 interface UserRepository {

@@ -1,4 +1,4 @@
-package com.aiinty.copayment.data.model
+package com.aiinty.copayment.data.model.profile
 
 data class ProfileResponse (
     val id: String,

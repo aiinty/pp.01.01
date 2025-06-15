@@ -3,7 +3,7 @@ package com.aiinty.copayment.presentation.viewmodels
 import androidx.lifecycle.viewModelScope
 import com.aiinty.copayment.R
 import com.aiinty.copayment.data.local.UserPreferences
-import com.aiinty.copayment.data.model.SignUpData
+import com.aiinty.copayment.data.model.auth.SignUpData
 import com.aiinty.copayment.domain.model.AppException
 import com.aiinty.copayment.domain.model.OTPType
 import com.aiinty.copayment.domain.usecase.auth.RecoverUseCase
