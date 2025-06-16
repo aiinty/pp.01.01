@@ -2,6 +2,7 @@ package com.aiinty.copayment.data.repository
 
 import com.aiinty.copayment.data.local.UserPreferences
 import com.aiinty.copayment.data.model.card.CardInsertRequest
+import com.aiinty.copayment.data.model.card.CardsResponse
 import com.aiinty.copayment.data.network.AuthApi
 import com.aiinty.copayment.data.network.AvatarApi
 import com.aiinty.copayment.data.network.CardApi
@@ -35,20 +36,22 @@ class CardRepositoryImpl @Inject constructor(
 
             handleApiResponse(response).fold(
                 onSuccess = { cardsList ->
-                    val cards = cardsList.map { card ->
-                        Card(
-                            id = card.id,
-                            userId = card.user_id,
-                            cardNumber = card.card_number,
-                            cardStyle = CardStyle.entries[card.card_style],
-                            cardHolderName = card.cardholder_name,
-                            expirationDate = card.expiration_date,
-                            cvv = card.cvv,
-                            isActive = card.is_active,
-                            balance = card.balance
-                        )
-                    }
-
+                    val cards: List<Card> = cardsList
+                        .filter { card -> card.id != null }.map { card ->
+                            Card(
+                                id = card.id!!,
+                                userId = card.user_id,
+                                cardNumber = card.card_number,
+                                cardStyle = CardStyle.entries[card.card_style],
+                                cardHolderName = card.cardholder_name,
+                                expirationDate = card.expiration_date,
+                                cvv = card.cvv,
+                                balance = card.balance,
+                                isFrozen = card.is_frozen,
+                                isContactlessDisabled = card.is_contactless_disabled,
+                                isMagstripeDisabled = card.is_magstripe_disabled
+                            )
+                        }
                     Result.success(cards)
                 },
                 onFailure = {
@@ -67,10 +70,33 @@ class CardRepositoryImpl @Inject constructor(
                 cardholder_name = card.cardHolderName,
                 expiration_date = card.expirationDate,
                 cvv = card.cvv,
-                is_active = card.isActive,
             )
 
             val response = api.insertCard(
+                authHeader = bearerToken.invoke(),
+                body = requestBody
+            )
+            handleEmptyResponse(response)
+        }
+    }
+
+    override suspend fun updateCard(card: Card): Result<Unit> {
+        return withContext(ioDispatcher) {
+            val requestBody = CardsResponse(
+                user_id = card.userId,
+                card_number = card.cardNumber,
+                card_style = card.cardStyle.ordinal,
+                cardholder_name = card.cardHolderName,
+                expiration_date = card.expirationDate,
+                cvv = card.cvv,
+                balance = card.balance,
+                is_frozen = card.isFrozen,
+                is_contactless_disabled = card.isContactlessDisabled,
+                is_magstripe_disabled = card.isMagstripeDisabled,
+            )
+
+            val response = api.updateCard(
+                id = "eq.${card.id}",
                 authHeader = bearerToken.invoke(),
                 body = requestBody
             )

@@ -124,7 +124,7 @@ fun ProfileScreen(
                         onClick = { viewModel.navigateToEditProfile() }
                     )
                     SettingItem(
-                        iconResId = R.drawable.password,
+                        iconResId = R.drawable.lock,
                         iconTintColor = Orange,
                         label = stringResource(R.string.change_password),
                         onClick = { viewModel.navigateToChangePassword() }

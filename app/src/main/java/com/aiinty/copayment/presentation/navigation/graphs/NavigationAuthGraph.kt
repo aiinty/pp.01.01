@@ -1,7 +1,8 @@
-package com.aiinty.copayment.presentation.navigation
+package com.aiinty.copayment.presentation.navigation.graphs
 
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
+import com.aiinty.copayment.presentation.navigation.NavigationEventBus
 import com.aiinty.copayment.presentation.ui.auth.createPinCodeScreen
 import com.aiinty.copayment.presentation.ui.auth.passwordChangeScreen
 import com.aiinty.copayment.presentation.ui.auth.pinCodeScreen

@@ -8,6 +8,8 @@ data class Card(
     val cardHolderName: String,
     val expirationDate: String,
     val cvv: String,
-    val isActive: Boolean,
     val balance: Double,
+    val isFrozen: Boolean = false,
+    val isContactlessDisabled: Boolean = false,
+    val isMagstripeDisabled: Boolean = false,
 )

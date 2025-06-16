@@ -26,13 +26,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.CardStyle
+import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui._components.auth.FullNameTextField
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
 import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
@@ -71,7 +74,6 @@ fun CreateCardScreen(
         cardHolderName = cardholderName.value,
         expirationDate = expiryDate.value,
         cvv = cvv.value,
-        isActive = true,
         balance = 0.0,
         cardStyle = cardStyle
     )
@@ -245,6 +247,7 @@ private fun CreateCardFields(
 
 fun NavGraphBuilder.createCardScreen(
     modifier: Modifier = Modifier,
+    navController: NavHostController,
 ) {
     composable(
         route = "create_card?style={style}",
@@ -254,9 +257,16 @@ fun NavGraphBuilder.createCardScreen(
     ){ backStackEntry ->
         val styleOrdinal = backStackEntry.arguments?.getString("style")?.toIntOrNull()
         val cardStyle = CardStyle.entries[styleOrdinal ?: 0]
+
+        val parentEntry = remember(navController) {
+            navController.getBackStackEntry(NavigationRoute.CardsScreen.route)
+        }
+        val viewModel: CardViewModel = hiltViewModel(parentEntry)
+
         CreateCardScreen(
             modifier = modifier,
             cardStyle = cardStyle,
+            viewModel = viewModel
         )
     }
 }

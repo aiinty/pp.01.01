@@ -1,5 +1,6 @@
 package com.aiinty.copayment.presentation.ui.main.card
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -26,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
@@ -83,7 +85,14 @@ fun CardsScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(cards) { card ->
-                        BaseCard(card = card)
+                        BaseCard(
+                            modifier = Modifier
+                                .clickable {
+                                    viewModel.selectCard(card)
+                                    viewModel.navigateToEditCard()
+                                },
+                            card = card
+                        )
                     }
 
                     item {
@@ -107,11 +116,11 @@ fun CardsScreen(
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.plus),
-                                    contentDescription = "Plus"
+                                    contentDescription = stringResource(R.string.plus)
                                 )
 
                                 Text(
-                                    text = "Add new card",
+                                    text = stringResource(R.string.add_new_card),
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.W700,
                                     color = Greyscale900
@@ -127,12 +136,18 @@ fun CardsScreen(
 
 fun NavGraphBuilder.cardsScreen(
     modifier: Modifier = Modifier,
+    navController: NavController,
 ) {
     composable(
         route = NavigationRoute.CardsScreen.route
     ){
+        val parentEntry = remember(navController) {
+            navController.getBackStackEntry(NavigationRoute.CardsScreen.route)
+        }
+        val viewModel: CardViewModel = hiltViewModel(parentEntry)
         CardsScreen(
             modifier = modifier,
+            viewModel = viewModel
         )
     }
 }

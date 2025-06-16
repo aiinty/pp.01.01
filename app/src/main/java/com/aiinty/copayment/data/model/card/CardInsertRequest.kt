@@ -7,6 +7,5 @@ data class CardInsertRequest(
     val cardholder_name: String,
     val expiration_date: String,
     val cvv: String,
-    val is_active: Boolean = false,
     val balance: Double = 0.0
 )

@@ -17,4 +17,15 @@ class FakeCardRepository : CardRepository {
         cards.add(card)
         return Result.success(Unit)
     }
+
+    override suspend fun updateCard(card: Card): Result<Unit> {
+        delay(500)
+        val index = cards.indexOfFirst { it.id == card.id }
+        return if (index != -1) {
+            cards[index] = card
+            Result.success(Unit)
+        } else {
+            Result.failure(Exception("Card not found"))
+        }
+    }
 }

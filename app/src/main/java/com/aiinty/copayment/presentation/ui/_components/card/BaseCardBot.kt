@@ -59,7 +59,6 @@ private fun BaseCardBotPreview() {
             cardHolderName = "John Doe",
             expirationDate = "1324",
             cvv = "123",
-            isActive = true,
             balance = 1000.0,
             cardStyle = CardStyle.CLASSIC
         ),

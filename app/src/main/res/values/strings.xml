@@ -101,4 +101,14 @@
     <string name="cardholder_name">Cardholder Name</string>
     <string name="error_holder_name_blank">Cardholder name cannot be blank</string>
     <string name="error_holder_name_length">Cardholder name must be at least 2 characters</string>
+    <string name="disable_magstripe">Disable magstripe</string>
+    <string name="disable_contactless">Disable contactless</string>
+    <string name="freeze_card">Freeze physical card</string>
+    <string name="edit_card">Edit Card</string>
+    <string name="get_free_card">Get Free Card</string>
+    <string name="create_card_onboarding_desc">The customizable, no hidden fee, instant discount debit or credit card</string>
+    <string name="create_card_onboarding_title">Create your\nSmartpay Card</string>
+    <string name="onboarding_illustration">Onboarding illustration</string>
+    <string name="add_new_card">Add new card</string>
+    <string name="plus">Plus</string>
 </resources>

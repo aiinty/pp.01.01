@@ -35,7 +35,6 @@ fun CreateCardStyleScreen(
         cardHolderName = "Tommy Jason",
         expirationDate = "1226",
         cvv = "",
-        isActive = true,
         balance = 0.0,
         cardStyle = CardStyle.CLASSIC
     )

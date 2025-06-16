@@ -9,6 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
+import com.aiinty.copayment.presentation.navigation.graphs.authGraph
+import com.aiinty.copayment.presentation.navigation.graphs.mainGraph
 
 @Composable
 fun CoPaymentNavHost(
@@ -17,7 +20,6 @@ fun CoPaymentNavHost(
     navigationEventBus: NavigationEventBus,
     startDestination: String = NavigationRoute.SplashScreen.route,
 ) {
-
     LaunchedEffect(Unit) {
         navigationEventBus.events.collect { event ->
             when (event) {
@@ -51,6 +53,7 @@ fun CoPaymentNavHost(
         )
 
         mainGraph(
+            navController = navController,
             navigationEventBus = navigationEventBus
         )
     }
