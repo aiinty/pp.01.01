@@ -7,13 +7,16 @@ import com.aiinty.copayment.data.network.AvatarApi
 import com.aiinty.copayment.data.network.CardApi
 import com.aiinty.copayment.data.network.ProfileApi
 import com.aiinty.copayment.data.network.RetrofitInstance
+import com.aiinty.copayment.data.network.TransactionApi
 import com.aiinty.copayment.data.repository.AvatarRepositoryImpl
 import com.aiinty.copayment.data.repository.CardRepositoryImpl
 import com.aiinty.copayment.data.repository.ProfileRepositoryImpl
+import com.aiinty.copayment.data.repository.TransactionRepositoryImpl
 import com.aiinty.copayment.data.repository.UserRepositoryImpl
 import com.aiinty.copayment.domain.repository.AvatarRepository
 import com.aiinty.copayment.domain.repository.CardRepository
 import com.aiinty.copayment.domain.repository.ProfileRepository
+import com.aiinty.copayment.domain.repository.TransactionRepository
 import com.aiinty.copayment.domain.repository.UserRepository
 import com.aiinty.copayment.presentation.common.ErrorHandler
 import com.aiinty.copayment.presentation.navigation.NavigationEventBus
@@ -42,6 +45,9 @@ object AppModule {
     fun provideAuthApi(): AuthApi = RetrofitInstance.authApi
 
     @Provides
+    fun provideTransactionApi(): TransactionApi = RetrofitInstance.transactionApi
+
+    @Provides
     fun provideCardApi(): CardApi = RetrofitInstance.cardApi
 
     @Provides
@@ -68,6 +74,14 @@ object AppModule {
         gson: Gson,
         userPrefs: UserPreferences
     ): UserRepository = UserRepositoryImpl(api, gson, userPrefs)
+
+    @Provides
+    @Singleton
+    fun provideTransactionRepository(
+        api: TransactionApi,
+        gson: Gson,
+        userPrefs: UserPreferences
+    ): TransactionRepository = TransactionRepositoryImpl(api, gson, userPrefs)
 
     @Provides
     @Singleton
