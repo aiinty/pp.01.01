@@ -49,4 +49,8 @@ object RetrofitInstance {
         retrofit.create(CardApi::class.java)
     }
 
+    val transactionApi: TransactionApi by lazy {
+        retrofit.create(TransactionApi::class.java)
+    }
+
 }
