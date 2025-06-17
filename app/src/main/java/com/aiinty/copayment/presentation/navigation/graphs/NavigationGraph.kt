@@ -9,5 +9,4 @@ import kotlinx.serialization.Serializable
 sealed class NavigationGraph(val route: String) {
     data object AuthGraph: NavigationGraph("auth_graph")
     data object MainGraph: NavigationGraph("main_graph")
-    data object CardGraph: NavigationGraph("card_graph")
 }

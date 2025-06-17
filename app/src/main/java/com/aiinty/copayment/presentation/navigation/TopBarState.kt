@@ -32,7 +32,8 @@ fun rememberTopBarState(
                 NavigationRoute.OnboardingScreen,
                 NavigationRoute.PinCodeScreen,
                 NavigationRoute.CreateCardOnboardingScreen,
-                NavigationRoute.HomeScreen
+                NavigationRoute.HomeScreen,
+                NavigationRoute.TransactionsScreen
             )
         ) {
             return@remember TopBarState(isVisible = false)

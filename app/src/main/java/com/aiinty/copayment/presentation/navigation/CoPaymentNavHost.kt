@@ -3,6 +3,7 @@ package com.aiinty.copayment.presentation.navigation
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -12,13 +13,16 @@ import androidx.navigation.compose.rememberNavController
 import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
 import com.aiinty.copayment.presentation.navigation.graphs.authGraph
 import com.aiinty.copayment.presentation.navigation.graphs.mainGraph
+import com.aiinty.copayment.presentation.ui.auth.passwordChangeScreen
+import com.aiinty.copayment.presentation.ui.auth.recoverScreen
+import com.aiinty.copayment.presentation.ui.auth.verifyOTPScreen
 
 @Composable
 fun CoPaymentNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     navigationEventBus: NavigationEventBus,
-    startDestination: String = NavigationRoute.SplashScreen.route,
+    startDestination: String = NavigationGraph.AuthGraph.route,
 ) {
     LaunchedEffect(Unit) {
         navigationEventBus.events.collect { event ->
@@ -51,6 +55,10 @@ fun CoPaymentNavHost(
         authGraph(
             navigationEventBus = navigationEventBus
         )
+
+        verifyOTPScreen()
+        recoverScreen()
+        passwordChangeScreen()
 
         mainGraph(
             navController = navController,

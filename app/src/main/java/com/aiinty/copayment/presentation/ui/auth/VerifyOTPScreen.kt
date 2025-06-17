@@ -153,7 +153,7 @@ private fun VerifyOTPHeader(
 }
 
 fun NavGraphBuilder.verifyOTPScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
 ) {
     composable(
         route = "verify_otp/{type}/{email}?next={next}",

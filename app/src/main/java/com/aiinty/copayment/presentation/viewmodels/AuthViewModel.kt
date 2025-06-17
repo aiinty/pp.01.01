@@ -16,6 +16,7 @@ import com.aiinty.copayment.presentation.common.ErrorHandler
 import com.aiinty.copayment.presentation.navigation.NavigationEvent
 import com.aiinty.copayment.presentation.navigation.NavigationEventBus
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
+import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -56,7 +57,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private suspend fun navigateToHomeInternal() {
-        navigateTo(NavigationRoute.HomeScreen.route)
+        navigateTo(NavigationGraph.MainGraph.route)
     }
 
     private suspend fun navigateToSignInInternal() {

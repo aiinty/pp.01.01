@@ -2,7 +2,6 @@ package com.aiinty.copayment.presentation.navigation
 
 import com.aiinty.copayment.domain.model.CardStyle
 import com.aiinty.copayment.domain.model.OTPType
-import com.aiinty.copayment.presentation.ui.main.card.EditCardScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -46,6 +45,7 @@ sealed class NavigationRoute(
     )
 
     data object HomeScreen: NavigationRoute("home", true)
+    data object TransactionsScreen: NavigationRoute("transactions", true)
 
     data object CardsScreen: NavigationRoute("cards", true)
     data object CreateCardOnboardingScreen: NavigationRoute("create_card_onboarding")
@@ -73,7 +73,7 @@ sealed class NavigationRoute(
         private val routes: Map<String, NavigationRoute> = listOfNotNull(
             NextScreen, SplashScreen, OnboardingScreen,
             SignUpScreen, SignInScreen, RecoverScreen, PinCodeScreen,
-            HomeScreen,
+            HomeScreen, TransactionsScreen,
             CardsScreen, CreateCardOnboardingScreen, CreateCardStyleScreen, EditCardScreen,
             ShowQRCodeScreen, ScanQRCodeScreen,
             ActivityScreen,

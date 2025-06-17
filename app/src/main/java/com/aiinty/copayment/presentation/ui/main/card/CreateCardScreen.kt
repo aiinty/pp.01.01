@@ -258,7 +258,7 @@ fun NavGraphBuilder.createCardScreen(
         val cardStyle = CardStyle.entries[styleOrdinal ?: 0]
 
         val parentEntry = remember(navController) {
-            navController.getBackStackEntry(NavigationGraph.CardGraph.route)
+            navController.getBackStackEntry(NavigationGraph.MainGraph.route)
         }
         val viewModel: CardViewModel = hiltViewModel(parentEntry)
 

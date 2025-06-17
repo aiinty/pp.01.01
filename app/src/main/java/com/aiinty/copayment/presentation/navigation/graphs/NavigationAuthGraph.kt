@@ -2,7 +2,9 @@ package com.aiinty.copayment.presentation.navigation.graphs
 
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.navigation
 import com.aiinty.copayment.presentation.navigation.NavigationEventBus
+import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui.auth.createPinCodeScreen
 import com.aiinty.copayment.presentation.ui.auth.passwordChangeScreen
 import com.aiinty.copayment.presentation.ui.auth.pinCodeScreen
@@ -17,13 +19,15 @@ fun NavGraphBuilder.authGraph(
     modifier: Modifier = Modifier,
     navigationEventBus: NavigationEventBus
 ) {
-    splashScreen(modifier)
-    onboardingScreen(modifier, navigationEventBus)
-    signInScreen(modifier)
-    signUpScreen(modifier)
-    verifyOTPScreen(modifier)
-    recoverScreen(modifier)
-    passwordChangeScreen(modifier)
-    createPinCodeScreen(modifier)
-    pinCodeScreen(modifier)
+    navigation(
+        route = NavigationGraph.AuthGraph.route,
+        startDestination = NavigationRoute.SplashScreen.route
+    ) {
+        splashScreen(modifier)
+        onboardingScreen(modifier, navigationEventBus)
+        signInScreen(modifier)
+        signUpScreen(modifier)
+        createPinCodeScreen(modifier)
+        pinCodeScreen(modifier)
+    }
 }
