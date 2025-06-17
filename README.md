@@ -24,3 +24,4 @@
 - [Kotlinx Serialization JSON](github.com/Kotlin/kotlinx.serialization)
 - [AndroidX Security Crypto](https://developer.android.com/jetpack/androidx/releases/security)
 - [Dagger Hilt](https://dagger.dev/hilt)
+- [Coil](https://github.com/coil-kt/coil)
