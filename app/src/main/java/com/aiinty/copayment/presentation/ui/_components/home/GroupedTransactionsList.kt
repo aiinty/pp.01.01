@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter
 fun GroupedTransactionsList(
     cardTransactions: List<Transaction>,
     profile: Profile,
-    selectedCard: Card
+    card: Card
 ) {
     if (cardTransactions.isEmpty()) {
         Box(
@@ -76,7 +76,7 @@ fun GroupedTransactionsList(
                 TransactionItem(
                     userProfile = profile,
                     trx = item,
-                    isPositive = TransactionsUtils.isPositiveTransaction(selectedCard, item)
+                    isPositive = TransactionsUtils.isPositiveTransaction(card, item)
                 )
                 HorizontalDivider(
                     modifier = Modifier.padding(vertical = 16.dp),
