@@ -39,6 +39,7 @@ import com.aiinty.copayment.presentation.ui._components.base.BaseButton
 import com.aiinty.copayment.presentation.ui._components.base.BasePullToRefreshBox
 import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.card.BaseCard
+import com.aiinty.copayment.presentation.ui._components.card.CardPicker
 import com.aiinty.copayment.presentation.ui.main.ErrorScreen
 import com.aiinty.copayment.presentation.ui.main.LoadingScreen
 import com.aiinty.copayment.presentation.ui.theme.Greyscale50
@@ -81,16 +82,13 @@ private fun CardsScreenContent(
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(cards) { card ->
-                BaseCard(
-                    modifier = Modifier
-                        .clickable {
-                            viewModel.selectCard(card)
-                            viewModel.navigateToEditCard()
-                        },
-                    card = card
-                )
-            }
+            CardPicker(
+                cards = cards,
+                onSelect = { card ->
+                    viewModel.selectCard(card)
+                    viewModel.navigateToEditCard()
+                }
+            )
 
             item {
                 BaseButton(
