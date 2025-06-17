@@ -1,6 +1,5 @@
 package com.aiinty.copayment.domain.repository
 
-import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.Transaction
 import com.aiinty.copayment.domain.model.TransactionType
 import kotlinx.coroutines.delay
@@ -29,11 +28,10 @@ class FakeTransactionRepository : TransactionRepository {
         )
     )
 
-    override suspend fun getTransactions(userId: String?, cardId: String?, range: String): Result<List<Transaction>> {
+    override suspend fun getTransactions( cardId: String?, range: String): Result<List<Transaction>> {
         delay(500)
         val filtered = fakeTransactions.filter { tx ->
-            (userId == null || tx.initiatorProfile?.id == userId) &&
-                    (cardId == null || tx.senderId == cardId || tx.receiverId == cardId)
+            (cardId == null || tx.senderId == cardId || tx.receiverId == cardId)
         }
         return Result.success(filtered)
     }

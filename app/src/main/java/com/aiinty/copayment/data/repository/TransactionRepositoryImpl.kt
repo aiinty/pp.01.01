@@ -1,6 +1,5 @@
 package com.aiinty.copayment.data.repository
 
-import android.icu.text.DateFormat
 import com.aiinty.copayment.data.local.UserPreferences
 import com.aiinty.copayment.data.model.transaction.TransactionInsertRequest
 import com.aiinty.copayment.data.network.TransactionApi
@@ -12,9 +11,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.sql.Date
 import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class TransactionRepositoryImpl @Inject constructor(
@@ -26,13 +23,12 @@ class TransactionRepositoryImpl @Inject constructor(
     private val bearerToken = { "Bearer ${prefs.getAccessToken()}" }
 
     override suspend fun getTransactions(
-        userId: String?,
         cardId: String?,
         range: String,
     ): Result<List<Transaction>> {
         return withContext(ioDispatcher) {
             val response = api.getTransactions(
-                or = "(sender_id.eq.$cardId,receiver_id.eq.$cardId,initiator_user_id.eq.$userId)",
+                or = "(sender_id.eq.$cardId,receiver_id.eq.$cardId)",
                 authHeader = bearerToken.invoke(),
                 range = range
             )

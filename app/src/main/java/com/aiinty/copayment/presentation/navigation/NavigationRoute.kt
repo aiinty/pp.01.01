@@ -45,7 +45,8 @@ sealed class NavigationRoute(
     )
 
     data object HomeScreen: NavigationRoute("home", true)
-    data object TransactionsScreen: NavigationRoute("transactions", true)
+    data object TransactionsScreen: NavigationRoute("transactions", false)
+    data object SelectCardScreen: NavigationRoute("select_card", false)
 
     data object CardsScreen: NavigationRoute("cards", true)
     data object CreateCardOnboardingScreen: NavigationRoute("create_card_onboarding")
@@ -73,7 +74,7 @@ sealed class NavigationRoute(
         private val routes: Map<String, NavigationRoute> = listOfNotNull(
             NextScreen, SplashScreen, OnboardingScreen,
             SignUpScreen, SignInScreen, RecoverScreen, PinCodeScreen,
-            HomeScreen, TransactionsScreen,
+            HomeScreen, TransactionsScreen, SelectCardScreen,
             CardsScreen, CreateCardOnboardingScreen, CreateCardStyleScreen, EditCardScreen,
             ShowQRCodeScreen, ScanQRCodeScreen,
             ActivityScreen,

@@ -1,7 +1,6 @@
 package com.aiinty.copayment.presentation.navigation.graphs
 
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.navigation
@@ -14,6 +13,7 @@ import com.aiinty.copayment.presentation.ui.main.card.createCardScreen
 import com.aiinty.copayment.presentation.ui.main.card.createCardStyleScreen
 import com.aiinty.copayment.presentation.ui.main.card.editCardScreen
 import com.aiinty.copayment.presentation.ui.main.home.homeScreen
+import com.aiinty.copayment.presentation.ui.main.home.selectCardScreen
 import com.aiinty.copayment.presentation.ui.main.home.transactionsScreen
 import com.aiinty.copayment.presentation.ui.main.profile.contactScreen
 import com.aiinty.copayment.presentation.ui.main.profile.editProfileScreen
@@ -32,6 +32,7 @@ fun NavGraphBuilder.mainGraph(
     ) {
         homeScreen(modifier, navController)
         transactionsScreen(modifier, navController)
+        selectCardScreen(modifier, navController)
 
         cardsScreen(modifier, navController)
         createCardOnboardingScreen(modifier, navigationEventBus)

@@ -17,6 +17,8 @@ import com.aiinty.copayment.presentation.navigation.NavigationEvent
 import com.aiinty.copayment.presentation.navigation.NavigationEventBus
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,9 +34,8 @@ class HomeViewModel @Inject constructor(
     private val _uiState = mutableStateOf<HomeUiState>(HomeUiState.Loading)
     val uiState: State<HomeUiState> = _uiState
 
-    init {
-        loadUserInfo()
-    }
+    private val _selectedCard = MutableStateFlow<Card?>(null)
+    val selectedCard: StateFlow<Card?> = _selectedCard
 
     private suspend fun navigateTo(route: String) {
         navigationEventBus.send(NavigationEvent.ToRoute(route))
@@ -52,6 +53,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun navigateToSelectCard() {
+        viewModelScope.launch {
+            navigateTo(NavigationRoute.SelectCardScreen.route)
+        }
+    }
+
     fun loadUserInfo() {
         viewModelScope.launch {
             _uiState.value = HomeUiState.Loading
@@ -62,6 +69,7 @@ class HomeViewModel @Inject constructor(
                 handleError(AppException.UiResError(resId = R.string.unknown_error))
                 return@launch
             }
+            val lastSelectedCard = userPreferences.getSelectedCard()
 
             runCatching {
                 val cards = getCardsUseCase.invoke(userId).getOrThrow()
@@ -73,12 +81,20 @@ class HomeViewModel @Inject constructor(
                     return@launch
                 }
 
-                val transactions = getTransactionsUseCase.invoke(userId, cards.first().id).getOrThrow()
+                val foundedCard = cards.firstOrNull { it.id == lastSelectedCard }
+                val selectedCard = foundedCard ?: cards[0]
+                _selectedCard.value = selectedCard
+
+                val transactions = getTransactionsUseCase.invoke(selectedCard.id).getOrThrow()
                 val profile = getProfileUseCase.invoke().getOrThrow()
 
                 Triple(profile, cards, transactions)
             }.onSuccess { triple ->
-                _uiState.value = HomeUiState.Success(triple)
+                _uiState.value = HomeUiState.Success(
+                    triple.first,
+                    triple.second,
+                    triple.third
+                )
             }.onFailure { error ->
                 _uiState.value = HomeUiState.Error
                 handleError(error)
@@ -86,14 +102,25 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun selectCard(card: Card) {
+        viewModelScope.launch {
+            userPreferences.saveSelectedCard(card.id)
+            _selectedCard.value = card
+            loadUserInfo()
+            navigationEventBus.send(
+                NavigationEvent.Back
+            )
+        }
+    }
+
 }
 
 sealed class HomeUiState {
     data object Loading : HomeUiState()
-    data class Success(val userInfo: Triple<
-            Profile,
-            List<Card>,
-            List<Transaction>
-            >) : HomeUiState()
+    data class Success(
+        val profile: Profile,
+        val cards: List<Card>,
+        val transactions: List<Transaction>
+    ) : HomeUiState()
     data object Error : HomeUiState()
 }

@@ -129,4 +129,6 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="now_there_are_no_transactions">Now there are no transactions...</string>
+    <string name="all">All</string>
+    <string name="select_your_card">Select your card</string>
 </resources>

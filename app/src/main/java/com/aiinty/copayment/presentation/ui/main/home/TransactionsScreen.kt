@@ -20,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,7 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -41,11 +41,14 @@ import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.CardStyle
 import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.domain.model.Transaction
+import com.aiinty.copayment.domain.model.TransactionCategory
+import com.aiinty.copayment.domain.model.TransactionType
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
 import com.aiinty.copayment.presentation.ui._components.base.BaseIconButton
 import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.home.HomeHeader
+import com.aiinty.copayment.presentation.ui._components.home.TransactionsFilterRow
 import com.aiinty.copayment.presentation.ui.main.ErrorScreen
 import com.aiinty.copayment.presentation.ui.main.LoadingScreen
 import com.aiinty.copayment.presentation.ui.theme.Green
@@ -61,15 +64,17 @@ fun TransactionsScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     UiErrorHandler(viewModel)
+    val selectedCard = viewModel.selectedCard.collectAsState()
+
     when(val state = viewModel.uiState.value) {
         is HomeUiState.Loading -> LoadingScreen(modifier)
         is HomeUiState.Error -> ErrorScreen(modifier)
         is HomeUiState.Success -> TransactionsScreenContent(
             modifier = modifier,
             viewModel = viewModel,
-            profile = state.userInfo.first,
-            cards = state.userInfo.second,
-            transactions = state.userInfo.third
+            profile = state.profile,
+            card = selectedCard.value!!,
+            transactions = state.transactions,
         )
     }
 }
@@ -79,18 +84,22 @@ private fun TransactionsScreenContent(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel,
     profile: Profile,
-    cards: List<Card>,
-    transactions: List<Transaction>
+    card: Card,
+    transactions: List<Transaction>,
 ) {
-    val selectedCard = cards.first()
-    val cardTransactions = transactions.filter {
-        it.senderId == selectedCard.id || it.receiverId == selectedCard.id
-    }
-    val headerColor = when(cards[0].cardStyle) {
+    val headerColor = when (card.cardStyle) {
         CardStyle.MINIMAL -> Greyscale900
         else -> Green
     }
     val isNumberVisible = remember { mutableStateOf(false) }
+
+    var selectedCategories = remember { mutableStateOf<Set<TransactionCategory>>(emptySet()) }
+    var selectedTypes = remember { mutableStateOf<Set<TransactionType>>(emptySet()) }
+    val filteredTransactions = transactions.filter { transaction ->
+        (selectedCategories.value.isEmpty() || selectedCategories.value.contains(transaction.category)) &&
+                (selectedTypes.value.isEmpty() || selectedTypes.value.contains(transaction.transactionType))
+    }
+
 
     Column(modifier = modifier) {
         HomeHeader(
@@ -122,7 +131,6 @@ private fun TransactionsScreenContent(
                 .background(headerColor)
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
                 .aspectRatio(981f / 378f)
-                .zIndex(1f)
         ) {
             Row(
                 modifier = Modifier
@@ -151,7 +159,7 @@ private fun TransactionsScreenContent(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            text = "$${cards[0].balance}",
+                            text = "$${card.balance}",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -168,7 +176,7 @@ private fun TransactionsScreenContent(
                             Icon(
                                 painter = if (isNumberVisible.value)
                                     painterResource(R.drawable.eye) else
-                                        painterResource(R.drawable.eye_off),
+                                    painterResource(R.drawable.eye_off),
                                 contentDescription = if (isNumberVisible.value)
                                     stringResource(R.string.hide) else stringResource(R.string.show),
                                 tint = Color.White.copy(alpha = 0.5f)
@@ -176,13 +184,15 @@ private fun TransactionsScreenContent(
                         }
                     }
 
-                    val cardNumber = if (isNumberVisible.value) cards[0].cardNumber else
-                        CardUtils.maskCardNumber(cards[0].cardNumber)
+                    val cardNumber = if (isNumberVisible.value) card.cardNumber else
+                        CardUtils.maskCardNumber(card.cardNumber)
 
                     Text(
-                        text = "Bank account: ${CardUtils.formatCardNumberWithSpaces(
-                            cardNumber
-                        )}",
+                        text = "Bank account: ${
+                            CardUtils.formatCardNumberWithSpaces(
+                                cardNumber
+                            )
+                        }",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White
@@ -194,7 +204,7 @@ private fun TransactionsScreenContent(
                         .size(48.dp)
                         .align(Alignment.CenterVertically),
                     onClick = {
-
+                        viewModel.navigateToSelectCard()
                     },
                     shape = CircleShape
                 ) {
@@ -210,21 +220,36 @@ private fun TransactionsScreenContent(
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .zIndex(0f),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            TransactionsFilterRow(
+                selectedCategories = selectedCategories.value,
+                onCategoryToggle = { category ->
+                    selectedCategories.value = selectedCategories.value.toMutableSet().apply {
+                        if (!add(category)) remove(category)
+                    }
+                },
+                onCategoryClear = { selectedCategories.value = emptySet() },
+                selectedTypes = selectedTypes.value,
+                onTypeToggle = { type ->
+                    selectedTypes.value = selectedTypes.value.toMutableSet().apply {
+                        if (!add(type)) remove(type)
+                    }
+                },
+                onTypeClear = { selectedTypes.value = emptySet() }
+            )
+
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.End
             ) {
-
                 Spacer(Modifier.height(8.dp))
 
                 GroupedTransactionsList(
-                    cardTransactions = cardTransactions,
+                    cardTransactions = filteredTransactions,
                     profile = profile,
-                    selectedCard = selectedCard
+                    card = card
                 )
             }
         }

@@ -21,6 +21,7 @@ class UserPreferences(
         private const val KEY_USER_PASSWORD = "user_password"
         private const val KEY_USER_PIN = "user_pin"
         private const val KEY_PROFILE = "profile"
+        private const val KEY_SELECTED_CARD = "selected_card"
     }
 
     private val sharedPreferences by lazy {
@@ -99,6 +100,14 @@ class UserPreferences(
 
     fun getUserPin(): String? {
         return sharedPreferences.getString(KEY_USER_PIN, null)
+    }
+
+    fun saveSelectedCard(cardId: String) {
+        sharedPreferences.edit().putString(KEY_SELECTED_CARD, cardId).apply()
+    }
+
+    fun getSelectedCard(): String? {
+        return sharedPreferences.getString(KEY_SELECTED_CARD, null)
     }
 
     fun saveProfile(profile: Profile) {

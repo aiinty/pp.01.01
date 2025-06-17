@@ -9,21 +9,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -46,7 +42,6 @@ import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.CardStyle
 import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.domain.model.Transaction
-import com.aiinty.copayment.presentation.utils.TransactionsUtils
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
 import com.aiinty.copayment.presentation.ui._components.base.BaseIconButton
@@ -54,16 +49,12 @@ import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.card.BaseCardBot
 import com.aiinty.copayment.presentation.ui._components.card.BaseCardTop
 import com.aiinty.copayment.presentation.ui._components.home.HomeHeader
-import com.aiinty.copayment.presentation.ui._components.home.OperationMenuItem
 import com.aiinty.copayment.presentation.ui._components.home.OperationMenuRow
-import com.aiinty.copayment.presentation.ui._components.home.TransactionItem
 import com.aiinty.copayment.presentation.ui.main.ErrorScreen
 import com.aiinty.copayment.presentation.ui.main.LoadingScreen
 import com.aiinty.copayment.presentation.ui.theme.Green
 import com.aiinty.copayment.presentation.ui.theme.Greyscale200
-import com.aiinty.copayment.presentation.ui.theme.Greyscale50
 import com.aiinty.copayment.presentation.ui.theme.Greyscale900
-import com.aiinty.copayment.presentation.viewmodels.CardViewModel
 import com.aiinty.copayment.presentation.viewmodels.HomeUiState
 import com.aiinty.copayment.presentation.viewmodels.HomeViewModel
 
@@ -73,15 +64,21 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     UiErrorHandler(viewModel)
+
+    LaunchedEffect(Unit) {
+        viewModel.loadUserInfo()
+    }
+    val selectedCard = viewModel.selectedCard.collectAsState()
+
     when(val state = viewModel.uiState.value) {
         is HomeUiState.Loading -> LoadingScreen(modifier)
         is HomeUiState.Error -> ErrorScreen(modifier)
         is HomeUiState.Success -> HomeScreenContent(
             modifier = modifier,
             viewModel = viewModel,
-            profile = state.userInfo.first,
-            cards = state.userInfo.second,
-            transactions = state.userInfo.third
+            profile = state.profile,
+            card = selectedCard.value!!,
+            transactions = state.transactions
         )
     }
 }
@@ -91,14 +88,10 @@ private fun HomeScreenContent(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel,
     profile: Profile,
-    cards: List<Card>,
+    card: Card,
     transactions: List<Transaction>
 ) {
-    val selectedCard = cards.first()
-    val cardTransactions = transactions.filter {
-        it.senderId == selectedCard.id || it.receiverId == selectedCard.id
-    }
-    val headerColor = when(cards[0].cardStyle) {
+    val headerColor = when(card.cardStyle) {
         CardStyle.MINIMAL -> Greyscale900
         else -> Green
     }
@@ -150,7 +143,7 @@ private fun HomeScreenContent(
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
                 .zIndex(1f)
         ) {
-            BaseCardTop(Modifier.align(Alignment.BottomCenter), selectedCard)
+            BaseCardTop(Modifier.align(Alignment.BottomCenter), card)
         }
         Column(
             Modifier
@@ -164,7 +157,7 @@ private fun HomeScreenContent(
                     elevation = 16.dp,
                     shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
                 ),
-                card = selectedCard,
+                card = card,
                 showBalance = true
             )
 
@@ -197,9 +190,9 @@ private fun HomeScreenContent(
                 Spacer(Modifier.height(8.dp))
 
                 GroupedTransactionsList(
-                    cardTransactions = cardTransactions,
+                    cardTransactions = transactions,
                     profile = profile,
-                    selectedCard = selectedCard
+                    card = card
                 )
             }
         }

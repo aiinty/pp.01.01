@@ -40,6 +40,8 @@ fun rememberTopBarState(
         }
 
         val titleResIdMap = mapOf(
+            NavigationRoute.SelectCardScreen to R.string.select_your_card,
+
             NavigationRoute.CardsScreen to R.string.my_card,
             NavigationRoute.CreateCardStyleScreen to R.string.create_card_style_title,
             NavigationRoute.CreateCardScreen() to R.string.create_card_title,
