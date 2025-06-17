@@ -3,31 +3,27 @@ package com.aiinty.copayment.presentation.ui.main.home
 import GroupedTransactionsList
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -46,29 +41,22 @@ import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.CardStyle
 import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.domain.model.Transaction
-import com.aiinty.copayment.presentation.utils.TransactionsUtils
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
 import com.aiinty.copayment.presentation.ui._components.base.BaseIconButton
 import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
-import com.aiinty.copayment.presentation.ui._components.card.BaseCardBot
-import com.aiinty.copayment.presentation.ui._components.card.BaseCardTop
 import com.aiinty.copayment.presentation.ui._components.home.HomeHeader
-import com.aiinty.copayment.presentation.ui._components.home.OperationMenuItem
-import com.aiinty.copayment.presentation.ui._components.home.OperationMenuRow
-import com.aiinty.copayment.presentation.ui._components.home.TransactionItem
 import com.aiinty.copayment.presentation.ui.main.ErrorScreen
 import com.aiinty.copayment.presentation.ui.main.LoadingScreen
 import com.aiinty.copayment.presentation.ui.theme.Green
 import com.aiinty.copayment.presentation.ui.theme.Greyscale200
-import com.aiinty.copayment.presentation.ui.theme.Greyscale50
 import com.aiinty.copayment.presentation.ui.theme.Greyscale900
-import com.aiinty.copayment.presentation.viewmodels.CardViewModel
+import com.aiinty.copayment.presentation.utils.CardUtils
 import com.aiinty.copayment.presentation.viewmodels.HomeUiState
 import com.aiinty.copayment.presentation.viewmodels.HomeViewModel
 
 @Composable
-fun HomeScreen(
+fun TransactionsScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -76,7 +64,7 @@ fun HomeScreen(
     when(val state = viewModel.uiState.value) {
         is HomeUiState.Loading -> LoadingScreen(modifier)
         is HomeUiState.Error -> ErrorScreen(modifier)
-        is HomeUiState.Success -> HomeScreenContent(
+        is HomeUiState.Success -> TransactionsScreenContent(
             modifier = modifier,
             viewModel = viewModel,
             profile = state.userInfo.first,
@@ -87,7 +75,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeScreenContent(
+private fun TransactionsScreenContent(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel,
     profile: Profile,
@@ -102,30 +90,15 @@ private fun HomeScreenContent(
         CardStyle.MINIMAL -> Greyscale900
         else -> Green
     }
+    val isNumberVisible = remember { mutableStateOf(false) }
 
     Column(modifier = modifier) {
         HomeHeader(
             headerColor,
             leftItem = {
-                Column {
-                    Text(
-                        text = "Welcome back!",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White
-                    )
-                    Text(
-                        text = profile.fullName,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
-            },
-            rightItem = {
                 BaseIconButton(
                     onClick = {
-
+                        viewModel.navigateBack()
                     },
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = headerColor,
@@ -137,8 +110,8 @@ private fun HomeScreenContent(
                 ) {
                     Icon(
                         modifier = Modifier.size(24.dp),
-                        painter = painterResource(R.drawable.notification),
-                        contentDescription = "Notification"
+                        painter = painterResource(R.drawable.chevron_left),
+                        contentDescription = stringResource(R.string.back)
                     )
                 }
             }
@@ -148,9 +121,91 @@ private fun HomeScreenContent(
                 .fillMaxWidth()
                 .background(headerColor)
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                .aspectRatio(981f / 378f)
                 .zIndex(1f)
         ) {
-            BaseCardTop(Modifier.align(Alignment.BottomCenter), selectedCard)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 24.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Column(
+                    modifier = modifier
+                        .weight(1f)
+                        .align(Alignment.Bottom),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Current balance",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "$${cards[0].balance}",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+
+                        IconButton(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .align(Alignment.CenterVertically),
+                            onClick = {
+                                isNumberVisible.value = !isNumberVisible.value
+                            },
+                        ) {
+                            Icon(
+                                painter = if (isNumberVisible.value)
+                                    painterResource(R.drawable.eye) else
+                                        painterResource(R.drawable.eye_off),
+                                contentDescription = if (isNumberVisible.value)
+                                    stringResource(R.string.hide) else stringResource(R.string.show),
+                                tint = Color.White.copy(alpha = 0.5f)
+                            )
+                        }
+                    }
+
+                    val cardNumber = if (isNumberVisible.value) cards[0].cardNumber else
+                        CardUtils.maskCardNumber(cards[0].cardNumber)
+
+                    Text(
+                        text = "Bank account: ${CardUtils.formatCardNumberWithSpaces(
+                            cardNumber
+                        )}",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White
+                    )
+                }
+
+                BaseIconButton(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .align(Alignment.CenterVertically),
+                    onClick = {
+
+                    },
+                    shape = CircleShape
+                ) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        painter = painterResource(R.drawable.change),
+                        contentDescription = "Change card",
+                        tint = Color.Unspecified
+                    )
+                }
+            }
         }
         Column(
             Modifier
@@ -159,40 +214,10 @@ private fun HomeScreenContent(
                 .zIndex(0f),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            BaseCardBot(
-                modifier = Modifier.shadow(
-                    elevation = 16.dp,
-                    shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
-                ),
-                card = selectedCard,
-                showBalance = true
-            )
-
-            OperationMenuRow()
-
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.End
             ) {
-                Row(
-                    modifier = Modifier.clickable {
-                        viewModel.navigateToTransactionsHistory()
-                    },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        "All transactions",
-                        color = Color(0xFF1D3A70),
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp
-                    )
-                    Icon(
-                        painter = painterResource(R.drawable.chevron_right),
-                        contentDescription = stringResource(R.string.navigate),
-                        tint = Greyscale900,
-                        modifier = Modifier.size(18.dp)
-                    )
-                }
 
                 Spacer(Modifier.height(8.dp))
 
@@ -206,19 +231,19 @@ private fun HomeScreenContent(
     }
 }
 
-fun NavGraphBuilder.homeScreen(
+fun NavGraphBuilder.transactionsScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
     composable(
-        route = NavigationRoute.HomeScreen.route
+        route = NavigationRoute.TransactionsScreen.route
     ){
         val parentEntry = remember(navController) {
             navController.getBackStackEntry(NavigationGraph.MainGraph.route)
         }
         val viewModel: HomeViewModel = hiltViewModel(parentEntry)
 
-        HomeScreen(
+        TransactionsScreen(
             modifier = modifier,
             viewModel
         )
@@ -227,8 +252,8 @@ fun NavGraphBuilder.homeScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun HomeScreenPreview() {
-    HomeScreen(
-        Modifier.fillMaxSize()
+private fun TransactionsScreenPreview() {
+    TransactionsScreen(
+        Modifier.fillMaxSize(),
     )
 }
