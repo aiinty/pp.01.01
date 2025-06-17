@@ -36,6 +36,7 @@ import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.CardStyle
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
+import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
 import com.aiinty.copayment.presentation.ui._components.auth.FullNameTextField
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
 import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
@@ -259,7 +260,7 @@ fun NavGraphBuilder.createCardScreen(
         val cardStyle = CardStyle.entries[styleOrdinal ?: 0]
 
         val parentEntry = remember(navController) {
-            navController.getBackStackEntry(NavigationRoute.CardsScreen.route)
+            navController.getBackStackEntry(NavigationGraph.CardGraph.route)
         }
         val viewModel: CardViewModel = hiltViewModel(parentEntry)
 

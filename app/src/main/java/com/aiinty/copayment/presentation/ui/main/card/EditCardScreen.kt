@@ -36,6 +36,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
+import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
 import com.aiinty.copayment.presentation.ui._components.base.BaseSwitch
 import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
@@ -222,7 +223,7 @@ fun NavGraphBuilder.editCardScreen(
         route = NavigationRoute.EditCardScreen.route
     ){
         val parentEntry = remember(navController) {
-            navController.getBackStackEntry(NavigationRoute.CardsScreen.route)
+            navController.getBackStackEntry(NavigationGraph.CardGraph.route)
         }
         val viewModel: CardViewModel = hiltViewModel(parentEntry)
 
