@@ -111,4 +111,22 @@
     <string name="onboarding_illustration">Onboarding illustration</string>
     <string name="add_new_card">Add new card</string>
     <string name="plus">Plus</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="transfers">Transfers</string>
+    <string name="deposit">Deposit</string>
+    <string name="unknown">Unknown</string>
+    <string name="other">Other</string>
+    <string name="investment">Investment</string>
+    <string name="travel">Travel</string>
+    <string name="subsription">Subsription</string>
+    <string name="transfer">Transfer</string>
+    <string name="base">Base</string>
+    <string name="lifestyle">Lifestyle</string>
+    <string name="finance">Finance</string>
+    <string name="misc">Misc</string>
+    <string name="more">More</string>
+    <string name="transfer_from_you">Transfer from you</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="now_there_are_no_transactions">Now there are no transactions...</string>
 </resources>
