@@ -4,6 +4,7 @@ import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.Transaction
 import com.aiinty.copayment.domain.model.TransactionType
 import kotlinx.coroutines.delay
+import java.time.OffsetDateTime
 
 class FakeTransactionRepository : TransactionRepository {
 
@@ -13,8 +14,8 @@ class FakeTransactionRepository : TransactionRepository {
             senderId = "ebd7c411-bf57-4190-875b-53115fbc647e",
             receiverId = null,
             amount = 25.5,
-            createdAt = "2025-06-16T12:54:37.358377+00:00",
-            initiatorUserId = null,
+            createdAt = OffsetDateTime.now(),
+            initiatorProfile = null,
             transactionType = TransactionType.WITHDRAW
         ),
         Transaction(
@@ -22,8 +23,8 @@ class FakeTransactionRepository : TransactionRepository {
             senderId = "ebd7c411-bf57-4190-875b-53115fbc647e",
             receiverId = "fbd7c411-bf57-4190-875b-53115fbc647e",
             amount = 100.0,
-            createdAt = "2025-06-15T10:14:11.000000+00:00",
-            initiatorUserId = "ebd7c411-bf57-4190-875b-53115fbc647e",
+            createdAt = OffsetDateTime.now(),
+            initiatorProfile = null,
             transactionType = TransactionType.TRANSFER
         )
     )
@@ -31,7 +32,7 @@ class FakeTransactionRepository : TransactionRepository {
     override suspend fun getTransactions(userId: String?, cardId: String?, range: String): Result<List<Transaction>> {
         delay(500)
         val filtered = fakeTransactions.filter { tx ->
-            (userId == null || tx.initiatorUserId == userId) &&
+            (userId == null || tx.initiatorProfile?.id == userId) &&
                     (cardId == null || tx.senderId == cardId || tx.receiverId == cardId)
         }
         return Result.success(filtered)

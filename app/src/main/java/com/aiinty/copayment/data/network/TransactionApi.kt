@@ -15,7 +15,7 @@ import retrofit2.http.Query
 
 interface TransactionApi {
 
-    @GET("/rest/v1/transactions?select=*,transaction_type(*)")
+    @GET("/rest/v1/transactions?select=*,profiles(*)")
     suspend fun getTransactions(
         @Query("or") or: String,
         @Header("Authorization") authHeader: String,

@@ -1,5 +1,7 @@
 package com.aiinty.copayment.data.model.transaction
 
+import com.aiinty.copayment.data.model.profile.ProfileResponse
+
 data class TransactionsResponse(
     val id: String,
     val sender_id: String?,
@@ -8,11 +10,5 @@ data class TransactionsResponse(
     val type: Int,
     val created_at: String,
     val initiator_user_id: String?,
-    val transaction_type: TransactionType
-) {
-    data class TransactionType(
-        val id: Int,
-        val name: String,
-        val category_id: Int
-    )
-}
+    val profiles: ProfileResponse?,
+)

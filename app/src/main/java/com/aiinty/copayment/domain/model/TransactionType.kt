@@ -1,5 +1,7 @@
 package com.aiinty.copayment.domain.model
 
+import com.aiinty.copayment.R
+
 enum class TransactionType(val id: Int, val category: TransactionCategory) {
     DEPOSIT(1, TransactionCategory.BASE),
     TRANSFER(2, TransactionCategory.BASE),
@@ -11,5 +13,16 @@ enum class TransactionType(val id: Int, val category: TransactionCategory) {
 
     companion object {
         fun fromId(id: Int): TransactionType? = entries.find { it.id == id }
+        fun toResId(transactionType: TransactionType): Int {
+            return when (transactionType) {
+                DEPOSIT -> R.string.deposit
+                TRANSFER -> R.string.transfer
+                WITHDRAW -> R.string.withdraw
+                SUBSCRIPTION -> R.string.subsription
+                TRAVEL -> R.string.travel
+                INVESTMENT -> R.string.investment
+                OTHER -> R.string.other
+            }
+        }
     }
 }

@@ -1,8 +1,10 @@
 package com.aiinty.copayment.data.repository
 
+import android.icu.text.DateFormat
 import com.aiinty.copayment.data.local.UserPreferences
 import com.aiinty.copayment.data.model.transaction.TransactionInsertRequest
 import com.aiinty.copayment.data.network.TransactionApi
+import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.domain.model.Transaction
 import com.aiinty.copayment.domain.model.TransactionType
 import com.aiinty.copayment.domain.repository.TransactionRepository
@@ -10,6 +12,9 @@ import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.sql.Date
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class TransactionRepositoryImpl @Inject constructor(
@@ -40,8 +45,16 @@ class TransactionRepositoryImpl @Inject constructor(
                             senderId = trx.sender_id,
                             receiverId = trx.receiver_id,
                             amount = trx.amount,
-                            createdAt = trx.created_at,
-                            initiatorUserId = trx.initiator_user_id,
+                            createdAt = OffsetDateTime.parse(trx.created_at),
+                            initiatorProfile = trx.profiles?.let {
+                                Profile(
+                                    id = trx.profiles.id,
+                                    email = "",
+                                    phone = trx.profiles.phone,
+                                    fullName = trx.profiles.full_name,
+                                    avatarUrl = trx.profiles.avatar_url
+                                )
+                            },
                             transactionType = TransactionType.fromId(trx.type) ?: TransactionType.OTHER
                         )
                     }
@@ -61,7 +74,7 @@ class TransactionRepositoryImpl @Inject constructor(
                 amount = transaction.amount,
                 sender_id = transaction.senderId,
                 receiver_id = transaction.receiverId,
-                initiator_user_id = transaction.initiatorUserId
+                initiator_user_id = transaction.initiatorProfile?.id
             )
 
             val response = api.insertTransaction(
