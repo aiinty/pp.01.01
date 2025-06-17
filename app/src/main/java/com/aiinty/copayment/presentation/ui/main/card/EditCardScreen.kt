@@ -35,12 +35,15 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
+import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
 import com.aiinty.copayment.presentation.ui._components.base.BaseSwitch
 import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.card.BaseCard
+import com.aiinty.copayment.presentation.ui.main.ErrorScreen
+import com.aiinty.copayment.presentation.ui.main.LoadingScreen
 import com.aiinty.copayment.presentation.ui.theme.Green
 import com.aiinty.copayment.presentation.ui.theme.Greyscale100
 import com.aiinty.copayment.presentation.ui.theme.Greyscale50
@@ -48,6 +51,7 @@ import com.aiinty.copayment.presentation.ui.theme.Greyscale900
 import com.aiinty.copayment.presentation.ui.theme.Typography
 import com.aiinty.copayment.presentation.viewmodels.CardUiState
 import com.aiinty.copayment.presentation.viewmodels.CardViewModel
+import com.aiinty.copayment.presentation.viewmodels.ProfileUiState
 
 @Composable
 fun EditCardScreen(
@@ -55,111 +59,109 @@ fun EditCardScreen(
     viewModel: CardViewModel = hiltViewModel(),
 ) {
     UiErrorHandler(viewModel)
-
-    val uiState = viewModel.uiState
     val card = viewModel.selectedCard.collectAsState().value
-
     if (card == null) {
         viewModel.selectedCardIsNull()
         return
     }
+    when(viewModel.uiState.value) {
+        is CardUiState.Loading -> LoadingScreen(modifier)
+        is CardUiState.Error -> ErrorScreen(modifier)
+        is CardUiState.Success -> {
+            EditCardScreenContent(
+                modifier,
+                card,
+                viewModel
+            )
+        }
+    }
+}
 
+@Composable
+private fun EditCardScreenContent(
+    modifier: Modifier,
+    card: Card,
+    viewModel: CardViewModel
+) {
     val freezePhysical = remember { mutableStateOf(card.isFrozen) }
     val disableContactless = remember { mutableStateOf(card.isContactlessDisabled) }
     val disableMagstripe = remember { mutableStateOf(card.isMagstripeDisabled) }
 
-    when(uiState.value) {
-        is CardUiState.Loading -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+
+    Column(
+        modifier = modifier,
+    ) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .background(Greyscale100)
+                .padding(horizontal = 16.dp, vertical = 32.dp),
+        ) {
+            BaseCard(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(16.dp),
+                    ),
+                card = card,
+                showCardNumber = true
+            )
         }
 
-        is CardUiState.Error -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = stringResource(R.string.something_went_wrong)
+        Column(
+            modifier = Modifier
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+
+            Column(
+                modifier = Modifier.padding(bottom = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                SettingItem(
+                    checked = freezePhysical,
+                    iconResId = R.drawable.card,
+                    iconTintColor = Color.Black,
+                    label = stringResource(R.string.freeze_card)
+                )
+
+                HorizontalDivider(thickness = 1.dp, color = Greyscale100)
+
+                SettingItem(
+                    checked = disableContactless,
+                    iconResId = R.drawable.contactless,
+                    iconTintColor = Greyscale900,
+                    label = stringResource(R.string.disable_contactless)
+                )
+
+                HorizontalDivider(thickness = 1.dp, color = Greyscale100)
+
+                SettingItem(
+                    checked = disableMagstripe,
+                    iconResId = R.drawable.lock,
+                    iconTintColor = Green,
+                    label = stringResource(R.string.disable_magstripe)
                 )
             }
-        }
 
-        is CardUiState.Success -> {
-            Column(
-                modifier = modifier,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .background(Greyscale100)
-                        .padding(horizontal = 16.dp, vertical = 32.dp),
-                ) {
-                    BaseCard(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .shadow(
-                                elevation = 8.dp,
-                                shape = RoundedCornerShape(16.dp),
-                            ),
-                        card = card,
-                        showCardNumber = true
+            BaseButton(
+                onClick = {
+                    val cardWithSettings = card.copy(
+                        isFrozen = freezePhysical.value,
+                        isContactlessDisabled = disableContactless.value,
+                        isMagstripeDisabled = disableMagstripe.value
                     )
+
+                    viewModel.updateCard(cardWithSettings)
                 }
-
-                Column(
-                    modifier = Modifier
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                ) {
-
-                    Column(
-                        modifier = Modifier.padding(bottom = 12.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        SettingItem(
-                            checked = freezePhysical,
-                            iconResId = R.drawable.card,
-                            iconTintColor = Color.Black,
-                            label = stringResource(R.string.freeze_card)
-                        )
-
-                        HorizontalDivider(thickness = 1.dp, color = Greyscale100)
-
-                        SettingItem(
-                            checked = disableContactless,
-                            iconResId = R.drawable.contactless,
-                            iconTintColor = Greyscale900,
-                            label = stringResource(R.string.disable_contactless)
-                        )
-
-                        HorizontalDivider(thickness = 1.dp, color = Greyscale100)
-
-                        SettingItem(
-                            checked = disableMagstripe,
-                            iconResId = R.drawable.lock,
-                            iconTintColor = Green,
-                            label = stringResource(R.string.disable_magstripe)
-                        )
-                    }
-
-                    BaseButton(
-                        onClick = {
-                            val cardWithSettings = card.copy(
-                                isFrozen = freezePhysical.value,
-                                isContactlessDisabled = disableContactless.value,
-                                isMagstripeDisabled = disableMagstripe.value
-                            )
-
-                            viewModel.updateCard(cardWithSettings)
-                        }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.save),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.W700,
-                            color = Color.White
-                        )
-                    }
-                }
+            ) {
+                Text(
+                    text = stringResource(R.string.save),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.W700,
+                    color = Color.White
+                )
             }
         }
     }

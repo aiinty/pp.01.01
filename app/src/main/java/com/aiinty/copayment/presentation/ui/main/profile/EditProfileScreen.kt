@@ -1,6 +1,7 @@
 package com.aiinty.copayment.presentation.ui.main.profile
 
 import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +39,8 @@ import com.aiinty.copayment.presentation.ui._components.auth.PhoneTextField
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
 import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.profile.ProfileAvatar
+import com.aiinty.copayment.presentation.ui.main.ErrorScreen
+import com.aiinty.copayment.presentation.ui.main.LoadingScreen
 import com.aiinty.copayment.presentation.viewmodels.ProfileUiState
 import com.aiinty.copayment.presentation.viewmodels.ProfileViewModel
 import java.io.File
@@ -48,8 +51,26 @@ fun EditProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     UiErrorHandler(viewModel = viewModel)
+    LaunchedEffect(Unit) {
+        viewModel.loadUser()
+    }
+    when(val state = viewModel.uiState.value) {
+        is ProfileUiState.Loading -> LoadingScreen(modifier)
+        is ProfileUiState.Error -> ErrorScreen(modifier)
+        is ProfileUiState.Success -> EditProfileContent(
+            modifier,
+            state.profile,
+            viewModel
+        )
+    }
+}
 
-    val uiState = viewModel.uiState
+@Composable
+private fun EditProfileContent(
+    modifier: Modifier,
+    profile: Profile,
+    viewModel: ProfileViewModel,
+) {
     val context = LocalContext.current
     val selectedImageUri = remember { mutableStateOf<Uri?>(null) }
     val imageFile = remember { mutableStateOf<File?>(null) }
@@ -62,95 +83,71 @@ fun EditProfileScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.loadUser()
-    }
+    val fullName = remember { mutableStateOf(profile.fullName) }
+    val fullNameError = remember { mutableStateOf<Int?>(null) }
+    val email = remember { mutableStateOf(profile.email) }
+    val emailError = remember { mutableStateOf<Int?>(null) }
+    val phone = remember { mutableStateOf(profile.phone ?: "") }
+    val phoneError = remember { mutableStateOf<Int?>(null) }
+    val isInputsValidated = fullNameError.value == null && emailError.value == null &&
+            phoneError.value == null && fullName.value.isNotEmpty()
+            && email.value.isNotEmpty() && phone.value.isNotEmpty()
 
-    when (uiState.value) {
-        is ProfileUiState.Loading -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
-
-        is ProfileUiState.Error -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = stringResource(R.string.something_went_wrong)
+    Column(
+        modifier = modifier.padding(16.dp),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Box(
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                ProfileAvatar(
+                    avatarUrl = profile.fullAvatarUrl,
+                    localImageUri = selectedImageUri.value,
+                    onClick = {
+                        imagePickerLauncher.launch("image/*")
+                    }
                 )
             }
+
+            EditProfileFields(
+                fullName = fullName,
+                fullNameError = fullNameError,
+                phone = phone,
+                phoneError = phoneError,
+                email = email,
+                emailError = emailError
+            )
         }
 
-        is ProfileUiState.Success -> {
-            val profile = (uiState.value as ProfileUiState.Success).profile
+        BaseButton(
+            onClick = {
+                if (isInputsValidated) {
+                    val newProfile = Profile(
+                        id = profile.id,
+                        fullName = fullName.value,
+                        email = email.value,
+                        phone = phone.value,
+                        avatarUrl = profile.avatarUrl
+                    )
 
-            val fullName = remember { mutableStateOf(profile.fullName) }
-            val fullNameError = remember { mutableStateOf<Int?>(null) }
-            val email = remember { mutableStateOf(profile.email) }
-            val emailError = remember { mutableStateOf<Int?>(null) }
-            val phone = remember { mutableStateOf(profile.phone ?: "") }
-            val phoneError = remember { mutableStateOf<Int?>(null) }
-            val isInputsValidated = fullNameError.value == null && emailError.value == null &&
-                    phoneError.value == null && fullName.value.isNotEmpty()
-                    && email.value.isNotEmpty() && phone.value.isNotEmpty()
-
-            Column(
-                modifier = modifier.padding(16.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Box(
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    ) {
-                        ProfileAvatar(
-                            avatarUrl = profile.fullAvatarUrl,
-                            localImageUri = selectedImageUri.value,
-                            onClick = {
-                                imagePickerLauncher.launch("image/*")
-                            }
-                        )
-                    }
-
-                    EditProfileFields(
-                        fullName = fullName,
-                        fullNameError = fullNameError,
-                        phone = phone,
-                        phoneError = phoneError,
-                        email = email,
-                        emailError = emailError
+                    viewModel.updateProfile(
+                        newProfile,
+                        newAvatarFile = imageFile.value
                     )
                 }
-
-                BaseButton(
-                    onClick = {
-                        if (isInputsValidated) {
-                            val newProfile = Profile(
-                                id = profile.id,
-                                fullName = fullName.value,
-                                email = email.value,
-                                phone = phone.value,
-                                avatarUrl = profile.avatarUrl
-                            )
-
-                            viewModel.updateProfile(
-                                newProfile,
-                                newAvatarFile = imageFile.value
-                            )
-                        }
-                    },
-                    enabled = isInputsValidated
-                ) {
-                    Text(
-                        text = stringResource(R.string.save),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.W700,
-                        color = Color.White
-                    )
-                }
-            }
+            },
+            enabled = isInputsValidated
+        ) {
+            Text(
+                text = stringResource(R.string.save),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.W700,
+                color = Color.White
+            )
         }
     }
 }

@@ -44,6 +44,8 @@ import com.aiinty.copayment.presentation.ui._components.card.BaseCard
 import com.aiinty.copayment.presentation.ui._components.card.CardCvvTextField
 import com.aiinty.copayment.presentation.ui._components.card.CardExpiryTextField
 import com.aiinty.copayment.presentation.ui._components.card.CardNumberTextField
+import com.aiinty.copayment.presentation.ui.main.ErrorScreen
+import com.aiinty.copayment.presentation.ui.main.LoadingScreen
 import com.aiinty.copayment.presentation.ui.theme.Greyscale100
 import com.aiinty.copayment.presentation.ui.theme.Typography
 import com.aiinty.copayment.presentation.viewmodels.CardUiState
@@ -56,9 +58,23 @@ fun CreateCardScreen(
     cardStyle: CardStyle,
 ) {
     UiErrorHandler(viewModel)
+    when(viewModel.uiState.value) {
+        is CardUiState.Loading -> LoadingScreen(modifier)
+        is CardUiState.Error -> ErrorScreen(modifier)
+        is CardUiState.Success -> CreateCardScreenContent(
+            modifier,
+            viewModel,
+            cardStyle
+        )
+    }
+}
 
-    val uiState = viewModel.uiState
-
+@Composable
+private fun CreateCardScreenContent(
+    modifier: Modifier,
+    viewModel: CardViewModel,
+    cardStyle: CardStyle,
+) {
     val cardNumber = remember { mutableStateOf("") }
     val cardNumberError = remember { mutableStateOf<Int?>(null) }
     val expiryDate = remember { mutableStateOf("") }
@@ -84,78 +100,60 @@ fun CreateCardScreen(
             cardNumber.value.isNotEmpty() && expiryDate.value.isNotEmpty() &&
             cvv.value.isNotEmpty() && cardholderName.value.isNotEmpty()
 
-    when(uiState.value) {
-        is CardUiState.Loading -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+    Column(
+        modifier = modifier,
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Greyscale100)
+                .padding(horizontal = 16.dp, vertical = 32.dp),
+        ) {
+            BaseCard(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = RoundedCornerShape(16.dp),
+                    ),
+                card = cardMock,
+                showCardNumber = true
+            )
         }
 
-        is CardUiState.Error -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = stringResource(R.string.something_went_wrong)
-                )
-            }
-        }
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            CreateCardFields(
+                cardNumber = cardNumber,
+                cardNumberError = cardNumberError,
+                expiryDate = expiryDate,
+                expiryDateError = expiryDateError,
+                cvv = cvv,
+                cvvError = cvvError,
+                cardholderName = cardholderName,
+                cardholderNameError = cardholderNameError
+            )
 
-        is CardUiState.Success -> {
-            Column(
-                modifier = modifier,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Greyscale100)
-                        .padding(horizontal = 16.dp, vertical = 32.dp),
-                ) {
-                    BaseCard(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .shadow(
-                                elevation = 8.dp,
-                                shape = RoundedCornerShape(16.dp),
-                            ),
-                        card = cardMock,
-                        showCardNumber = true
-                    )
-                }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    CreateCardFields(
-                        cardNumber = cardNumber,
-                        cardNumberError = cardNumberError,
-                        expiryDate = expiryDate,
-                        expiryDateError = expiryDateError,
-                        cvv = cvv,
-                        cvvError = cvvError,
-                        cardholderName = cardholderName,
-                        cardholderNameError = cardholderNameError
-                    )
-
-                    BaseButton(
-                        onClick = {
-                            if (isInputsValidated) {
-                                viewModel.insertCard(
-                                    card = cardMock
-                                )
-                            }
-                        },
-                        enabled = isInputsValidated
-                    ) {
-                        Text(
-                            text = stringResource(R.string.save),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.W700,
-                            color = Color.White
+            BaseButton(
+                onClick = {
+                    if (isInputsValidated) {
+                        viewModel.insertCard(
+                            card = cardMock
                         )
                     }
-                }
+                },
+                enabled = isInputsValidated
+            ) {
+                Text(
+                    text = stringResource(R.string.save),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.W700,
+                    color = Color.White
+                )
             }
         }
     }

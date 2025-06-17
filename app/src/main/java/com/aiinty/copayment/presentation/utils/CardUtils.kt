@@ -1,4 +1,4 @@
-package com.aiinty.copayment.presentation.common
+package com.aiinty.copayment.presentation.utils
 
 object CardUtils {
     fun maskCardNumber(cardNumber: String): String {

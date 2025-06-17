@@ -46,47 +46,21 @@ fun CreateCardStyleScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        BaseCard(
-            modifier = Modifier.clickable {
-                scope.launch {
-                    navigationEventBus.send(
-                        NavigationEvent.ToRoute(
-                            NavigationRoute.CreateCardScreen(CardStyle.CLASSIC).route
+        CardStyle.entries.forEach { cardStyle ->
+            BaseCard(
+                modifier = Modifier.clickable {
+                    scope.launch {
+                        navigationEventBus.send(
+                            NavigationEvent.ToRoute(
+                                NavigationRoute.CreateCardScreen(cardStyle).route
+                            )
                         )
-                    )
-                }
-            },
-            card = cardMockup.copy(cardStyle = CardStyle.CLASSIC),
-            showCardNumber = true
-        )
-
-        BaseCard(
-            modifier = Modifier.clickable {
-                scope.launch {
-                    navigationEventBus.send(
-                        NavigationEvent.ToRoute(
-                            NavigationRoute.CreateCardScreen(CardStyle.SPLIT).route
-                        )
-                    )
-                }
-            },
-            card = cardMockup.copy(cardStyle = CardStyle.SPLIT),
-            showCardNumber = true
-        )
-
-        BaseCard(
-            modifier = Modifier.clickable {
-                scope.launch {
-                    navigationEventBus.send(
-                        NavigationEvent.ToRoute(
-                            NavigationRoute.CreateCardScreen(CardStyle.MINIMAL).route
-                        )
-                    )
-                }
-            },
-            card = cardMockup.copy(cardStyle = CardStyle.MINIMAL),
-            showCardNumber = true
-        )
+                    }
+                },
+                card = cardMockup.copy(cardStyle = cardStyle),
+                showCardNumber = true
+            )
+        }
     }
 }
 

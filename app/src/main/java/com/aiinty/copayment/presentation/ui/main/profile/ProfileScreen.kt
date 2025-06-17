@@ -31,9 +31,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
+import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
+import com.aiinty.copayment.presentation.ui._components.base.SettingItem
 import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.profile.ProfileAvatar
+import com.aiinty.copayment.presentation.ui.main.ErrorScreen
+import com.aiinty.copayment.presentation.ui.main.LoadingScreen
 import com.aiinty.copayment.presentation.ui.theme.Blue
 import com.aiinty.copayment.presentation.ui.theme.Green
 import com.aiinty.copayment.presentation.ui.theme.Greyscale50
@@ -50,148 +54,89 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
-    val uiState = viewModel.uiState
     UiErrorHandler(viewModel = viewModel)
-
     LaunchedEffect(Unit) {
         viewModel.loadUser()
     }
-
-    when (uiState.value) {
-        is ProfileUiState.Loading -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
-
-        is ProfileUiState.Error -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = stringResource(R.string.something_went_wrong)
-                )
-            }
-        }
-
-        is ProfileUiState.Success -> {
-            val user = (uiState.value as ProfileUiState.Success).profile
-
-            Column(
-                modifier = modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Box(
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    ) {
-                        ProfileAvatar(
-                            avatarUrl = user.fullAvatarUrl
-                        )
-                    }
-
-                    Text(
-                        text = user.fullName,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1D3A70)
-                    )
-
-                    Text(
-                        text = user.email,
-                        fontSize = 12.sp,
-                        color = Color(0xFF6B7280)
-                    )
-                }
-
-                SettingItem(
-                    iconResId = R.drawable.contacts,
-                    label = stringResource(R.string.contact_list),
-                    onClick = { viewModel.navigateToContact() }
-                )
-
-                HorizontalDivider(thickness = 1.dp, color = Color(0xFFF3F4F6))
-
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    SettingItem(
-                        iconResId = R.drawable.settings,
-                        iconTintColor = Blue,
-                        label = stringResource(R.string.edit_profile),
-                        onClick = { viewModel.navigateToEditProfile() }
-                    )
-                    SettingItem(
-                        iconResId = R.drawable.lock,
-                        iconTintColor = Orange,
-                        label = stringResource(R.string.change_password),
-                        onClick = { viewModel.navigateToChangePassword() }
-                    )
-                    SettingItem(
-                        iconResId = R.drawable.qr_code,
-                        iconTintColor = Purple,
-                        label = stringResource(R.string.change_log_in_pin),
-                        onClick = { viewModel.navigateToChangeLogInPin() }
-                    )
-                }
-            }
-        }
+    UiErrorHandler(viewModel)
+    when(val state = viewModel.uiState.value) {
+        is ProfileUiState.Loading -> LoadingScreen(modifier)
+        is ProfileUiState.Error -> ErrorScreen(modifier)
+        is ProfileUiState.Success -> ProfileScreenContent(
+            modifier,
+            state.profile,
+            viewModel
+        )
     }
 }
 
 @Composable
-private fun SettingItem(
-    modifier: Modifier = Modifier,
-    iconResId: Int?,
-    iconTintColor: Color = Green,
-    label: String,
-    onClick: () -> Unit = {}
+private fun ProfileScreenContent(
+    modifier: Modifier,
+    user: Profile,
+    viewModel: ProfileViewModel
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .clickable {
-                onClick()
-            }
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+    Column(
+        modifier = modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(Greyscale50, RoundedCornerShape(12.dp)),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Icon(
-                    painter = if (iconResId != null) painterResource(iconResId) else
-                        painterResource(R.drawable.settings),
-                    contentDescription = label,
-                    tint = iconTintColor
+                ProfileAvatar(
+                    avatarUrl = user.fullAvatarUrl
                 )
             }
 
             Text(
-                text = label,
-                color = Greyscale900,
-                style = Typography.bodyMedium,
-                fontWeight = FontWeight.W500
+                text = user.fullName,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1D3A70)
+            )
+
+            Text(
+                text = user.email,
+                fontSize = 12.sp,
+                color = Color(0xFF6B7280)
             )
         }
 
-        Icon(
-            modifier = Modifier.size(16.dp),
-            painter = painterResource(R.drawable.chevron_right),
-            tint = Greyscale500,
-            contentDescription = stringResource(R.string.navigate)
+        SettingItem(
+            iconResId = R.drawable.contacts,
+            label = stringResource(R.string.contact_list),
+            onClick = { viewModel.navigateToContact() }
         )
+
+        HorizontalDivider(thickness = 1.dp, color = Color(0xFFF3F4F6))
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            SettingItem(
+                iconResId = R.drawable.settings,
+                iconTintColor = Blue,
+                label = stringResource(R.string.edit_profile),
+                onClick = { viewModel.navigateToEditProfile() }
+            )
+            SettingItem(
+                iconResId = R.drawable.lock,
+                iconTintColor = Orange,
+                label = stringResource(R.string.change_password),
+                onClick = { viewModel.navigateToChangePassword() }
+            )
+            SettingItem(
+                iconResId = R.drawable.qr_code,
+                iconTintColor = Purple,
+                label = stringResource(R.string.change_log_in_pin),
+                onClick = { viewModel.navigateToChangeLogInPin() }
+            )
+        }
     }
 }
 

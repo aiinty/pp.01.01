@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.CardStyle
-import com.aiinty.copayment.presentation.common.CardUtils
+import com.aiinty.copayment.presentation.utils.CardUtils
 import com.aiinty.copayment.presentation.ui._components.card.styles.classic.CardBotClassic
 import com.aiinty.copayment.presentation.ui._components.card.styles.minimal.CardBotMinimal
 import com.aiinty.copayment.presentation.ui._components.card.styles.split.CardBotSplit

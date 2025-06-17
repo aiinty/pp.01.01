@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,102 +32,96 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
+import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
+import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
 import com.aiinty.copayment.presentation.ui._components.base.BasePullToRefreshBox
 import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.card.BaseCard
+import com.aiinty.copayment.presentation.ui.main.ErrorScreen
+import com.aiinty.copayment.presentation.ui.main.LoadingScreen
 import com.aiinty.copayment.presentation.ui.theme.Greyscale50
 import com.aiinty.copayment.presentation.ui.theme.Greyscale900
 import com.aiinty.copayment.presentation.viewmodels.CardUiState
 import com.aiinty.copayment.presentation.viewmodels.CardViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardsScreen(
     modifier: Modifier = Modifier,
     viewModel: CardViewModel = hiltViewModel(),
 ) {
     UiErrorHandler(viewModel)
-
-    val uiState = viewModel.uiState
-    val isRefreshing = remember { mutableStateOf(false) }
-
     LaunchedEffect(Unit) {
         viewModel.loadCards()
     }
+    when(val state = viewModel.uiState.value) {
+        is CardUiState.Loading -> LoadingScreen(modifier)
+        is CardUiState.Error -> ErrorScreen(modifier)
+        is CardUiState.Success -> CardsScreenContent(modifier, state.cards, viewModel)
+    }
+}
 
-    when(uiState.value) {
-        is CardUiState.Loading -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CardsScreenContent(
+    modifier: Modifier,
+    cards: List<Card>,
+    viewModel: CardViewModel
+) {
+    val isRefreshing = remember { mutableStateOf(false) }
 
-        is CardUiState.Error -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = stringResource(R.string.something_went_wrong)
+    BasePullToRefreshBox(
+        isRefreshing = isRefreshing.value,
+        onRefresh = { viewModel.loadCards() }
+    ) {
+        LazyColumn(
+            modifier = modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(cards) { card ->
+                BaseCard(
+                    modifier = Modifier
+                        .clickable {
+                            viewModel.selectCard(card)
+                            viewModel.navigateToEditCard()
+                        },
+                    card = card
                 )
             }
-        }
 
-        is CardUiState.Success -> {
-            val cards = (uiState.value as CardUiState.Success).cards
-
-            BasePullToRefreshBox(
-                isRefreshing = isRefreshing.value,
-                onRefresh = { viewModel.loadCards() }
-            ) {
-                LazyColumn(
-                    modifier = modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+            item {
+                BaseButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    onClick = {
+                        viewModel.navigateToCreateStyleCard()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Greyscale50,
+                        contentColor = Greyscale900,
+                        disabledContainerColor = Greyscale50,
+                        disabledContentColor = Greyscale900
+                    )
                 ) {
-                    items(cards) { card ->
-                        BaseCard(
-                            modifier = Modifier
-                                .clickable {
-                                    viewModel.selectCard(card)
-                                    viewModel.navigateToEditCard()
-                                },
-                            card = card
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.plus),
+                            contentDescription = stringResource(R.string.plus)
                         )
-                    }
 
-                    item {
-                        BaseButton(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 16.dp),
-                            onClick = {
-                                viewModel.navigateToCreateStyleCard()
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Greyscale50,
-                                contentColor = Greyscale900,
-                                disabledContainerColor = Greyscale50,
-                                disabledContentColor = Greyscale900
-                            )
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.plus),
-                                    contentDescription = stringResource(R.string.plus)
-                                )
-
-                                Text(
-                                    text = stringResource(R.string.add_new_card),
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.W700,
-                                    color = Greyscale900
-                                )
-                            }
-                        }
+                        Text(
+                            text = stringResource(R.string.add_new_card),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.W700,
+                            color = Greyscale900
+                        )
                     }
                 }
             }
@@ -142,7 +137,7 @@ fun NavGraphBuilder.cardsScreen(
         route = NavigationRoute.CardsScreen.route
     ){
         val parentEntry = remember(navController) {
-            navController.getBackStackEntry(NavigationRoute.CardsScreen.route)
+            navController.getBackStackEntry(NavigationGraph.CardGraph.route)
         }
         val viewModel: CardViewModel = hiltViewModel(parentEntry)
         CardsScreen(
