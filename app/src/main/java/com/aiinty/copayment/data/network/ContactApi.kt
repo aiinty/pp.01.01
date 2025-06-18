@@ -23,6 +23,6 @@ interface ContactApi {
     suspend fun insertContact(
         @Header("Authorization") authHeader: String,
         @Body body: ContactInsertRequest
-    ): Response<EmptyResponse>
+    ): Response<Unit>
 
 }

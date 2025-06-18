@@ -35,6 +35,7 @@ fun ProfileAvatar(
     modifier: Modifier = Modifier,
     avatarUrl: String,
     localImageUri: Uri? = null,
+    withBorder: Boolean = true,
     onClick: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
@@ -60,14 +61,15 @@ fun ProfileAvatar(
 
         Box(
             modifier = Modifier
-                .matchParentSize()
-                .shadow(
-                    elevation = 16.dp,
-                    shape = CircleShape,
-                    spotColor = Color.Black.copy(alpha = 0.5f)
+                .matchParentSize().then(
+                    if (withBorder) Modifier
+                        .shadow(
+                            elevation = 16.dp,
+                            shape = CircleShape,
+                            spotColor = Color.Black.copy(alpha = 0.5f)
+                        ).background(Color.White, shape = CircleShape)
+                        .padding(10.dp) else Modifier
                 )
-                .background(Color.White, shape = CircleShape)
-                .padding(10.dp)
                 .clip(CircleShape)
         ) {
             if (imageBitmap != null) {

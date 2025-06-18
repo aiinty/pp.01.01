@@ -25,3 +25,5 @@
 - [AndroidX Security Crypto](https://developer.android.com/jetpack/androidx/releases/security)
 - [Dagger Hilt](https://dagger.dev/hilt)
 - [Coil](https://github.com/coil-kt/coil)
+- [Zxing](https://github.com/zxing/zxing)
+- [Zxing-android-embedded](https://github.com/journeyapps/zxing-android-embedded)

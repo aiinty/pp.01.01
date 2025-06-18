@@ -11,11 +11,13 @@ import com.aiinty.copayment.data.network.RetrofitInstance
 import com.aiinty.copayment.data.network.TransactionApi
 import com.aiinty.copayment.data.repository.AvatarRepositoryImpl
 import com.aiinty.copayment.data.repository.CardRepositoryImpl
+import com.aiinty.copayment.data.repository.ContactRepositoryImpl
 import com.aiinty.copayment.data.repository.ProfileRepositoryImpl
 import com.aiinty.copayment.data.repository.TransactionRepositoryImpl
 import com.aiinty.copayment.data.repository.UserRepositoryImpl
 import com.aiinty.copayment.domain.repository.AvatarRepository
 import com.aiinty.copayment.domain.repository.CardRepository
+import com.aiinty.copayment.domain.repository.ContactRepository
 import com.aiinty.copayment.domain.repository.ProfileRepository
 import com.aiinty.copayment.domain.repository.TransactionRepository
 import com.aiinty.copayment.domain.repository.UserRepository
@@ -102,6 +104,14 @@ object AppModule {
         gson: Gson,
         userPrefs: UserPreferences
     ): AvatarRepository = AvatarRepositoryImpl(api, gson, userPrefs)
+
+    @Provides
+    @Singleton
+    fun provideContactRepository(
+        api: ContactApi,
+        gson: Gson,
+        userPrefs: UserPreferences
+    ): ContactRepository = ContactRepositoryImpl(api, gson, userPrefs)
 
     @Provides
     @Singleton

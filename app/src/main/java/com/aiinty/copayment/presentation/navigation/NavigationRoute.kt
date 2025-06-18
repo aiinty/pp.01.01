@@ -61,8 +61,7 @@ sealed class NavigationRoute(
     )
     data object EditCardScreen: NavigationRoute("edit_card")
 
-    data object ShowQRCodeScreen: NavigationRoute("qr_code_show")
-    data object ScanQRCodeScreen: NavigationRoute("qr_code_scan")
+    data object QRCodeScreen: NavigationRoute("qr_code")
 
     data object ActivityScreen: NavigationRoute("activity", true)
 
@@ -76,7 +75,7 @@ sealed class NavigationRoute(
             SignUpScreen, SignInScreen, RecoverScreen, PinCodeScreen,
             HomeScreen, TransactionsScreen, SelectCardScreen,
             CardsScreen, CreateCardOnboardingScreen, CreateCardStyleScreen, EditCardScreen,
-            ShowQRCodeScreen, ScanQRCodeScreen,
+            QRCodeScreen,
             ActivityScreen,
             ProfileScreen, EditProfileScreen, ContactScreen,
         ).associateBy { it.route }

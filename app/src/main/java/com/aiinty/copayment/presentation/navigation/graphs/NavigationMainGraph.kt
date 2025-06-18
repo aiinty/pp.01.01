@@ -18,8 +18,7 @@ import com.aiinty.copayment.presentation.ui.main.home.transactionsScreen
 import com.aiinty.copayment.presentation.ui.main.profile.contactScreen
 import com.aiinty.copayment.presentation.ui.main.profile.editProfileScreen
 import com.aiinty.copayment.presentation.ui.main.profile.profileScreen
-import com.aiinty.copayment.presentation.ui.main.qr.scanQRCodeScreen
-import com.aiinty.copayment.presentation.ui.main.qr.showQRCodeScreen
+import com.aiinty.copayment.presentation.ui.main.qr.qrCodeScreen
 
 fun NavGraphBuilder.mainGraph(
     modifier: Modifier = Modifier,
@@ -40,8 +39,7 @@ fun NavGraphBuilder.mainGraph(
         createCardScreen(modifier, navController)
         editCardScreen(modifier, navController)
 
-        showQRCodeScreen(modifier)
-        scanQRCodeScreen(modifier)
+        qrCodeScreen(modifier, navController)
 
         activityScreen(modifier)
 
