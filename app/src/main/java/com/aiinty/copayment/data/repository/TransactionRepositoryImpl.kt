@@ -35,7 +35,7 @@ class TransactionRepositoryImpl @Inject constructor(
 
             handleApiResponse(response).fold(
                 onSuccess = { trxList ->
-                    val cards: List<Transaction> = trxList.map { trx ->
+                    val transactions: List<Transaction> = trxList.map { trx ->
                         Transaction(
                             id = trx.id,
                             senderId = trx.sender_id,
@@ -54,7 +54,7 @@ class TransactionRepositoryImpl @Inject constructor(
                             transactionType = TransactionType.fromId(trx.type) ?: TransactionType.OTHER
                         )
                     }
-                    Result.success(cards)
+                    Result.success(transactions)
                 },
                 onFailure = {
                     Result.failure(it)
