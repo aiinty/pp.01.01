@@ -139,4 +139,20 @@
     <string name="transfer_success_title">Transfer Successful</string>
     <string name="select_transaction_type">Select transaction type</string>
     <string name="load_more">Load more</string>
+    <string name="change_card">Change card</string>
+    <string name="bank_account">Bank account: %1$s</string>
+    <string name="current_balance">Current balance</string>
+    <string name="welcome_back">Welcome back!</string>
+    <string name="notifications">Notifications</string>
+    <string name="all_transactions">All transactions</string>
+    <string name="back_to_home">Back to Home</string>
+    <string name="choose_cards">Choose cards</string>
+    <string name="continue_text">Continue</string>
+    <string name="choose_recipients">Choose recipients</string>
+    <string name="enter_amount">Enter amount:</string>
+    <string name="max">Max $%1$s</string>
+    <string name="scan_qr">Scan QR</string>
+    <string name="from">From %1$s</string>
+    <string name="cancel">Cancel</string>
+    <string name="qr_code">QR Code</string>
 </resources>

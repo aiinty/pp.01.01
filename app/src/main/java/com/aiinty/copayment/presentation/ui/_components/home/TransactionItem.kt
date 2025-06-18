@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.domain.model.Transaction
 import com.aiinty.copayment.domain.model.TransactionCategory
@@ -73,7 +74,7 @@ fun TransactionItem(
                                     ))
                                 }
                                 else -> {
-                                    "From ${profile.fullName}"
+                                    stringResource(R.string.from, profile.fullName)
                                 }
                             }
                         } ?: stringResource(TransactionCategory.toResId(trx.transactionType.category))

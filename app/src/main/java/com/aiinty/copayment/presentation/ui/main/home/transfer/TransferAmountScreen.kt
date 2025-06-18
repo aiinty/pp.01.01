@@ -22,12 +22,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.Contact
 import com.aiinty.copayment.domain.utils.MoneyUtils.formatMoney
@@ -113,12 +115,12 @@ fun TransferAmountScreenContent(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Enter amount:",
+                        text = stringResource(R.string.enter_amount),
                         color = Color(0xFFB0B4C3),
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Text(
-                        text = "Max \$${maxAmount.formatMoney()}",
+                        text = stringResource(R.string.max, maxAmount.formatMoney()),
                         color = Color(0xFFB0B4C3),
                         style = MaterialTheme.typography.bodyMedium
                     )
@@ -157,7 +159,7 @@ fun TransferAmountScreenContent(
                 .fillMaxWidth()
                 .height(56.dp)
         ) {
-            Text("Send Money")
+            Text(stringResource(R.string.send_money))
         }
 
         Spacer(modifier = Modifier.height(20.dp))

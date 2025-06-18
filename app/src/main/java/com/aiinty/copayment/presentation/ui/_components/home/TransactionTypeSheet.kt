@@ -120,7 +120,7 @@ fun TransactionTypeSheet(
                     .fillMaxWidth()
                     .padding(top = 8.dp),
                 onClick = { onDismiss() },
-                text = "Cancel",
+                text = stringResource(R.string.cancel),
                 enabledColor = Green
             )
         }

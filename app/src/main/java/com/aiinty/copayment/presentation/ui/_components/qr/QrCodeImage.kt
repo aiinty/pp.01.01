@@ -4,6 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.stringResource
+import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.utils.QRUtils.generateQrBitmap
 
 @Composable
@@ -16,6 +18,6 @@ fun QrCodeImage(
     Image(
         modifier = modifier,
         bitmap = bitmap.asImageBitmap(),
-        contentDescription = "QR Code"
+        contentDescription = stringResource(R.string.qr_code)
     )
 }

@@ -109,7 +109,6 @@ class HomeViewModel @Inject constructor(
                 val selectedCard = foundedCard ?: cards[0]
                 _selectedCard.value = selectedCard
 
-                // Пагинация
                 currentRangeStart = 0
                 _transactions.value = emptyList()
                 canLoadMoreInternal = true

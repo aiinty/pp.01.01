@@ -79,7 +79,8 @@ class TransactionViewModel @Inject constructor(
 
             runCatching {
                 val isWithdrawLike = TransactionType.isWithdrawLike(transactionType)
-                val profile = getCachedProfileUseCase.invoke() ?: throw AppException.UiTextError("User not found")
+                val profile = getCachedProfileUseCase.invoke()
+                    ?: throw AppException.UiResError(R.string.unknown_error)
                 val transaction = Transaction(
                     id = "",
                     senderId = if (isWithdrawLike) card.id else null,

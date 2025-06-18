@@ -81,7 +81,7 @@ fun HomeScreen(
             viewModel = viewModel,
             profile = state.profile,
             card = selectedCard.value!!,
-            transactions = state.transactions
+            transactions = viewModel.transactions.collectAsState().value
         )
     }
 }
@@ -106,7 +106,7 @@ private fun HomeScreenContent(
             leftItem = {
                 Column {
                     Text(
-                        text = "Welcome back!",
+                        text = stringResource(R.string.welcome_back),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White
@@ -135,7 +135,7 @@ private fun HomeScreenContent(
                     Icon(
                         modifier = Modifier.size(24.dp),
                         painter = painterResource(R.drawable.notification),
-                        contentDescription = "Notification"
+                        contentDescription = stringResource(R.string.notifications)
                     )
                 }
             }
@@ -195,8 +195,8 @@ private fun HomeScreenContent(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "All transactions",
-                        color = Color(0xFF1D3A70),
+                        stringResource(R.string.all_transactions),
+                        color = Greyscale900,
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp
                     )
@@ -211,7 +211,7 @@ private fun HomeScreenContent(
                 Spacer(Modifier.height(8.dp))
 
                 GroupedTransactionsList(
-                    cardTransactions = viewModel.transactions.collectAsState().value,
+                    cardTransactions = transactions,
                     card = card,
                     profile = profile,
                     canLoadMore = viewModel.canLoadMore.collectAsState().value,

@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -94,7 +95,7 @@ private fun TransferSelectScreenContent(
     ) {
         Column(modifier.weight(2f)) {
             Text(
-                text = "Choose cards",
+                text = stringResource(R.string.choose_cards),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(16.dp)
             )
@@ -150,7 +151,7 @@ private fun TransferSelectScreenContent(
         }
         Column(modifier.weight(2f)) {
             Text(
-                text = "Choose recipients",
+                text = stringResource(R.string.choose_recipients),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(16.dp)
             )
@@ -188,7 +189,7 @@ private fun TransferSelectScreenContent(
             },
             enabled = selectedCard.value != null && selectedContact.value != null,
         ) {
-            Text("Continue")
+            Text(stringResource(R.string.continue_text))
         }
     }
 }

@@ -117,7 +117,8 @@ class TransferViewModel @Inject constructor(
         viewModelScope.launch {
 
             runCatching {
-                val profile = getCachedProfileUseCase.invoke() ?: throw AppException.UiTextError("User not found")
+                val profile = getCachedProfileUseCase.invoke()
+                    ?: throw AppException.UiResError(R.string.unknown_error)
                 val transaction = Transaction(
                     id = "",
                     senderId = card.id,

@@ -2,9 +2,14 @@ package com.aiinty.copayment.presentation.ui.main.home.transfer
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,17 +26,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.aiinty.copayment.R
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
+import com.aiinty.copayment.presentation.ui._components.base.BaseButton
 import com.aiinty.copayment.presentation.ui.main.ErrorScreen
 import com.aiinty.copayment.presentation.ui.main.LoadingScreen
+import com.aiinty.copayment.presentation.ui.theme.Greyscale50
+import com.aiinty.copayment.presentation.ui.theme.Greyscale900
 import com.aiinty.copayment.presentation.viewmodels.TransferUiState
 import com.aiinty.copayment.presentation.viewmodels.TransferViewModel
-import com.aiinty.copayment.R
-import com.aiinty.copayment.presentation.ui._components.base.BaseButton
-import com.aiinty.copayment.presentation.ui.theme.Greyscale50
-import com.aiinty.copayment.presentation.ui.theme.Greyscale500
-import com.aiinty.copayment.presentation.ui.theme.Greyscale900
 
 @Composable
 fun TransferSuccessScreen(
@@ -108,7 +112,7 @@ fun TransferSuccessScreenContent(
             },
         ) {
             Text(
-                text = "Back to Home"
+                text = stringResource(R.string.back_to_home)
             )
         }
     }

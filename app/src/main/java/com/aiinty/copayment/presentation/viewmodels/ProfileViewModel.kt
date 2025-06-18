@@ -137,8 +137,7 @@ class ProfileViewModel @Inject constructor(
                 )
 
                 if (avatarResult.isFailure) {
-                    val errorMessage = "Error uploading avatar"
-                    handleError(avatarResult.exceptionOrNull() ?: AppException.UiTextError(errorMessage))
+                    handleError(AppException.UiResError(R.string.unknown_error))
                     _uiState.value = ProfileUiState.Error
                     return@launch
                 }
@@ -151,8 +150,7 @@ class ProfileViewModel @Inject constructor(
             val profileResult = updateProfileUseCase.invoke(updatedProfile)
 
             if (profileResult.isFailure) {
-                val errorMessage = "Profile update failed."
-                handleError(profileResult.exceptionOrNull() ?: AppException.UiTextError(errorMessage))
+                handleError(AppException.UiResError(R.string.unknown_error))
                 _uiState.value = ProfileUiState.Error
                 return@launch
             }
@@ -163,8 +161,7 @@ class ProfileViewModel @Inject constructor(
             if (cached != null && profile.email != cached.email) {
                 userResult = updateUserUseCase.invoke(email = profile.email, password = null)
                 if (userResult.isFailure) {
-                    val errorMessage = "Email update failed."
-                    handleError(userResult.exceptionOrNull() ?: AppException.UiTextError(errorMessage))
+                    handleError(AppException.UiResError(R.string.unknown_error))
                     _uiState.value = ProfileUiState.Error
                     return@launch
                 }
@@ -192,7 +189,8 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = ProfileUiState.Loading
             runCatching {
-                val profile = getCachedProfileUseCase.invoke() ?: throw AppException.UiTextError("User not found")
+                val profile = getCachedProfileUseCase.invoke()
+                    ?: throw AppException.UiResError(R.string.unknown_error)
                 val contacts = getContactsUseCase.invoke(profile.id).getOrThrow()
 
                 val cardIds = contacts.map { it.cardId }

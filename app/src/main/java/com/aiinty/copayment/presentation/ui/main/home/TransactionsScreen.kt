@@ -146,7 +146,7 @@ private fun TransactionsScreenContent(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "Current balance",
+                        text = stringResource(R.string.current_balance),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White
@@ -188,11 +188,11 @@ private fun TransactionsScreenContent(
                         CardUtils.maskCardNumber(card.cardNumber)
 
                     Text(
-                        text = "Bank account: ${
-                            CardUtils.formatCardNumberWithSpaces(
+                        text = stringResource(
+                            R.string.bank_account, CardUtils.formatCardNumberWithSpaces(
                                 cardNumber
                             )
-                        }",
+                        ),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White
@@ -211,7 +211,7 @@ private fun TransactionsScreenContent(
                     Icon(
                         modifier = Modifier.size(24.dp),
                         painter = painterResource(R.drawable.change),
-                        contentDescription = "Change card",
+                        contentDescription = stringResource(R.string.change_card),
                         tint = Color.Unspecified
                     )
                 }
