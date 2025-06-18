@@ -12,7 +12,7 @@ import retrofit2.http.Query
 
 interface TransactionApi {
 
-    @GET("/rest/v1/transactions?select=*,profiles(*)")
+    @GET("/rest/v1/transactions?select=*,profiles(*)&order=created_at.desc")
     suspend fun getTransactions(
         @Query("or") or: String,
         @Header("Authorization") authHeader: String,

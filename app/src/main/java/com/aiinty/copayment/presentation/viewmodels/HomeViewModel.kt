@@ -9,6 +9,7 @@ import com.aiinty.copayment.domain.model.AppException
 import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.domain.model.Transaction
+import com.aiinty.copayment.domain.model.TransactionType
 import com.aiinty.copayment.domain.usecase.card.GetCardsUseCase
 import com.aiinty.copayment.domain.usecase.home.GetTransactionsUseCase
 import com.aiinty.copayment.domain.usecase.profile.GetProfileUseCase
@@ -36,6 +37,15 @@ class HomeViewModel @Inject constructor(
 
     private val _selectedCard = MutableStateFlow<Card?>(null)
     val selectedCard: StateFlow<Card?> = _selectedCard
+
+    private val _transactions = MutableStateFlow<List<Transaction>>(emptyList())
+    val transactions: StateFlow<List<Transaction>> = _transactions
+
+    private var currentRangeStart = 0
+    private val pageSize = 10
+    private var canLoadMoreInternal = true
+
+    val canLoadMore = MutableStateFlow(true)
 
     private suspend fun navigateTo(route: String) {
         navigationEventBus.send(NavigationEvent.ToRoute(route))
@@ -65,6 +75,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun navigateToTransaction(type: TransactionType) {
+        viewModelScope.launch {
+            navigationEventBus.send(
+                NavigationEvent.ToTransaction(type)
+            )
+        }
+    }
+
     fun loadUserInfo() {
         viewModelScope.launch {
             _uiState.value = HomeUiState.Loading
@@ -91,15 +109,21 @@ class HomeViewModel @Inject constructor(
                 val selectedCard = foundedCard ?: cards[0]
                 _selectedCard.value = selectedCard
 
-                val transactions = getTransactionsUseCase.invoke(selectedCard.id).getOrThrow()
+                // Пагинация
+                currentRangeStart = 0
+                _transactions.value = emptyList()
+                canLoadMoreInternal = true
+                canLoadMore.value = true
+                loadNextTransactions(selectedCard.id)
+
                 val profile = getProfileUseCase.invoke().getOrThrow()
 
-                Triple(profile, cards, transactions)
-            }.onSuccess { triple ->
+                Pair(profile, cards)
+            }.onSuccess { (profile, cards) ->
                 _uiState.value = HomeUiState.Success(
-                    triple.first,
-                    triple.second,
-                    triple.third
+                    profile,
+                    cards,
+                    _transactions.value
                 )
             }.onFailure { error ->
                 _uiState.value = HomeUiState.Error
@@ -115,6 +139,27 @@ class HomeViewModel @Inject constructor(
             loadUserInfo()
             navigationEventBus.send(
                 NavigationEvent.Back
+            )
+        }
+    }
+
+    fun loadNextTransactions(cardId: String?) {
+        viewModelScope.launch {
+            if (!canLoadMoreInternal) return@launch
+            val range = "${currentRangeStart}-${currentRangeStart + pageSize - 1}"
+            val result = getTransactionsUseCase.invoke(cardId, range)
+            result.fold(
+                onSuccess = { newItems ->
+                    _transactions.value = _transactions.value + newItems
+                    canLoadMoreInternal = newItems.size == pageSize
+                    canLoadMore.value = canLoadMoreInternal
+                    currentRangeStart += newItems.size
+                },
+                onFailure = {
+                    handleError(it)
+                    canLoadMoreInternal = false
+                    canLoadMore.value = false
+                }
             )
         }
     }

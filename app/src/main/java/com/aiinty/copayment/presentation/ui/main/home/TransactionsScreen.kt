@@ -74,7 +74,7 @@ fun TransactionsScreen(
             viewModel = viewModel,
             profile = state.profile,
             card = selectedCard.value!!,
-            transactions = state.transactions,
+            transactions = viewModel.transactions.collectAsState().value,
         )
     }
 }
@@ -93,7 +93,7 @@ private fun TransactionsScreenContent(
     }
     val isNumberVisible = remember { mutableStateOf(false) }
 
-    var selectedCategories = remember { mutableStateOf<Set<TransactionCategory>>(emptySet()) }
+    val selectedCategories = remember { mutableStateOf<Set<TransactionCategory>>(emptySet()) }
     var selectedTypes = remember { mutableStateOf<Set<TransactionType>>(emptySet()) }
     val filteredTransactions = transactions.filter { transaction ->
         (selectedCategories.value.isEmpty() || selectedCategories.value.contains(transaction.category)) &&
@@ -248,8 +248,10 @@ private fun TransactionsScreenContent(
 
                 GroupedTransactionsList(
                     cardTransactions = filteredTransactions,
+                    card = card,
                     profile = profile,
-                    card = card
+                    canLoadMore = viewModel.canLoadMore.collectAsState().value,
+                    onLoadMore = { viewModel.loadNextTransactions(card.id) }
                 )
             }
         }

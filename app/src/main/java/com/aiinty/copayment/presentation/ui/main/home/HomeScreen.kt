@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +43,7 @@ import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.CardStyle
 import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.domain.model.Transaction
+import com.aiinty.copayment.domain.model.TransactionType
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
 import com.aiinty.copayment.presentation.ui._components.base.BaseIconButton
@@ -50,6 +52,7 @@ import com.aiinty.copayment.presentation.ui._components.card.BaseCardBot
 import com.aiinty.copayment.presentation.ui._components.card.BaseCardTop
 import com.aiinty.copayment.presentation.ui._components.home.HomeHeader
 import com.aiinty.copayment.presentation.ui._components.home.OperationMenuRow
+import com.aiinty.copayment.presentation.ui._components.home.TransactionTypeSheet
 import com.aiinty.copayment.presentation.ui.main.ErrorScreen
 import com.aiinty.copayment.presentation.ui.main.LoadingScreen
 import com.aiinty.copayment.presentation.ui.theme.Green
@@ -95,6 +98,7 @@ private fun HomeScreenContent(
         CardStyle.MINIMAL -> Greyscale900
         else -> Green
     }
+    val showTransactionTypeSheet = remember { mutableStateOf(false) }
 
     Column(modifier = modifier) {
         HomeHeader(
@@ -162,8 +166,23 @@ private fun HomeScreenContent(
             )
 
             OperationMenuRow(
-                onTransferClick = { viewModel.navigateToTransfer() }
+                onDepositClick = { viewModel.navigateToTransaction(TransactionType.DEPOSIT) },
+                onTransferClick = { viewModel.navigateToTransfer() },
+                onWithdrawClick = { viewModel.navigateToTransaction(TransactionType.WITHDRAW) },
+                onMoreClick = { showTransactionTypeSheet.value = true }
             )
+
+            if (showTransactionTypeSheet.value) {
+                TransactionTypeSheet(
+                    onSelect = { type ->
+                        showTransactionTypeSheet.value = false
+                        if (type != null) {
+                            viewModel.navigateToTransaction(type)
+                        }
+                    },
+                    onDismiss = { showTransactionTypeSheet.value = false }
+                )
+            }
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -192,9 +211,11 @@ private fun HomeScreenContent(
                 Spacer(Modifier.height(8.dp))
 
                 GroupedTransactionsList(
-                    cardTransactions = transactions,
+                    cardTransactions = viewModel.transactions.collectAsState().value,
+                    card = card,
                     profile = profile,
-                    card = card
+                    canLoadMore = viewModel.canLoadMore.collectAsState().value,
+                    onLoadMore = { viewModel.loadNextTransactions(card.id) }
                 )
             }
         }

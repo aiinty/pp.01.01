@@ -3,7 +3,6 @@ package com.aiinty.copayment.presentation.navigation
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -39,6 +38,10 @@ fun CoPaymentNavHost(
                         event.email,
                         event.nextDestination
                     ).route
+                    navController.navigate(route) { launchSingleTop = true }
+                }
+                is NavigationEvent.ToTransaction -> {
+                    val route = NavigationRoute.TransactionScreen(event.type).route
                     navController.navigate(route) { launchSingleTop = true }
                 }
             }

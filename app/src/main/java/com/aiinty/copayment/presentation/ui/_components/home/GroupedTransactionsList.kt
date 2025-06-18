@@ -17,6 +17,7 @@ import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.domain.model.Transaction
+import com.aiinty.copayment.presentation.ui._components.base.BaseButton
 import com.aiinty.copayment.presentation.ui._components.home.TransactionItem
 import com.aiinty.copayment.presentation.ui.theme.Greyscale500
 import com.aiinty.copayment.presentation.utils.TransactionsUtils
@@ -27,7 +28,9 @@ import java.time.format.DateTimeFormatter
 fun GroupedTransactionsList(
     cardTransactions: List<Transaction>,
     profile: Profile,
-    card: Card
+    card: Card,
+    canLoadMore: Boolean = false,
+    onLoadMore: (() -> Unit)? = null
 ) {
     if (cardTransactions.isEmpty()) {
         Box(
@@ -82,6 +85,19 @@ fun GroupedTransactionsList(
                     modifier = Modifier.padding(vertical = 16.dp),
                     color = Color(0xFFF3F4F6)
                 )
+            }
+        }
+
+        if (canLoadMore && onLoadMore != null) {
+            item {
+                BaseButton(
+                    onClick = onLoadMore,
+                ) {
+                    Text(
+                        text = stringResource(R.string.load_more),
+                        fontWeight = FontWeight.Medium
+                    )
+                }
             }
         }
     }

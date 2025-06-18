@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -31,6 +30,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.Contact
+import com.aiinty.copayment.domain.utils.MoneyUtils.formatMoney
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
@@ -127,11 +127,7 @@ fun TransferAmountScreenContent(
 
                 BaseTextField(
                     value = input.value,
-                    onValueChange = {
-                        if (it.isEmpty() || it.matches(Regex("^\\d*\\.?\\d{0,2}$"))) {
-                            input.value = it
-                        }
-                    },
+                    onValueChange = { input.value = it },
                     placeholder = { Text("0.00") },
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
@@ -168,12 +164,12 @@ fun TransferAmountScreenContent(
 
         NumericKeyboard(
             input = input,
+            validateRules = {
+                it.isEmpty() || it.matches(Regex("^\\d*\\.?\\d{0,2}$"))
+            }
         )
     }
 }
-
-private fun Double.formatMoney(): String =
-    "%,.2f".format(this)
 
 fun NavGraphBuilder.transferAmountScreen(
     modifier: Modifier = Modifier,

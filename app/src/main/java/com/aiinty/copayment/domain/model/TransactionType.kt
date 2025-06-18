@@ -24,5 +24,26 @@ enum class TransactionType(val id: Int, val category: TransactionCategory) {
                 OTHER -> R.string.other
             }
         }
+        fun isWithdrawLike(transactionType: TransactionType): Boolean {
+            return when (transactionType) {
+                WITHDRAW,
+                SUBSCRIPTION,
+                TRAVEL,
+                INVESTMENT,
+                OTHER -> true
+                else -> false
+            }
+        }
+        fun toIconId(transactionType: TransactionType): Int {
+            return when (transactionType) {
+                DEPOSIT -> R.drawable.deposit
+                TRANSFER -> R.drawable.transfer
+                WITHDRAW -> R.drawable.withdraw
+                SUBSCRIPTION -> R.drawable.subscribe
+                TRAVEL -> R.drawable.car
+                INVESTMENT -> R.drawable.investments
+                else -> R.drawable.withdraw
+            }
+        }
     }
 }

@@ -137,4 +137,6 @@
     <string name="send_money">Send Money</string>
     <string name="transfer_success_desc">Transfers are reviewed which may result in\ndelays or funds being frozen</string>
     <string name="transfer_success_title">Transfer Successful</string>
+    <string name="select_transaction_type">Select transaction type</string>
+    <string name="load_more">Load more</string>
 </resources>

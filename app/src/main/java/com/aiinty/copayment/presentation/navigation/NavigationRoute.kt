@@ -2,6 +2,7 @@ package com.aiinty.copayment.presentation.navigation
 
 import com.aiinty.copayment.domain.model.CardStyle
 import com.aiinty.copayment.domain.model.OTPType
+import com.aiinty.copayment.domain.model.TransactionType
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -51,8 +52,10 @@ sealed class NavigationRoute(
     data object TransferSelectScreen: NavigationRoute("transfer_select", false)
     data object TransferAmountScreen: NavigationRoute("transfer_amount", false)
     data object TransferProofScreen: NavigationRoute("transfer_proof", false)
-    data object WithdrawScreen: NavigationRoute("withdraw", false)
-    data object MoreScreen: NavigationRoute("more", false)
+    data class TransactionScreen(val type: TransactionType): NavigationRoute(
+        route = "transaction/${type.id}",
+        showBottomBar = false
+    )
 
     data object CardsScreen: NavigationRoute("cards", true)
     data object CreateCardOnboardingScreen: NavigationRoute("create_card_onboarding")
@@ -81,7 +84,6 @@ sealed class NavigationRoute(
             SignUpScreen, SignInScreen, RecoverScreen, PinCodeScreen,
             HomeScreen, TransactionsScreen, SelectCardScreen,
             TransferScreen, TransferSelectScreen, TransferAmountScreen, TransferProofScreen,
-            WithdrawScreen, MoreScreen,
             CardsScreen, CreateCardOnboardingScreen, CreateCardStyleScreen, EditCardScreen,
             QRCodeScreen,
             ActivityScreen,
@@ -99,6 +101,7 @@ sealed class NavigationRoute(
                 route.startsWith("password_change") -> PasswordChangeScreen()
                 route.startsWith("pin_code_create") -> CreatePinCodeScreen()
                 route.startsWith("create_card?") -> CreateCardScreen()
+                route.startsWith("transaction/") -> TransactionScreen(TransactionType.WITHDRAW)
                 else -> routes[route]
             }
         }

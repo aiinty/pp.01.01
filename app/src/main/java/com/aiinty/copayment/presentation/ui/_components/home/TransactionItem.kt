@@ -22,11 +22,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.domain.model.Transaction
 import com.aiinty.copayment.domain.model.TransactionCategory
 import com.aiinty.copayment.domain.model.TransactionType
+import com.aiinty.copayment.domain.utils.MoneyUtils.formatMoney
 import com.aiinty.copayment.presentation.ui.theme.Green
 import com.aiinty.copayment.presentation.ui.theme.Greyscale50
 import com.aiinty.copayment.presentation.ui.theme.Greyscale900
@@ -56,7 +56,7 @@ fun TransactionItem(
                     modifier = Modifier
                         .size(26.dp),
                     painter =
-                        painterResource(R.drawable.transfer),
+                        painterResource(TransactionType.toIconId(trx.transactionType)),
                     contentDescription = null,
                     tint = Color.Unspecified,
                 )
@@ -97,7 +97,7 @@ fun TransactionItem(
             }
         }
         Text(
-            text = (if(isPositive) "+ " else "-") + " $${trx.amount}",
+            text = (if(isPositive) "+ " else "-") + " $${trx.amount.formatMoney()}",
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
             color = if (isPositive) Green else Greyscale900

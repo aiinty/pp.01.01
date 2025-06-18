@@ -3,7 +3,6 @@ package com.aiinty.copayment.presentation.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import com.aiinty.copayment.R
 
 data class TopBarState(
@@ -42,8 +41,6 @@ fun rememberTopBarState(
             NavigationRoute.SelectCardScreen to R.string.select_your_card,
             NavigationRoute.TransferSelectScreen to R.string.transfer,
             NavigationRoute.TransferAmountScreen to R.string.send_money,
-            NavigationRoute.WithdrawScreen to R.string.withdraw,
-            NavigationRoute.MoreScreen to R.string.more,
 
             NavigationRoute.CardsScreen to R.string.my_card,
             NavigationRoute.CreateCardStyleScreen to R.string.create_card_style_title,
