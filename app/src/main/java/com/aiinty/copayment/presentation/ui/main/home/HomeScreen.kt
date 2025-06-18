@@ -161,7 +161,9 @@ private fun HomeScreenContent(
                 showBalance = true
             )
 
-            OperationMenuRow()
+            OperationMenuRow(
+                onTransferClick = { viewModel.navigateToTransfer() }
+            )
 
             Column(
                 modifier = Modifier.fillMaxWidth(),

@@ -15,6 +15,9 @@ import com.aiinty.copayment.presentation.ui.main.card.editCardScreen
 import com.aiinty.copayment.presentation.ui.main.home.homeScreen
 import com.aiinty.copayment.presentation.ui.main.home.selectCardScreen
 import com.aiinty.copayment.presentation.ui.main.home.transactionsScreen
+import com.aiinty.copayment.presentation.ui.main.home.transfer.transferAmountScreen
+import com.aiinty.copayment.presentation.ui.main.home.transfer.transferSelectScreen
+import com.aiinty.copayment.presentation.ui.main.home.transfer.transferSuccessScreen
 import com.aiinty.copayment.presentation.ui.main.profile.contactScreen
 import com.aiinty.copayment.presentation.ui.main.profile.editProfileScreen
 import com.aiinty.copayment.presentation.ui.main.profile.profileScreen
@@ -32,6 +35,9 @@ fun NavGraphBuilder.mainGraph(
         homeScreen(modifier, navController)
         transactionsScreen(modifier, navController)
         selectCardScreen(modifier, navController)
+        transferSelectScreen(modifier, navController)
+        transferAmountScreen(modifier, navController)
+        transferSuccessScreen(modifier, navController)
 
         cardsScreen(modifier, navController)
         createCardOnboardingScreen(modifier, navigationEventBus)

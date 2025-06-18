@@ -68,8 +68,8 @@ class TransactionRepositoryImpl @Inject constructor(
             val requestBody = TransactionInsertRequest(
                 type_id = transaction.transactionType.id,
                 amount = transaction.amount,
-                sender_id = transaction.senderId,
-                receiver_id = transaction.receiverId,
+                sender_card_id = transaction.senderId,
+                receiver_card_id = transaction.receiverId,
                 initiator_user_id = transaction.initiatorProfile?.id
             )
 

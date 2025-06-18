@@ -6,6 +6,7 @@ import com.aiinty.copayment.domain.usecase.card.GetCardsUseCase
 import com.aiinty.copayment.domain.usecase.card.InsertCardUseCase
 import com.aiinty.copayment.domain.usecase.card.UpdateCardUseCase
 import com.aiinty.copayment.domain.usecase.home.GetTransactionsUseCase
+import com.aiinty.copayment.domain.usecase.home.InsertTransactionUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,6 +21,13 @@ object HomeUseCaseModule {
         transactionRepository: TransactionRepository
     ): GetTransactionsUseCase {
         return GetTransactionsUseCase(transactionRepository)
+    }
+
+    @Provides
+    fun provideInsertTransactionUseCase(
+        transactionRepository: TransactionRepository
+    ): InsertTransactionUseCase {
+        return InsertTransactionUseCase(transactionRepository)
     }
 
 }

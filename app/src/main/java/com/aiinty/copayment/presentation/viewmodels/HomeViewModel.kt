@@ -59,6 +59,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun navigateToTransfer() {
+        viewModelScope.launch {
+            navigateTo(NavigationRoute.TransferSelectScreen.route)
+        }
+    }
+
     fun loadUserInfo() {
         viewModelScope.launch {
             _uiState.value = HomeUiState.Loading

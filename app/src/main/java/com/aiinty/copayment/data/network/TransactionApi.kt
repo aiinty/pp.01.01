@@ -19,7 +19,7 @@ interface TransactionApi {
         @Header("Range") range: String = "0-9"
     ): Response<List<TransactionsResponse>>
 
-    @POST("/rest/v1/transactions")
+    @POST("/functions/v1/make_transaction")
     suspend fun insertTransaction(
         @Header("Authorization") authHeader: String,
         @Body body: TransactionInsertRequest

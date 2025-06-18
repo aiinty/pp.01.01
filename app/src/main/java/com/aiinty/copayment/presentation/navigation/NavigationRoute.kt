@@ -48,7 +48,8 @@ sealed class NavigationRoute(
     data object TransactionsScreen: NavigationRoute("transactions", false)
     data object SelectCardScreen: NavigationRoute("select_card", false)
     data object TransferScreen: NavigationRoute("transfer", false)
-    data object TransferDetailScreen: NavigationRoute("transfer_detail", false)
+    data object TransferSelectScreen: NavigationRoute("transfer_select", false)
+    data object TransferAmountScreen: NavigationRoute("transfer_amount", false)
     data object TransferProofScreen: NavigationRoute("transfer_proof", false)
     data object WithdrawScreen: NavigationRoute("withdraw", false)
     data object MoreScreen: NavigationRoute("more", false)
@@ -79,6 +80,8 @@ sealed class NavigationRoute(
             NextScreen, SplashScreen, OnboardingScreen,
             SignUpScreen, SignInScreen, RecoverScreen, PinCodeScreen,
             HomeScreen, TransactionsScreen, SelectCardScreen,
+            TransferScreen, TransferSelectScreen, TransferAmountScreen, TransferProofScreen,
+            WithdrawScreen, MoreScreen,
             CardsScreen, CreateCardOnboardingScreen, CreateCardStyleScreen, EditCardScreen,
             QRCodeScreen,
             ActivityScreen,
