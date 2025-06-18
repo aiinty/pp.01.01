@@ -3,17 +3,21 @@ package com.aiinty.copayment.presentation.viewmodels
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
+import com.aiinty.copayment.R
 import com.aiinty.copayment.data.local.UserPreferences
 import com.aiinty.copayment.domain.model.AppException
 import com.aiinty.copayment.domain.model.OTPType
 import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.domain.usecase.auth.UpdateUserUseCase
+import com.aiinty.copayment.domain.usecase.card.GetMaskedCardsUseCase
 import com.aiinty.copayment.domain.usecase.profile.GetCachedProfileUseCase
+import com.aiinty.copayment.domain.usecase.profile.GetContactsUseCase
 import com.aiinty.copayment.domain.usecase.profile.GetProfileUseCase
 import com.aiinty.copayment.domain.usecase.profile.UpdateProfileUseCase
 import com.aiinty.copayment.domain.usecase.profile.UploadAvatarUseCase
 import com.aiinty.copayment.domain.utils.FileUtils
 import com.aiinty.copayment.presentation.common.ErrorHandler
+import com.aiinty.copayment.presentation.model.ContactWithMaskedCard
 import com.aiinty.copayment.presentation.navigation.NavigationEvent
 import com.aiinty.copayment.presentation.navigation.NavigationEventBus
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
@@ -31,7 +35,9 @@ class ProfileViewModel @Inject constructor(
     private val getCachedProfileUseCase: GetCachedProfileUseCase,
     private val updateUserUseCase: UpdateUserUseCase,
     private val updateProfileUseCase: UpdateProfileUseCase,
-    private val uploadAvatarUseCase: UploadAvatarUseCase
+    private val uploadAvatarUseCase: UploadAvatarUseCase,
+    private val getContactsUseCase: GetContactsUseCase,
+    private val getMaskedCardsUseCase: GetMaskedCardsUseCase
 ): BaseViewModel(errorHandler) {
     private val _uiState = mutableStateOf<ProfileUiState>(ProfileUiState.Loading)
     val uiState: State<ProfileUiState> = _uiState
@@ -181,10 +187,50 @@ class ProfileViewModel @Inject constructor(
             loadUser()
         }
     }
+
+    fun getContacts() {
+        viewModelScope.launch {
+            _uiState.value = ProfileUiState.Loading
+            runCatching {
+                val profile = getCachedProfileUseCase.invoke() ?: throw AppException.UiTextError("User not found")
+                val contacts = getContactsUseCase.invoke(profile.id).getOrThrow()
+
+                val cardIds = contacts.map { it.cardId }
+
+                val maskedCards = getMaskedCardsUseCase.invoke(cardIds).getOrThrow()
+                val maskedMap = cardIds.zip(maskedCards)
+                    .mapNotNull { (id, masked) ->
+                        masked.masked_number?.let { id to it }
+                    }
+                    .toMap()
+
+                val contactsWithMasked = contacts
+                    .filter { contact -> maskedMap.containsKey(contact.cardId) }
+                    .map { contact ->
+                        ContactWithMaskedCard(
+                            contact,
+                            maskedMap[contact.cardId]!!
+                        )
+                    }
+
+                Pair(profile, contactsWithMasked)
+            }.onSuccess { (profile, contactsWithMasked)  ->
+                _uiState.value = ProfileUiState.Success(
+                    profile = profile,
+                    contacts = contactsWithMasked
+                )
+            }.onFailure {
+                handleError(it)
+            }
+        }
+    }
 }
 
 sealed class ProfileUiState {
     data object Loading : ProfileUiState()
-    data class Success(val profile: Profile) : ProfileUiState()
+    data class Success(
+        val profile: Profile,
+        val contacts: List<ContactWithMaskedCard>? = null
+    ) : ProfileUiState()
     data object Error : ProfileUiState()
 }

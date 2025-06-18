@@ -3,20 +3,16 @@ package com.aiinty.copayment.data.repository
 import com.aiinty.copayment.data.local.UserPreferences
 import com.aiinty.copayment.data.model.card.CardInsertRequest
 import com.aiinty.copayment.data.model.card.CardsResponse
-import com.aiinty.copayment.data.network.AuthApi
-import com.aiinty.copayment.data.network.AvatarApi
+import com.aiinty.copayment.data.model.card.MaskedCardRequest
+import com.aiinty.copayment.data.model.card.MaskedCardResponse
 import com.aiinty.copayment.data.network.CardApi
 import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.CardStyle
-import com.aiinty.copayment.domain.repository.AvatarRepository
 import com.aiinty.copayment.domain.repository.CardRepository
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
 import javax.inject.Inject
 
 class CardRepositoryImpl @Inject constructor(
@@ -101,6 +97,17 @@ class CardRepositoryImpl @Inject constructor(
                 body = requestBody
             )
             handleEmptyResponse(response)
+        }
+    }
+
+    override suspend fun getMaskedCards(cardIds: List<String>): Result<List<MaskedCardResponse>> {
+        return withContext(ioDispatcher) {
+            val requestBody = cardIds.map { MaskedCardRequest(card_id = it) }
+            val response = api.getMaskedCards(
+                authHeader = bearerToken.invoke(),
+                body = requestBody
+            )
+            handleApiResponse(response)
         }
     }
 

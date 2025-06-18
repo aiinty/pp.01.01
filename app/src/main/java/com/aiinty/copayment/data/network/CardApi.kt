@@ -2,6 +2,8 @@ package com.aiinty.copayment.data.network
 
 import com.aiinty.copayment.data.model.card.CardInsertRequest
 import com.aiinty.copayment.data.model.card.CardsResponse
+import com.aiinty.copayment.data.model.card.MaskedCardRequest
+import com.aiinty.copayment.data.model.card.MaskedCardResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -30,5 +32,11 @@ interface CardApi {
         @Header("Authorization") authHeader: String,
         @Body body: CardsResponse
     ): Response<Unit>
+
+    @POST("/functions/v1/get_masked_card")
+    suspend fun getMaskedCards(
+        @Header("Authorization") authHeader: String,
+        @Body body: List<MaskedCardRequest>
+    ): Response<List<MaskedCardResponse>>
 
 }

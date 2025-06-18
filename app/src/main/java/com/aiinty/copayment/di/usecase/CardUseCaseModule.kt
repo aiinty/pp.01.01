@@ -2,6 +2,7 @@ package com.aiinty.copayment.di.usecase
 
 import com.aiinty.copayment.domain.repository.CardRepository
 import com.aiinty.copayment.domain.usecase.card.GetCardsUseCase
+import com.aiinty.copayment.domain.usecase.card.GetMaskedCardsUseCase
 import com.aiinty.copayment.domain.usecase.card.InsertCardUseCase
 import com.aiinty.copayment.domain.usecase.card.UpdateCardUseCase
 import dagger.Module
@@ -32,6 +33,13 @@ object CardUseCaseModule {
         cardRepository: CardRepository
     ): UpdateCardUseCase {
         return UpdateCardUseCase(cardRepository)
+    }
+
+    @Provides
+    fun provideGetMaskedCardUseCase(
+        cardRepository: CardRepository
+    ): GetMaskedCardsUseCase {
+        return GetMaskedCardsUseCase(cardRepository)
     }
 
 }

@@ -43,8 +43,8 @@ fun NavGraphBuilder.mainGraph(
 
         activityScreen(modifier)
 
-        profileScreen(modifier)
-        editProfileScreen(modifier)
-        contactScreen(modifier)
+        profileScreen(modifier, navController)
+        editProfileScreen(modifier, navController)
+        contactScreen(modifier, navController)
     }
 }

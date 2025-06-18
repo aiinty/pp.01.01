@@ -22,10 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -36,14 +34,12 @@ import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
 import com.aiinty.copayment.presentation.ui._components.base.BaseButton
-import com.aiinty.copayment.presentation.ui._components.profile.ProfileAvatar
+import com.aiinty.copayment.presentation.ui._components.profile.ContactProfileItem
 import com.aiinty.copayment.presentation.ui._components.qr.QrCodeImage
 import com.aiinty.copayment.presentation.ui.main.ErrorScreen
 import com.aiinty.copayment.presentation.ui.main.LoadingScreen
 import com.aiinty.copayment.presentation.ui.theme.Greyscale400
 import com.aiinty.copayment.presentation.ui.theme.Greyscale50
-import com.aiinty.copayment.presentation.ui.theme.Greyscale500
-import com.aiinty.copayment.presentation.ui.theme.Greyscale900
 import com.aiinty.copayment.presentation.utils.CardUtils
 import com.aiinty.copayment.presentation.viewmodels.QRUiState
 import com.aiinty.copayment.presentation.viewmodels.QRViewModel
@@ -101,38 +97,7 @@ private fun QRCodeScreenContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                ProfileAvatar(
-                    modifier = Modifier.size(48.dp),
-                    avatarUrl = profile.fullAvatarUrl,
-                    withBorder = false
-                )
-
-                Column(
-                    modifier = Modifier,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = profile.fullName,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Greyscale900,
-                        letterSpacing = 0.3.sp
-                    )
-                    Text(
-                        text = CardUtils.formatCardNumberWithSpaces(
-                            CardUtils.maskCardNumber(card.cardNumber)
-                        ),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Greyscale500,
-                        letterSpacing = 0.3.sp
-                    )
-                }
-            }
+            ContactProfileItem(profile = profile, cardNumber = CardUtils.maskCardNumber(card.cardNumber))
 
             Icon(
                 modifier = Modifier

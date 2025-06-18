@@ -47,6 +47,11 @@ sealed class NavigationRoute(
     data object HomeScreen: NavigationRoute("home", true)
     data object TransactionsScreen: NavigationRoute("transactions", false)
     data object SelectCardScreen: NavigationRoute("select_card", false)
+    data object TransferScreen: NavigationRoute("transfer", false)
+    data object TransferDetailScreen: NavigationRoute("transfer_detail", false)
+    data object TransferProofScreen: NavigationRoute("transfer_proof", false)
+    data object WithdrawScreen: NavigationRoute("withdraw", false)
+    data object MoreScreen: NavigationRoute("more", false)
 
     data object CardsScreen: NavigationRoute("cards", true)
     data object CreateCardOnboardingScreen: NavigationRoute("create_card_onboarding")

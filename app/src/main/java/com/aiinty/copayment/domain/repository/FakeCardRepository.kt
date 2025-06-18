@@ -1,6 +1,8 @@
 package com.aiinty.copayment.domain.repository
 
+import com.aiinty.copayment.data.model.card.MaskedCardResponse
 import com.aiinty.copayment.domain.model.Card
+import com.aiinty.copayment.presentation.utils.CardUtils
 import kotlinx.coroutines.delay
 
 class FakeCardRepository : CardRepository {
@@ -27,5 +29,24 @@ class FakeCardRepository : CardRepository {
         } else {
             Result.failure(Exception("Card not found"))
         }
+    }
+
+    override suspend fun getMaskedCards(cardIds: List<String>): Result<List<MaskedCardResponse>> {
+        delay(500)
+        val responses = cardIds.map { cardId ->
+            val card = cards.find { it.id == cardId }
+            if (card != null) {
+                MaskedCardResponse(
+                    card_id = cardId,
+                    masked_number = CardUtils.maskCardNumber(card.cardNumber)
+                )
+            } else {
+                MaskedCardResponse(
+                    card_id = cardId,
+                    masked_number = null
+                )
+            }
+        }
+        return Result.success(responses)
     }
 }

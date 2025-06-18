@@ -131,4 +131,7 @@
     <string name="now_there_are_no_transactions">Now there are no transactions...</string>
     <string name="all">All</string>
     <string name="select_your_card">Select your card</string>
+    <string name="no_contacts_found">No contacts found</string>
+    <string name="search">Search</string>
+    <string name="all_contacts">All Contacts</string>
 </resources>

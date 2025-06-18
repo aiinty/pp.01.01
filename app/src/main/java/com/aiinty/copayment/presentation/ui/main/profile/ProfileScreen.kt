@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,10 +30,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
+import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
 import com.aiinty.copayment.presentation.ui._components.base.SettingItem
 import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.profile.ProfileAvatar
@@ -46,6 +49,7 @@ import com.aiinty.copayment.presentation.ui.theme.Greyscale900
 import com.aiinty.copayment.presentation.ui.theme.Orange
 import com.aiinty.copayment.presentation.ui.theme.Purple
 import com.aiinty.copayment.presentation.ui.theme.Typography
+import com.aiinty.copayment.presentation.viewmodels.CardViewModel
 import com.aiinty.copayment.presentation.viewmodels.ProfileUiState
 import com.aiinty.copayment.presentation.viewmodels.ProfileViewModel
 
@@ -142,12 +146,18 @@ private fun ProfileScreenContent(
 
 fun NavGraphBuilder.profileScreen(
     modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
     composable(
         route = NavigationRoute.ProfileScreen.route
     ){
+        val parentEntry = remember(navController) {
+            navController.getBackStackEntry(NavigationGraph.MainGraph.route)
+        }
+        val viewModel: ProfileViewModel = hiltViewModel(parentEntry)
         ProfileScreen(
             modifier = modifier,
+            viewModel = viewModel
         )
     }
 }

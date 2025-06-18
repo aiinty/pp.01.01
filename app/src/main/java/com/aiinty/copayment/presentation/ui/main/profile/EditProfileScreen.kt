@@ -27,12 +27,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.Profile
 import com.aiinty.copayment.domain.utils.FileUtils.uriToFile
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
+import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
 import com.aiinty.copayment.presentation.ui._components.auth.EmailTextField
 import com.aiinty.copayment.presentation.ui._components.auth.FullNameTextField
 import com.aiinty.copayment.presentation.ui._components.auth.PhoneTextField
@@ -41,6 +45,7 @@ import com.aiinty.copayment.presentation.ui._components.base.UiErrorHandler
 import com.aiinty.copayment.presentation.ui._components.profile.ProfileAvatar
 import com.aiinty.copayment.presentation.ui.main.ErrorScreen
 import com.aiinty.copayment.presentation.ui.main.LoadingScreen
+import com.aiinty.copayment.presentation.viewmodels.CardViewModel
 import com.aiinty.copayment.presentation.viewmodels.ProfileUiState
 import com.aiinty.copayment.presentation.viewmodels.ProfileViewModel
 import java.io.File
@@ -197,12 +202,18 @@ private fun EditProfileFields(
 
 fun NavGraphBuilder.editProfileScreen(
     modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
     composable(
         route = NavigationRoute.EditProfileScreen.route
     ){
+        val parentEntry = remember(navController) {
+            navController.getBackStackEntry(NavigationGraph.MainGraph.route)
+        }
+        val viewModel: ProfileViewModel = hiltViewModel(parentEntry)
         EditProfileScreen(
             modifier = modifier,
+            viewModel = viewModel
         )
     }
 }
