@@ -44,6 +44,10 @@ class AuthViewModel @Inject constructor(
     val resendCooldownSeconds: StateFlow<Int> = _resendCooldownSeconds.asStateFlow()
     val canResend = MutableStateFlow(true)
 
+    private var cachedEmail: String? = null
+    private var cachedPassword: String? = null
+    private var cachedSignUpData: SignUpData? = null
+
     private suspend fun navigateTo(route: String) {
         navigationEventBus.send(NavigationEvent.ToRoute(route))
     }
@@ -158,6 +162,10 @@ class AuthViewModel @Inject constructor(
     }
 
     fun signUp(fullName: String, email: String, password: String) {
+        cachedEmail = email
+        cachedPassword = password
+        cachedSignUpData = SignUpData(full_name = fullName)
+
         //Saving in preferences because there is no endpoint for resending the email confirmation
         userPreferences.saveUserEmail(email)
         userPreferences.saveUserPassword(password)
@@ -199,7 +207,7 @@ class AuthViewModel @Inject constructor(
                 OTPType.EMAIL -> {
                     val password = userPreferences.getUserPassword()
                     if (password != null) {
-                        signUpUseCase(email = email, password = password, data = null)
+                        signUpUseCase(email = email, password = password, data = cachedSignUpData)
                     } else {
                         Result.failure(Exception("Missing password"))
                     }
@@ -216,7 +224,10 @@ class AuthViewModel @Inject constructor(
             }
             result.fold(
                 onSuccess = { startResendCooldown(60) },
-                onFailure = ::handleError
+                onFailure = {
+                    handleError(it)
+                    startResendCooldown(60)
+                }
             )
         }
     }

@@ -42,7 +42,7 @@
     <string name="unknown_error">Произошла неизвестная ошибка</string>
     <string name="login_error_occurred">Произошла ошибка во время входа</string>
     <string name="unknown_api_error">Произошла неизвестная ошибка API</string>
-    <string name="try_signing_in_again">Пожалуйста, попробуйте войти в систему еще раз</string>
+    <string name="try_signing_in_again">Пожалуйста, попробуйте зарегистрироваться в системе еще раз</string>
     <string name="email_is_already_taken">Указанный вами адрес электронной почты уже используется</string>
     <string name="token_has_expired">Срок действия вашего токена истек или он может быть недействительным</string>
     <string name="verify_the_accuracy">Подтвердите точность введенной вами информации</string>
