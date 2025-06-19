@@ -35,6 +35,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.Card
 import com.aiinty.copayment.domain.model.TransactionType
 import com.aiinty.copayment.domain.utils.MoneyUtils.formatMoney
@@ -126,7 +127,7 @@ fun TransactionScreenContent(
 
         if (isWithdrawLike) {
             Text(
-                text = "Maximum \$${maxAmount.formatMoney()}",
+                text = stringResource(R.string.maximum, maxAmount.formatMoney()),
                 color = Greyscale400,
             )
 

@@ -95,7 +95,7 @@ fun TransferAmountScreenContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "to ${contact.profile.fullName}",
+            text = stringResource(R.string.to, contact.profile.fullName),
             style = MaterialTheme.typography.titleMedium,
             color = Greyscale900,
         )

@@ -155,4 +155,6 @@
     <string name="from">From %1$s</string>
     <string name="cancel">Cancel</string>
     <string name="qr_code">QR Code</string>
+    <string name="to">to %1$s</string>
+    <string name="maximum">Maximum $%1$s</string>
 </resources>
