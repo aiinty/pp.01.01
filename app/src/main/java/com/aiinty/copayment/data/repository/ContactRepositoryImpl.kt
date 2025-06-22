@@ -2,20 +2,14 @@ package com.aiinty.copayment.data.repository
 
 import com.aiinty.copayment.data.local.UserPreferences
 import com.aiinty.copayment.data.model.contact.ContactInsertRequest
-import com.aiinty.copayment.data.model.transaction.TransactionInsertRequest
 import com.aiinty.copayment.data.network.ContactApi
-import com.aiinty.copayment.data.network.TransactionApi
 import com.aiinty.copayment.domain.model.Contact
 import com.aiinty.copayment.domain.model.Profile
-import com.aiinty.copayment.domain.model.Transaction
-import com.aiinty.copayment.domain.model.TransactionType
 import com.aiinty.copayment.domain.repository.ContactRepository
-import com.aiinty.copayment.domain.repository.TransactionRepository
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.time.OffsetDateTime
 import javax.inject.Inject
 
 class ContactRepositoryImpl @Inject constructor(

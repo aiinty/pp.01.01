@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -24,7 +23,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.aiinty.copayment.R
-import com.aiinty.copayment.domain.model.Contact
 import com.aiinty.copayment.presentation.model.ContactWithMaskedCard
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.navigation.graphs.NavigationGraph
@@ -33,7 +31,6 @@ import com.aiinty.copayment.presentation.ui._components.profile.ContactProfileIt
 import com.aiinty.copayment.presentation.ui.main.ErrorScreen
 import com.aiinty.copayment.presentation.ui.main.LoadingScreen
 import com.aiinty.copayment.presentation.ui.theme.Greyscale500
-import com.aiinty.copayment.presentation.viewmodels.CardViewModel
 import com.aiinty.copayment.presentation.viewmodels.ProfileUiState
 import com.aiinty.copayment.presentation.viewmodels.ProfileViewModel
 

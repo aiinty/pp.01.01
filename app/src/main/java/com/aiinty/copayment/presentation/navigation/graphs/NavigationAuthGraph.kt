@@ -6,13 +6,10 @@ import androidx.navigation.navigation
 import com.aiinty.copayment.presentation.navigation.NavigationEventBus
 import com.aiinty.copayment.presentation.navigation.NavigationRoute
 import com.aiinty.copayment.presentation.ui.auth.createPinCodeScreen
-import com.aiinty.copayment.presentation.ui.auth.passwordChangeScreen
+import com.aiinty.copayment.presentation.ui.auth.onboardingScreen
 import com.aiinty.copayment.presentation.ui.auth.pinCodeScreen
-import com.aiinty.copayment.presentation.ui.auth.recoverScreen
 import com.aiinty.copayment.presentation.ui.auth.signInScreen
 import com.aiinty.copayment.presentation.ui.auth.signUpScreen
-import com.aiinty.copayment.presentation.ui.auth.verifyOTPScreen
-import com.aiinty.copayment.presentation.ui.auth.onboardingScreen
 import com.aiinty.copayment.presentation.ui.auth.splashScreen
 
 fun NavGraphBuilder.authGraph(

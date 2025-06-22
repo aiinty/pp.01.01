@@ -1,10 +1,7 @@
 package com.aiinty.copayment.domain.repository
 
 import com.aiinty.copayment.domain.model.Contact
-import com.aiinty.copayment.domain.model.Transaction
-import com.aiinty.copayment.domain.model.TransactionType
 import kotlinx.coroutines.delay
-import java.time.OffsetDateTime
 
 class FakeContactRepository : ContactRepository {
 

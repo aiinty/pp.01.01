@@ -1,6 +1,5 @@
 package com.aiinty.copayment.data.network
 
-import com.aiinty.copayment.data.model.EmptyResponse
 import com.aiinty.copayment.data.model.contact.ContactInsertRequest
 import com.aiinty.copayment.data.model.contact.ContactResponse
 import retrofit2.Response

@@ -1,8 +1,5 @@
 package com.aiinty.copayment.presentation.navigation.graphs
 
-import com.aiinty.copayment.domain.model.CardStyle
-import com.aiinty.copayment.domain.model.OTPType
-import com.aiinty.copayment.presentation.ui.main.card.EditCardScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

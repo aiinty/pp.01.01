@@ -70,9 +70,9 @@
     <string name="error_invalid_phone">Неверный номер телефона</string>
     <string name="home">Главная</string>
     <string name="profile">Профиль</string>
-    <string name="activity">Активности</string>
+    <string name="activity">Операции</string>
     <string name="scan">Сканировать</string>
-    <string name="my_card">Мои Карты</string>
+    <string name="my_card">Карты</string>
     <string name="bar_item">Пункт меню</string>
     <string name="scan_qr_code">Сканировать QR</string>
     <string name="edit_profile">Редактировать профиль</string>

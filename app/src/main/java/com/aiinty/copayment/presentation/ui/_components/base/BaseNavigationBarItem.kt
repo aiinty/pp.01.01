@@ -38,6 +38,7 @@ fun RowScope.BaseNavigationBarItem(
         label = {
             Text(
                 text = itemLabel,
+                maxLines = 1,
                 color = if (isSelected) Greyscale900 else Greyscale500,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
             )

@@ -1,14 +1,13 @@
 package com.aiinty.copayment.presentation.ui._components.home
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.runtime.*
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.aiinty.copayment.R
 import com.aiinty.copayment.domain.model.TransactionCategory
 import com.aiinty.copayment.domain.model.TransactionType

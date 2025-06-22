@@ -75,7 +75,7 @@
     <string name="profile">Profile</string>
     <string name="activity">Activity</string>
     <string name="scan">Scan</string>
-    <string name="my_card">My Card</string>
+    <string name="my_card">Cards</string>
     <string name="bar_item">Bar Item</string>
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="edit_profile">Edit Profile</string>
